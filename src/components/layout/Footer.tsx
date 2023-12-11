@@ -7,8 +7,8 @@ import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="flex flex-row px-16 py-10 space-x-5 bg-green-100">
-      <div className="bg-blue-100 flex flex-col justify-between w-full">
+    <footer className="flex flex-col lg:flex-row px-16 py-10 space-y-5 lg:space-y-0 lg:space-x-5 bg-green-100">
+      <div className="bg-blue-100 flex flex-col space-y-2 justify-between w-full">
         <div>
           <h2 className="text-2xl font-bold">Tally Newsletter</h2>
         </div>
@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="flex justify-end py-2 px-3 bg-indigo-100">
           <Link href="/" className="text-xl">LOGO</Link>
         </div>
-        <div className="flex justify-end space-x-5 px-3 py-2 bg-orange-100">
+        <div className="flex flex-col sm:flex-row items-end justify-end space-y-3 sm:space-y-0 sm:space-x-5 px-3 py-2 bg-orange-100">
           <Link
             href="/"
             className="hover:cursor-pointer underline hover:no-underline"

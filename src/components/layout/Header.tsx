@@ -24,7 +24,7 @@ export default function Header({ authUser }: HeaderProps) {
         <Link href="/">LOGO</Link>
         <Input placeholder="Search markets" />
       </div>
-      <div className="space-x-3">
+      <div className="space-x-3 hidden md:flex">
         <Link
           href="/"
           className="hover:cursor-pointer underline hover:no-underline"

@@ -38,7 +38,7 @@ export default async function RootLayout({
         )}
       >
         <Header authUser={user} />
-        <main className="flex flex-col grow w-full items-center justify-center">
+        <main className="flex flex-col grow w-full items-center">
           {children}
         </main>
         <Footer />

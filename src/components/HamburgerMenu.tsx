@@ -1,19 +1,32 @@
 "use client"
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
+import Link from "next/link";
 import { useWindowSize } from 'usehooks-ts'
 
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+import { BsGraphUpArrow } from "react-icons/bs";
+import { CgInsights } from "react-icons/cg";
 import { FaDiscord } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { GoTrophy } from "react-icons/go";
+import { IoMdBook } from "react-icons/io";
+import { MdOutlineRocketLaunch } from "react-icons/md";
+import { MdQuestionMark } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 // Source: https://tailwindcss.com/docs/responsive-design
@@ -25,74 +38,60 @@ const tailwindWidthBreakpoints = {
   "2xl": 1536,
 }
 
-function HamburgerMenuLinks() {
+export default function HamburgerMenu() {
   const { width, height } = useWindowSize()
   return (
-    <ul className="py-3 px-2 space-y-3">
-      {
-        width < tailwindWidthBreakpoints["md"] ? (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
+          <RxHamburgerMenu />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        { width < tailwindWidthBreakpoints["md"] ? (
           <>
-            <li>
-            <NavigationMenuLink>
-              Fair Launch
-            </NavigationMenuLink>
-            </li>
-            <li>
-            <NavigationMenuLink>
-              Markets
-            </NavigationMenuLink>
-            </li>
-            <li>
-            <NavigationMenuLink>
-              Insights
-            </NavigationMenuLink>
-            </li>
-            <li>
-            <NavigationMenuLink>
-              FAQ
-            </NavigationMenuLink>
-            </li>
-            <li>
-            <NavigationMenuLink>
-              Leaderboard
-            </NavigationMenuLink>
-            </li>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <MdOutlineRocketLaunch className="mr-2 h-4 w-4" />
+                <Link href="/">
+                <span>Fair Launch</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <BsGraphUpArrow className="mr-2 h-4 w-4" />
+                <span>Markets</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CgInsights className="mr-2 h-4 w-4" />
+                <span>Insights</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <MdQuestionMark className="mr-2 h-4 w-4" />
+                <span>FAQ</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <GoTrophy className="mr-2 h-4 w-4" />
+                <span>Leaderboard</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
           </>
-        ) : null
-      }
-      <li>
-      <NavigationMenuLink>
-        Documentation
-      </NavigationMenuLink>
-      </li>
-      <li>
-      <NavigationMenuLink>
-        <FaDiscord />
-      </NavigationMenuLink>
-      </li>
-      <li>
-      <NavigationMenuLink>
-        <FaXTwitter />
-      </NavigationMenuLink>
-      </li>
-    </ul>
-  )
-}
-
-export default function HamburgerMenu() {
-
-  return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>
-            <RxHamburgerMenu/>
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <HamburgerMenuLinks />
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+        ) : null }
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <IoMdBook className="mr-2 h-4 w-4"/>
+            <span>Documentation</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <FaDiscord className="mr-2 h-4 w-4"/>
+            <span>Discord</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <FaXTwitter className="mr-2 h-4 w-4"/>
+            <span>Twitter</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

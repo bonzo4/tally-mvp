@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button"
+import BannerCarousel from "@/components/BannerCarousel"
 
 function Tickers() {
   return (
@@ -11,8 +12,8 @@ function Tickers() {
 
 function Banner() {
   return (
-    <div className="w-full min-h-[50vh] bg-orange-100">
-      Banner
+    <div className="w-full min-h-[50vh] flex flex-col bg-orange-100">
+      <BannerCarousel />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from 'next/image'
+import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 
 const TEST_IMAGE_SRCS = [
@@ -35,8 +36,16 @@ function BannerSlide({ src, alt }: BannerSlideProps) {
   )
 }
 
+const autoplayOptions = {
+  delay: 4000,
+  stopOnInteraction: false,
+}
+
 function BannerCarousel() {
-  const [emblaRef] = useEmblaCarousel()
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay(autoplayOptions)
+  ])
+
 
   return (
     <div className="embla overflow-hidden flex flex-grow" ref={emblaRef}>

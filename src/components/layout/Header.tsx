@@ -32,7 +32,7 @@ export default function Header({ authUser }: HeaderProps) {
           Fair Launch
         </Link>
         <Link
-          href="/"
+          href="/markets"
           className="hover:cursor-pointer underline hover:no-underline"
         >
           Markets

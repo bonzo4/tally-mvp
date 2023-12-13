@@ -44,8 +44,10 @@ const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
 export default function PredictionMarkets() {
   return(
     <div className="space-y-5">
-      <div>
-        <h2 className="text-4xl font-bold">Prediction Markets</h2>
+      <div className="flex">
+        <Link href="/markets">
+          <h2 className="text-4xl font-bold hover:underline">Prediction Markets</h2>
+        </Link>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
@@ -57,7 +59,7 @@ export default function PredictionMarkets() {
         <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
       </div>
       <div>
-        <Link href="/">
+        <Link href="/markets">
           <Button>View All</Button>
         </Link>
       </div>

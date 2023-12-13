@@ -91,7 +91,7 @@ export default function MarketsPage() {
     <div className="w-full">
       <Tickers />
       <Banner />
-      <div className="w-full flex flex-col space-y-5 px-3 py-3 lg:px-10 lg:py-10">
+      <div className="w-full flex flex-col space-y-5 p-3 lg:p-10">
         <FairLaunchGallery />
         <MarketsGallery />
       </div>

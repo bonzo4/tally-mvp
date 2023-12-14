@@ -9,15 +9,19 @@ import { Input } from "@/components/ui/input";
 const TEST_MARKET_STATUS = {
   1: {
     status: "fairLaunch",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
   },
   2: {
     status: "trading",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-2.jpg",
   },
   3: {
     status: "frozen",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
   },
   4: {
     status: "resolution",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-4.jpg",
   },
 }
 
@@ -214,8 +218,14 @@ function BannerNoContainer(props) {
 
 function Banner(props) {
   return (
-    <div className="bg-gray-500 w-full min-h-[60vh] flex justify-center items-center p-3 lg:pt-[10vh] pb-[12vh]">
-    <div className="lg:w-[70vw] flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-3 justify-center items-center">
+    <div className="relative w-full min-h-[60vh] flex justify-center items-center p-3 lg:pt-[10vh] pb-[12vh]">
+    <Image 
+      src={props.image}
+      fill={true}
+      alt="test image"
+      className="object-cover"
+    />
+    <div className="lg:w-[70vw] flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-3 justify-center items-center z-10">
       <BannerTitle {...props} />
       <div className="h-full flex flex-col space-y-5">
         <BannerYesContainer {...props} />

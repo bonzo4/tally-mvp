@@ -49,15 +49,13 @@ const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
   },
 ]
 
-
-
 function BannerTitle(props) {
   switch (props.status) {
     case "fairLaunch":
       return (
         <div className="">
-          <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $0.00</h1>
-          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+          <h1 className="text-3xl md:text-5xl text-green-500 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">TOTAL POT: $0.00</h1>
+          <h1 className="text-3xl md:text-5xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
         </div>
       )
       break;
@@ -66,14 +64,14 @@ function BannerTitle(props) {
         <div>
           <div className="lg:mb-5 flex flex-col lg:flex-row items-center">
             <div className="mr-5 mb-3 lg:mb-0">
-              <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">WINNER: YES</h1>
+              <h1 className="text-3xl md:text-5xl text-green-500 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">WINNER: YES</h1>
             </div>
             <div className="mb-5 lg:mb-0">
               <Link href="/"><Button>Start Trading</Button></Link>
             </div>
           </div>
-          <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $100,000</h1>
-          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+          <h1 className="text-3xl md:text-5xl text-green-500 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">TOTAL POT: $100,000</h1>
+          <h1 className="text-3xl md:text-5xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
         </div>
       )
       break;
@@ -82,11 +80,11 @@ function BannerTitle(props) {
         <div>
           <div className="lg:mb-5 flex flex-col lg:flex-row items-center">
             <div className="mr-5 mb-3 lg:mb-0">
-              <h1 className="text-3xl md:text-5xl text-blue-400 font-bold text-center lg:text-left">LEADING: NO</h1>
+              <h1 className="text-3xl md:text-5xl text-blue-400 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">LEADING: NO</h1>
             </div>
           </div>
-          <h1 className="text-3xl md:text-5xl text-blue-400 font-bold text-center lg:text-left">TOTAL POT: $182,000</h1>
-          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+          <h1 className="text-3xl md:text-5xl text-blue-400 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">TOTAL POT: $182,000</h1>
+          <h1 className="text-3xl md:text-5xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
         </div>
       )
       break;
@@ -95,11 +93,11 @@ function BannerTitle(props) {
         <div>
           <div className="lg:mb-5 flex flex-col lg:flex-row items-center">
             <div className="mr-5 mb-3 lg:mb-0">
-              <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">WINNER: YES</h1>
+              <h1 className="text-3xl md:text-5xl text-green-500 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">WINNER: YES</h1>
             </div>
           </div>
-          <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $182,000</h1>
-          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+          <h1 className="text-3xl md:text-5xl text-green-500 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">TOTAL POT: $182,000</h1>
+          <h1 className="text-3xl md:text-5xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
         </div>
       )
       break;

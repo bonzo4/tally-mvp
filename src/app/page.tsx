@@ -1,10 +1,10 @@
-import Tickers from "@/components/landing/Tickers"
-import Banner from "@/components/landing/Banner"
-import FairLaunch from "@/components/landing/FairLaunch"
-import PredictionMarkets from "@/components/landing/PredictionMarkets"
-import LiveNewsFeed from "@/components/landing/LiveNewsFeed"
-import Insights from "@/components/landing/Insights"
-import Guide from "@/components/landing/Guide"
+import Tickers from "@/components/Tickers"
+import Banner from "@/components/Banner"
+import FairLaunch from "./components/FairLaunch"
+import PredictionMarkets from "./components/PredictionMarkets"
+import LiveNewsFeed from "./components/LiveNewsFeed"
+import Insights from "./components/Insights"
+import Guide from "./components/Guide"
 
 export default function LandingPage() {
   return (

@@ -1,6 +1,6 @@
 
-import Banner from "@/components/landing/Banner";
-import Tickers from "@/components/landing/Tickers";
+import Banner from "@/components/Banner";
+import Tickers from "@/components/Tickers";
 import { MarketTeaserProps, MarketTeaser } from "@/components/MarketTeaser";
 
 const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [

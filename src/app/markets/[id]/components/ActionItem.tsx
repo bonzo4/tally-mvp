@@ -1,0 +1,42 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+export default function ActionItem(props) {
+  let actionItem 
+  switch (props.status) {
+    case "fairLaunch":
+      actionItem = (
+        <Link href="/">
+          <Button>Predict Now</Button>
+        </Link>
+      )
+      break;
+    case "trading":
+      actionItem = (
+        <Link href="/">
+          <Button>Start Trading</Button>
+        </Link>
+      )
+      break;
+    case "frozen":
+      actionItem = (
+        <>
+        </>
+      )
+      break;
+    case "resolution":
+      actionItem = (
+        <Link href="/">
+          <Button>Claim Winnings</Button>
+        </Link>
+      )
+      break;
+  }
+
+  return (
+    <div className="w-full flex justify-center items-center pb-5">
+      { actionItem }
+    </div>
+  )
+}
+

@@ -1,20 +1,140 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import Tickers from "@/components/landing/Tickers";
 import { MarketTeaser, MarketTeaserProps } from "@/components/MarketTeaser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-function BannerTitle() {
-  return (
-    <div className="justify-center items-center">
-      <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $0.00</h1>
-      <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
-    </div>
-  )
+const TEST_MARKET_STATUS = {
+  1: {
+    status: "fairLaunch",
+  },
+  2: {
+    status: "trading",
+  },
+  3: {
+    status: "frozen",
+  },
+  4: {
+    status: "resolution",
+  },
 }
 
-function BannerYesContainer() {
+const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
+  {
+    title: "Will the USA confirm the existence of aliens?",
+    category: "Science",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
+    yesPrice: 1,
+    noPrice: 99,
+  },
+  {
+    title: "Will Shohei Ohtani join the Dodgers?",
+    category: "Sports",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
+    yesPrice: 97,
+    noPrice: 3,
+  },
+  {
+    title: "Will Claudine Gay, Harvard college president who testified on antisemitism, stay through 2023?",
+    category: "Politics",
+    image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
+    yesPrice: 97,
+    noPrice: 3,
+  },
+]
+
+
+
+function BannerTitle(props) {
+  switch (props.status) {
+    case "fairLaunch":
+      return (
+        <div className="">
+          <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $0.00</h1>
+          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+        </div>
+      )
+      break;
+    case "trading":
+      return (
+        <div>
+          <div className="mb-5 flex items-center">
+            <div className="mr-5">
+              <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">WINNER: YES</h1>
+            </div>
+            <div>
+              <Link href="/"><Button>Start Trading</Button></Link>
+            </div>
+          </div>
+          <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $100,000</h1>
+          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+        </div>
+      )
+      break;
+    case "frozen":
+      return (
+        <div>
+          <div className="mb-5 flex items-center">
+            <div className="mr-5">
+              <h1 className="text-3xl md:text-5xl text-blue-400 font-bold text-center lg:text-left">LEADING: NO</h1>
+            </div>
+          </div>
+          <h1 className="text-3xl md:text-5xl text-blue-400 font-bold text-center lg:text-left">TOTAL POT: $182,000</h1>
+          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+        </div>
+      )
+      break;
+    case "resolution":
+      return (
+        <div>
+          <div className="mb-5 flex items-center">
+            <div className="mr-5">
+              <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">WINNER: YES</h1>
+            </div>
+          </div>
+          <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">TOTAL POT: $182,000</h1>
+          <h1 className="text-3xl md:text-5xl text-white font-bold text-center lg:text-left">WHO WILL WIN THE 2024 PRESIDENTIAL ELECTION?</h1>
+        </div>
+      )
+      break;
+  }
+}
+
+function BannerYesContainer(props) {
+  let submitButton 
+  switch (props.status) {
+    case "fairLaunch":
+      submitButton = (
+        <Link href="/">
+          <Button>Buy</Button>
+        </Link>
+      )
+      break;
+    case "trading":
+      submitButton = (
+        <Link href="/">
+          <Button>Start Trading</Button>
+        </Link>
+      )
+      break;
+    case "frozen":
+      submitButton = (
+        <Link href="/">
+          <Button>Total Pot</Button>
+        </Link>
+      )
+      break;
+    case "resolution":
+      submitButton = (
+        <Link href="/">
+          <Button>Total Pot</Button>
+        </Link>
+      )
+      break;
+  }
+
   return (
     <div className="bg-green-500 flex flex-col space-y-2 border border-black rounded p-3">
       <div className="flex justify-between items-end">
@@ -30,14 +150,46 @@ function BannerYesContainer() {
           <h1 className="text-4xl md:text-5xl font-bold">$.50</h1>
         </div>
         <div className="flex justify-end self-end">
-          <Button>Buy</Button>
+          {submitButton}
         </div>
       </div>
     </div>
   )
 }
 
-function BannerNoContainer() {
+function BannerNoContainer(props) {
+  let submitButton 
+  switch (props.status) {
+    case "fairLaunch":
+      submitButton = (
+        <Link href="/">
+          <Button>Buy</Button>
+        </Link>
+      )
+      break;
+    case "trading":
+      submitButton = (
+        <Link href="/">
+          <Button>Start Trading</Button>
+        </Link>
+      )
+      break;
+    case "frozen":
+      submitButton = (
+        <Link href="/">
+          <Button>Total Pot</Button>
+        </Link>
+      )
+      break;
+    case "resolution":
+      submitButton = (
+        <Link href="/">
+          <Button>Total Pot</Button>
+        </Link>
+      )
+      break;
+  }
+
   return (
     <div className="bg-red-500 flex flex-col space-y-2 border border-black rounded p-3">
       <div className="flex justify-between items-end">
@@ -53,21 +205,21 @@ function BannerNoContainer() {
           <h1 className="text-4xl md:text-5xl font-bold">$.50</h1>
         </div>
         <div className="flex justify-end self-end">
-          <Button>Buy</Button>
+          { submitButton }
         </div>
       </div>
     </div>
   )
 }
 
-function Banner() {
+function Banner(props) {
   return (
     <div className="bg-gray-500 w-full min-h-[60vh] flex justify-center items-center p-3 lg:pt-[10vh] pb-[12vh]">
     <div className="lg:w-[70vw] flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-3 justify-center items-center">
-      <BannerTitle />
+      <BannerTitle {...props} />
       <div className="h-full flex flex-col space-y-5">
-        <BannerYesContainer />
-        <BannerNoContainer />
+        <BannerYesContainer {...props} />
+        <BannerNoContainer  {...props} />
       </div>
     </div>
     </div>
@@ -87,12 +239,28 @@ function CountdownUnit({ value, unit }: { value: number, unit: string}) {
   )
 }
 
-function Countdown() {
+function Countdown(props) {
+  let countdownTitle 
+  switch (props.status) {
+    case "fairLaunch":
+      countdownTitle = "FAIR LAUNCH COUNTDOWN"
+      break;
+    case "trading":
+      countdownTitle = "FAIR LAUNCH COUNTDOWN"
+      break;
+    case "frozen":
+      countdownTitle = "DEFROST COUNTDOWN"
+      break;
+    case "resolution":
+      countdownTitle = "YES IS THE WINNER"
+      break;
+  }
+
   return (
     <div className="relative w-full bg-red-100 h-[15vh] lg:h-[15vw] flex justify-center">
       <div className="absolute bg-white border border-black min-w-[70vw] min-h-[120px] h-[20vw] lg:h-[12vw] -top-[10vh] z-10 flex justify-center p-4">
         <div className="relative">
-          <h1 className="text-2xl md:text-4xl font-bold text-center">FAIR LAUNCH COUNTDOWN</h1>
+          <h1 className="text-2xl md:text-4xl font-bold text-center">{ countdownTitle }</h1>
           <div className="relative min-w-[50vw] min-h-[10vh] z-20 grid grid-cols-4 gap-2 md:gap-5 p-2 lg:p-4">
             <CountdownUnit value={15} unit={"DAYS"}/>
             <CountdownUnit value={22} unit={"HOURS"}/>
@@ -142,39 +310,46 @@ function HowItWorks() {
   )
 }
 
-function PredictNow() {
+function ActionItem(props) {
+  let actionItem 
+  switch (props.status) {
+    case "fairLaunch":
+      actionItem = (
+        <Link href="/">
+          <Button>Predict Now</Button>
+        </Link>
+      )
+      break;
+    case "trading":
+      actionItem = (
+        <Link href="/">
+          <Button>Start Trading</Button>
+        </Link>
+      )
+      break;
+    case "frozen":
+      actionItem = (
+        <>
+        </>
+      )
+      break;
+    case "resolution":
+      actionItem = (
+        <Link href="/">
+          <Button>Claim Winnings</Button>
+        </Link>
+      )
+      break;
+  }
+
   return (
     <div className="w-full flex justify-center items-center pb-5">
-      <Button>Predict Now</Button>
+      { actionItem }
     </div>
   )
 }
 
 function OtherMarkets() {
-  const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
-    {
-      title: "Will the USA confirm the existence of aliens?",
-      category: "Science",
-      image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
-      yesPrice: 1,
-      noPrice: 99,
-    },
-    {
-      title: "Will Shohei Ohtani join the Dodgers?",
-      category: "Sports",
-      image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-      yesPrice: 97,
-      noPrice: 3,
-    },
-    {
-      title: "Will Claudine Gay, Harvard college president who testified on antisemitism, stay through 2023?",
-      category: "Politics",
-      image: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-      yesPrice: 97,
-      noPrice: 3,
-    },
-  ]
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
@@ -186,45 +361,16 @@ function OtherMarkets() {
 
 export default function MarketPage({ params }: { params: { id: number } }) {
   const id = params.id // to get url param
-
-    const TEST_MARKET_STATUS = {
-      1: {
-        status: "fairLaunch"
-      },
-      2: {
-        status: "trading",
-        yesPot: 68000,
-        yesPrice: 68,
-        noPot: 32000,
-        noPrice: 32,
-        winner: true
-      },
-      3: {
-        status: "frozen",
-        yesPot: 84000,
-        yesPrice: 42,
-        noPot: 98000,
-        noPrice: 58,
-        leading: false
-      },
-      4: {
-        status: "resolution",
-        yesPot: 84000,
-        yesPrice: 1.21,
-        noPot: 98000,
-        noPrice: 0,
-        leading: true
-      },
-    }
+  const page_props = TEST_MARKET_STATUS[id]
 
   return (
     <div className="w-full h-full flex flex-col items-center">
       <Tickers />
-      <Banner />
-      <Countdown />
+      <Banner {...page_props} />
+      <Countdown {...page_props} />
       <div className="lg:w-[70vw] h-full flex flex-col justify-center items-center px-2 lg:px-0 pb-5">
         <HowItWorks />
-        <PredictNow />
+        <ActionItem {...page_props} />
         <OtherMarkets />
       </div>
     </div>

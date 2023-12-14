@@ -60,11 +60,11 @@ function BannerTitle(props) {
     case "trading":
       return (
         <div>
-          <div className="mb-5 flex items-center">
-            <div className="mr-5">
+          <div className="lg:mb-5 flex flex-col lg:flex-row items-center">
+            <div className="mr-5 mb-3 lg:mb-0">
               <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">WINNER: YES</h1>
             </div>
-            <div>
+            <div className="mb-5 lg:mb-0">
               <Link href="/"><Button>Start Trading</Button></Link>
             </div>
           </div>
@@ -76,8 +76,8 @@ function BannerTitle(props) {
     case "frozen":
       return (
         <div>
-          <div className="mb-5 flex items-center">
-            <div className="mr-5">
+          <div className="lg:mb-5 flex flex-col lg:flex-row items-center">
+            <div className="mr-5 mb-3 lg:mb-0">
               <h1 className="text-3xl md:text-5xl text-blue-400 font-bold text-center lg:text-left">LEADING: NO</h1>
             </div>
           </div>
@@ -89,8 +89,8 @@ function BannerTitle(props) {
     case "resolution":
       return (
         <div>
-          <div className="mb-5 flex items-center">
-            <div className="mr-5">
+          <div className="lg:mb-5 flex flex-col lg:flex-row items-center">
+            <div className="mr-5 mb-3 lg:mb-0">
               <h1 className="text-3xl md:text-5xl text-green-500 font-bold text-center lg:text-left">WINNER: YES</h1>
             </div>
           </div>

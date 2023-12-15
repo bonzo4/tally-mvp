@@ -50,7 +50,7 @@ export default function Header({ authUser }: HeaderProps) {
           FAQ
         </Link>
         <Link
-          href="/"
+          href="/leaderboard"
           className="hover:cursor-pointer underline hover:no-underline"
         >
           Leaderboard

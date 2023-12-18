@@ -4,9 +4,9 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/lib/types";
 import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
 export const roboto = Roboto_Mono({
   subsets: ["latin"],
@@ -23,7 +23,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const cookieStore = cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 
   const {
     data: { user },

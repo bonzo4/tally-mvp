@@ -4,17 +4,18 @@ import { Input } from "@/components/ui/input";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import { Database } from "@/lib/types";
 import { useUser } from "@/hooks/useUser";
-import {
-  User,
-  createClientComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
 type HeaderProps = {
   authUser: User | null;
 };
 
 export default function Header({ authUser }: HeaderProps) {
-  const supabase = createClientComponentClient<Database>();
+  const supabase = createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const user = useUser({ supabase, user: authUser });
 

@@ -5,6 +5,9 @@ import Link from 'next/link'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { LandingBanner } from "@/lib/supabase/landingBanners";
+import { MarketsBanner } from "@/lib/supabase/marketsBanners";
+
+type Banner = LandingBanner | MarketsBanner;
 
 function BannerSlide({ src, alt, href }: { src: string, alt: string, href: string }) {
   return (
@@ -21,7 +24,7 @@ const autoplayOptions = {
   stopOnInteraction: false,
 }
 
-function BannerCarousel({ banners }: { banners: LandingBanner[] }) {
+function BannerCarousel({ banners }: { banners: Banner[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay(autoplayOptions)
   ])
@@ -44,7 +47,7 @@ function BannerCarousel({ banners }: { banners: LandingBanner[] }) {
   )
 }
 
-export default function Banner({ banners }: { banners: LandingBanner[] }) {
+export default function Banner({ banners }: { banners: Banner[] }) {
   return (
     <div className="w-full min-h-[50vh] flex flex-col bg-orange-100">
       <BannerCarousel banners={banners} />

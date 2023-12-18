@@ -1,7 +1,14 @@
+import { Database } from "@/lib/types";
+import { LandingBanner, getLandingBannersDocs } from "@/lib/supabase/landingBanners";
+import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
 import Banner from "@/components/Banner";
 import Tickers from "@/components/Tickers";
 import { MarketTeaserProps, MarketTeaser } from "@/components/MarketTeaser";
+import { MarketsBanner, getMarketsBannersDocs } from "@/lib/supabase/marketsBanners";
 
 const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
   {
@@ -86,11 +93,36 @@ function FairLaunchGallery() {
   )
 }
 
-export default function MarketsPage() {
+async function getMarketsBanners({
+  supabase,
+}: {
+  supabase: SupabaseClient<Database>;
+}): Promise<MarketsBanner[]> {
+  const data = await getMarketsBannersDocs({ supabase, table: "market_banners", limit: 10 });
+  return data;
+}
+
+export default async function MarketsPage() {
+  const cookieStore = cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const marketsBanners = await getMarketsBanners({ supabase });
+
   return (
     <div className="w-full">
       <Tickers />
-      <Banner />
+      <Banner banners={marketsBanners} />
       <div className="w-full flex flex-col space-y-5 p-3 lg:p-10">
         <FairLaunchGallery />
         <MarketsGallery />

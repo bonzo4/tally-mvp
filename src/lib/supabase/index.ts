@@ -8,6 +8,12 @@ export type CreateGetItemsProps = {
   supabase: SupabaseClient<Database>;
 };
 
+export type GetRecentLimitItemsProps = {
+  table: keyof Database["public"]["Tables"];
+  supabase: SupabaseClient<Database>;
+  limit: number;
+};
+
 export function preload(props: CreateGetItemsProps): void {
   void getItems(props);
 }
@@ -18,6 +24,18 @@ export function getItems<T>({
 }: CreateGetItemsProps): Promise<T[]> {
   return cache(async () => {
     const { data, error } = await supabase.from(table).select("*");
+    if (error) throw error;
+    return data as T[];
+  })();
+}
+
+export function getRecentLimitItems<T>({ 
+  supabase, 
+  table,
+  limit,
+}: GetRecentLimitItemsProps): Promise<T[]> {
+  return cache(async () => {
+    const { data, error } = await supabase.from(table).select("*").limit(limit).order("created_at", { ascending: false });
     if (error) throw error;
     return data as T[];
   })();

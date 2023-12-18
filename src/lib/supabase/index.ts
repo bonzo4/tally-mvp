@@ -3,7 +3,7 @@ import "server-only";
 import { Database } from "../types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export type CreateGetItemsProps = {
+export type GetItemsProps = {
   table: keyof Database["public"]["Tables"];
   supabase: SupabaseClient<Database>;
 };
@@ -14,14 +14,14 @@ export type GetRecentLimitItemsProps = {
   limit: number;
 };
 
-export function preload(props: CreateGetItemsProps): void {
+export function preload(props: GetItemsProps): void {
   void getItems(props);
 }
 
 export function getItems<T>({
   supabase,
   table,
-}: CreateGetItemsProps): Promise<T[]> {
+}: GetItemsProps): Promise<T[]> {
   return cache(async () => {
     const { data, error } = await supabase.from(table).select("*");
     if (error) throw error;

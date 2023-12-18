@@ -1,3 +1,10 @@
+import { Database } from "@/lib/types";
+import { LandingBanner, getLandingBannersDocs } from "@/lib/supabase/landingBanners";
+import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+
 import Tickers from "@/components/Tickers";
 import Banner from "@/components/Banner";
 import FairLaunch from "./components/FairLaunch";
@@ -5,11 +12,6 @@ import PredictionMarkets from "./components/PredictionMarkets";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
-import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/types";
 
 async function getSubMarkets({
   supabase,
@@ -21,6 +23,15 @@ async function getSubMarkets({
   // const res = await fetch(process.env.NEXT_PUBLIC_URL + "/api/markets/landing");
   // const data = await res.json();
   // return data as SubMarket[];
+}
+
+async function getLandingBanners({
+  supabase,
+}: {
+  supabase: SupabaseClient<Database>;
+}): Promise<LandingBanner[]> {
+  const data = await getLandingBannersDocs({ supabase, table: "landing_banners", limit: 10 });
+  return data;
 }
 
 export default async function LandingPage() {
@@ -39,11 +50,12 @@ export default async function LandingPage() {
   );
 
   const subMarkets = await getSubMarkets({ supabase });
+  const landingBanners = await getLandingBanners({ supabase });
 
   return (
     <div className="w-full">
       <Tickers />
-      <Banner />
+      <Banner banners={landingBanners} />
       <div className="w-full flex flex-col space-y-5 px-10 py-10">
         <div className="w-full flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
           <div className="md:w-[60vw] space-y-5">

@@ -8,6 +8,12 @@ const nextConfig = {
         port: '',
         pathname: '/davidjerleke/embla-carousel/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'bxjsuelhllhggaosiovg.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
   },
 }

@@ -1,47 +1,30 @@
 "use client";
 
 import Image from 'next/image'
+import Link from 'next/link'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
+import { LandingBanner } from "@/lib/supabase/landingBanners";
+import { MarketsBanner } from "@/lib/supabase/marketsBanners";
 
-const TEST_IMAGE_SRCS = [
-  {
-    src: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-    alt: "test image1"
-  },
-  {
-    src: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-2.jpg",
-    alt: "test image2"
-  },
-  {
-    src: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
-    alt: "test image3"
-  },
-  {
-    src: "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-4.jpg",
-    alt: "test image4"
-  },
-]
+type Banner = LandingBanner | MarketsBanner;
 
-interface BannerSlideProps {
-  src: string,
-  alt: string
-}
-
-function BannerSlide({ src, alt }: BannerSlideProps) {
+function BannerSlide({ src, alt, href }: { src: string, alt: string, href: string }) {
   return (
-    <div className="embla__slide relative min-w-full h-full flex-1">
-      <Image src={src} alt={alt} fill={true} className="object-cover" />
-    </div>
+    <Link href={href} className="min-w-full h-full flex-1">
+      <div className="embla__slide relative min-w-full h-full flex-1">
+        <Image src={src} alt={alt} fill={true} className="object-cover" />
+      </div>
+    </Link>
   )
 }
 
 const autoplayOptions = {
-  delay: 4000,
+  delay: 5000,
   stopOnInteraction: false,
 }
 
-function BannerCarousel() {
+function BannerCarousel({ banners }: { banners: Banner[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay(autoplayOptions)
   ])
@@ -51,10 +34,12 @@ function BannerCarousel() {
     <div className="embla overflow-hidden flex flex-grow" ref={emblaRef}>
       <div className="embla__container flex w-full">
         {
-          TEST_IMAGE_SRCS.map(({ src, alt }, index) => {
-            return (
-              <BannerSlide key={index} src={src} alt={alt} />
-            )
+          banners.map(({ banner, description, link }, index) => {
+            if (banner && description && link) {
+              return (
+                <BannerSlide key={index} src={banner} alt={description} href={link} />
+              )
+            }
           })
         }
       </div>
@@ -62,11 +47,10 @@ function BannerCarousel() {
   )
 }
 
-export default function Banner() {
+export default function Banner({ banners }: { banners: Banner[] }) {
   return (
     <div className="w-full min-h-[50vh] flex flex-col bg-orange-100">
-      <BannerCarousel />
+      <BannerCarousel banners={banners} />
     </div>
   )
 }
-

@@ -1,3 +1,10 @@
+import { Database } from "@/lib/types";
+import { LandingBanner, getLandingBannersDocs } from "@/lib/supabase/landingBanners";
+import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+
 import Tickers from "@/components/Tickers";
 import Banner from "@/components/Banner";
 import FairLaunch from "./components/FairLaunch";
@@ -5,12 +12,6 @@ import PredictionMarkets from "./components/PredictionMarkets";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
-import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
-import { LandingBanner, getLandingBannersDocs } from "@/lib/supabase/landingBanners";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/types";
 
 async function getSubMarkets({
   supabase,

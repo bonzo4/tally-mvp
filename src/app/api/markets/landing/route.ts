@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { Database } from "@/lib/types";
 import { CookieOptions, createServerClient } from "@supabase/ssr";
-import { getSubMarketsDocs } from "@/lib/supabase/markets";
+import { getSubMarkets } from "@/lib/supabase/markets";
 
 export async function GET(req: NextRequest) {
   try {
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    const data = await getSubMarketsDocs({ supabase, table: "sub_markets" });
+    const data = await getSubMarkets({ supabase });
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {

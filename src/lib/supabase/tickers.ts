@@ -14,7 +14,6 @@ const getTickersQuery = async (supabase: SupabaseClient<Database>): Promise<Post
     .order("share_price", { ascending: false })
 }
 
-
 export const getTickers = async ({ supabase }: { supabase: SupabaseClient<Database> }) =>
   await getAndCacheQuery({supabase: supabase, query: getTickersQuery})
 

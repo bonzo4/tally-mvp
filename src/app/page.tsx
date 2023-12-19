@@ -1,9 +1,9 @@
 import { Database } from "@/lib/types";
-import { LandingBanner, getLandingBannersDocs } from "@/lib/supabase/landingBanners";
-import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { getLandingBanners} from "@/lib/supabase/landingBanners";
+import { getSubMarkets } from "@/lib/supabase/markets";
 
 import Tickers from "@/components/Tickers";
 import Banner from "@/components/Banner";
@@ -12,27 +12,6 @@ import PredictionMarkets from "./components/PredictionMarkets";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
-
-async function getSubMarkets({
-  supabase,
-}: {
-  supabase: SupabaseClient<Database>;
-}): Promise<SubMarket[]> {
-  const data = await getSubMarketsDocs({ supabase, table: "sub_markets" });
-  return data;
-  // const res = await fetch(process.env.NEXT_PUBLIC_URL + "/api/markets/landing");
-  // const data = await res.json();
-  // return data as SubMarket[];
-}
-
-async function getLandingBanners({
-  supabase,
-}: {
-  supabase: SupabaseClient<Database>;
-}): Promise<LandingBanner[]> {
-  const data = await getLandingBannersDocs({ supabase, table: "landing_banners", limit: 10 });
-  return data;
-}
 
 export default async function LandingPage() {
   const cookieStore = cookies();

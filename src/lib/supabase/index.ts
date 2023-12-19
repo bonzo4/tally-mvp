@@ -1,41 +1,23 @@
-import { cache } from "react";
 import "server-only";
+import { cache } from "react";
 import { Database } from "../types";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { PostgrestResponse } from '@supabase/postgrest-js'
 
-export type GetItemsProps = {
-  table: keyof Database["public"]["Tables"];
+type QueryFunction<T> = (supabase: SupabaseClient<Database>) => Promise<PostgrestResponse<T>>;
+
+export type GetCacheQueryProps<T> = {
   supabase: SupabaseClient<Database>;
+  query: QueryFunction<T>;
 };
 
-export type GetRecentLimitItemsProps = {
-  table: keyof Database["public"]["Tables"];
-  supabase: SupabaseClient<Database>;
-  limit: number;
-};
 
-export function preload(props: GetItemsProps): void {
-  void getItems(props);
-}
-
-export function getItems<T>({
+export function getAndCacheQuery<T>({
   supabase,
-  table,
-}: GetItemsProps): Promise<T[]> {
+  query,
+}: GetCacheQueryProps<T>): Promise<T[]> {
   return cache(async () => {
-    const { data, error } = await supabase.from(table).select("*");
-    if (error) throw error;
-    return data as T[];
-  })();
-}
-
-export function getRecentLimitItems<T>({ 
-  supabase, 
-  table,
-  limit,
-}: GetRecentLimitItemsProps): Promise<T[]> {
-  return cache(async () => {
-    const { data, error } = await supabase.from(table).select("*").limit(limit).order("created_at", { ascending: false });
+    const { data, error } = await query(supabase);
     if (error) throw error;
     return data as T[];
   })();

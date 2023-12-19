@@ -8,7 +8,7 @@ import { createServerClient } from "@supabase/ssr";
 import Banner from "@/components/Banner";
 import Tickers from "@/components/Tickers";
 import { MarketTeaserProps, MarketTeaser } from "@/components/MarketTeaser";
-import { MarketsBanner, getMarketsBannersDocs } from "@/lib/supabase/marketsBanners";
+import { getMarketsBanners } from "@/lib/supabase/marketsBanners";
 
 const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
   {
@@ -91,15 +91,6 @@ function FairLaunchGallery() {
       </div>
     </div>
   )
-}
-
-async function getMarketsBanners({
-  supabase,
-}: {
-  supabase: SupabaseClient<Database>;
-}): Promise<MarketsBanner[]> {
-  const data = await getMarketsBannersDocs({ supabase, table: "market_banners", limit: 10 });
-  return data;
 }
 
 export default async function MarketsPage() {

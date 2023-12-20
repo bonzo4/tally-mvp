@@ -1,6 +1,6 @@
 import { Database } from "@/lib/types";
-import { LandingBanner, getLandingBannersDocs } from "@/lib/supabase/landingBanners";
-import { SubMarket, getSubMarketsDocs } from "@/lib/supabase/markets";
+import { getLandingBanners } from "@/lib/supabase/landingBanners";
+import { getSubMarkets } from "@/lib/supabase/markets";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";

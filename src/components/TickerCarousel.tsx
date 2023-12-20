@@ -50,13 +50,13 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
     }
 
     setTickerContentWidth(contentWidth);
-  });
+  }, [children.length, tickerUUID]);
 
   React.useEffect(() => {
     if (tickerRef.current && tickerContentWidth) {
       setNumDupes(Math.max(Math.ceil((2 * tickerRef.current.clientWidth) / tickerContentWidth), 1));
     }
-  }, [tickerRef.current, tickerContentWidth]);
+  }, [tickerContentWidth]);
 
   React.useEffect(() => {
     if (isInView && !animationControls) {
@@ -68,7 +68,7 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
       controls.play();
       setAnimationControls(controls);
     }
-  }, [isInView]);
+  }, [animate, animationControls, direction, duration, isInView, scope, tickerContentWidth]);
 
   React.useEffect(() => {
     if (animationControls) {
@@ -78,7 +78,7 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
         animationControls.play();
       }
     }
-  }, [isInView, isPlaying]);
+  }, [animationControls, isInView, isPlaying]);
 
   return (
     <div

@@ -1,11 +1,9 @@
-import { Button } from "@/components/ui/button";
-
 import Tickers from "@/components/Tickers";
 import DisplayPicture from "./components/DisplayPicture"
 import Overview from "./components/Overview"
 import Account from "./components/Account"
 import Ranking from "./components/Ranking"
-
+import Activities from "./components/Activities"
 
 export default function Profile() {
   return (
@@ -28,7 +26,8 @@ export default function Profile() {
           <Ranking />
           <Ranking />
         </div>
-        <div className="w-full h-[50vh] bg-orange-300">
+        <div className="w-full">
+          <Activities />
         </div>
       </div>
     </div>

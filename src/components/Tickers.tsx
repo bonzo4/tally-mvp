@@ -7,7 +7,7 @@ import { createBrowserClient } from "@supabase/ssr";
 import { Database } from "@/lib/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Tickers } from "@/lib/supabase/tickers";
-import TickerCarousel from 'framer-motion-ticker';
+import TickerCarousel from './TickerCarousel';
 import { convertDollarsToCents } from "@/lib/formats";
 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -58,7 +58,7 @@ function useTickers(
     };
     getTickers();
     setLoading(false);
-  }, [supabase]);
+  }, [supabase, setLoading]);
   return tickers;
 }
 
@@ -84,22 +84,20 @@ export default function Tickers() {
 
   return (
     <div className="w-full flex justify-between items-center bg-purple-50 py-2 px-2 lg:px-5 space-x-3 overflow-auto">
-      <TickerCarousel duration={20} className="w-full flex flex-row justify-between items-center space-x-3">
-        {tickers.map(
-          ({ choice, choice_market_id, share_price, direction }, index) => {
-            if (choice && choice_market_id && share_price && direction) {
-              return (
-                <Ticker
-                  key={index}
-                  choice={choice}
-                  choice_market_id={choice_market_id}
-                  share_price={share_price}
-                  direction={direction}
-                />
-              );
-            }
+      <TickerCarousel duration={20}>
+        {tickers.map(({ choice, choice_market_id, share_price, direction }, index) => {
+          if (choice && choice_market_id && share_price && direction) {
+            return (
+              <Ticker
+                key={index}
+                choice={choice}
+                choice_market_id={choice_market_id}
+                share_price={share_price}
+                direction={direction}
+              />
+            )
           }
-        )}
+        })}
       </TickerCarousel>
     </div>
   );

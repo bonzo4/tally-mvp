@@ -5,14 +5,15 @@ import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 
 import { Database } from "@/lib/types";
-import { convertDollarsToCents } from "@/lib/formats";
-import { Tickers } from "@/lib/supabase/tickers";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { motion } from "framer-motion";
+import { Tickers } from "@/lib/supabase/tickers";
+import TickerCarousel from 'framer-motion-ticker';
+import { convertDollarsToCents } from "@/lib/formats";
 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FcBullish } from "react-icons/fc";
 import { FcBearish } from "react-icons/fc";
+
 
 interface TickerProps {
   choice: string;
@@ -30,7 +31,7 @@ function Ticker({
   const href = `/markets/${choice_market_id}/`;
   return (
     <Link href={href}>
-      <div className="h-full flex justify-center items-center space-x-1">
+      <div className="h-full min-w-[200px] flex justify-center items-center space-x-1">
         <div className="whitespace-nowrap">{choice}</div>
         <div>{convertDollarsToCents(share_price)}</div>
         <div>{direction === "up" ? <FcBullish /> : <FcBearish />}</div>
@@ -64,6 +65,7 @@ function useTickers(
 export default function Tickers() {
   const [loading, setLoading] = useState(true);
 
+
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -71,7 +73,8 @@ export default function Tickers() {
 
   const tickers = useTickers(supabase, setLoading);
 
-  if (loading) {
+  // framer-motion-ticker library needs tickers.length or will crash
+  if (loading || !tickers.length) {
     return (
       <div className="w-full justify-center items-center bg-purple-50 py-2 px-2 lg:px-5 space-x-3 overflow-hidden">
         <AiOutlineLoading3Quarters className="animate-spin mx-auto" />
@@ -81,12 +84,7 @@ export default function Tickers() {
 
   return (
     <div className="w-full flex justify-between items-center bg-purple-50 py-2 px-2 lg:px-5 space-x-3 overflow-auto">
-      <motion.div
-        className="flex flex-row space-x-3"
-        transition={{ duration: 5, ease: "linear", repeat: Infinity }}
-        initial={{ x: "100vw" }}
-        animate={{ x: "-100vw" }}
-      >
+      <TickerCarousel duration={20} className="w-full flex flex-row justify-between items-center space-x-3">
         {tickers.map(
           ({ choice, choice_market_id, share_price, direction }, index) => {
             if (choice && choice_market_id && share_price && direction) {
@@ -102,7 +100,7 @@ export default function Tickers() {
             }
           }
         )}
-      </motion.div>
+      </TickerCarousel>
     </div>
   );
 }

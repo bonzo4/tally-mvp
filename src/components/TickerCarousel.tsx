@@ -6,7 +6,7 @@ const TICKER_DIRECTION_LEFT = -1;
 const TICKER_DIRECTION_RIGHT = 1;
 
 type TickerProps = {
-  children: JSX.Element[];
+  children: React.ReactNode[];
   duration?: number;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -72,7 +72,7 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
 
   React.useEffect(() => {
     if (animationControls) {
-      if (!isInView || !isPlaying) {
+      if (!isPlaying) {
         animationControls.pause();
       } else {
         animationControls.play();

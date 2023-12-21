@@ -75,7 +75,7 @@ export default function Calendar() {
   const TEST_MARCH_DATA = TEST_EVENT_DATA.filter((event) => event.month === "MAR")
 
   return (
-    <div className="w-full flex flex-col px-2 py-5 lg:px-10 space-y-5">
+    <div className="w-full flex flex-col px-5 py-5 lg:px-10 space-y-5">
       <Overview />
       <Filters filterMonth={filterMonth} setFilterMonth={setFilterMonth}  />
       { filterMonth === "All" || filterMonth === "Jan" ? (<Month name="January 2024" events={TEST_JANUARY_DATA} />) : null }

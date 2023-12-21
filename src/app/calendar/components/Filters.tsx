@@ -7,8 +7,8 @@ interface FilterProps {
 
 export default function Filters({ filterMonth, setFilterMonth }: FilterProps ) {
   return (
-    <div className="space-x-2">
-      <Button variant={filterMonth === "All" ? "default" : "secondary"} onClick={() => setFilterMonth("All")}>All</Button>
+    <div className="grid grid-cols-4 gap-2 lg:flex lg:space-x-2">
+      <Button className="col-span-4" variant={filterMonth === "All" ? "default" : "secondary"} onClick={() => setFilterMonth("All")}>All</Button>
       <Button variant={filterMonth === "Jan" ? "default" : "secondary"} onClick={() => setFilterMonth("Jan")}>Jan</Button>
       <Button variant={filterMonth === "Feb" ? "default" : "secondary"} onClick={() => setFilterMonth("Feb")}>Feb</Button>
       <Button variant={filterMonth === "Mar" ? "default" : "secondary"} onClick={() => setFilterMonth("Mar")}>Mar</Button>

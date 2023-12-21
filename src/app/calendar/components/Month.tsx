@@ -13,7 +13,7 @@ function MonthGrid({ events }: { events: EventProps[] }) {
     <div className="grid lg:grid-cols-3 gap-5">
       {events.map((event, index) => {
         return (
-          <Event {...event}/>
+          <Event key={index} {...event}/>
         )
       })}
     </div>

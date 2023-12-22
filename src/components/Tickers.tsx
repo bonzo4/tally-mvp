@@ -10,9 +10,9 @@ import { Tickers } from "@/lib/supabase/tickers";
 import TickerCarousel from './TickerCarousel';
 import { convertDollarsToCents } from "@/lib/formats";
 
+import { IconContext } from "react-icons";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { FcBullish } from "react-icons/fc";
-import { FcBearish } from "react-icons/fc";
+import { BsTriangleFill } from "react-icons/bs";
 
 
 interface TickerProps {
@@ -30,13 +30,15 @@ function Ticker({
 }: TickerProps) {
   const href = `/markets/${choice_market_id}/`;
   return (
-    <Link href={href}>
-      <div className="h-full min-w-[200px] flex justify-center items-center space-x-1">
-        <div className="whitespace-nowrap">{choice}</div>
-        <div>{convertDollarsToCents(share_price)}</div>
-        <div>{direction === "up" ? <FcBullish /> : (direction === "down" ? <FcBearish /> : null )}</div>
-      </div>
-    </Link>
+    <IconContext.Provider value={{ className: "opacity-50" }}>
+      <Link href={href}>
+        <div className="h-full min-w-[200px] flex justify-center items-center space-x-2">
+          <div className="whitespace-nowrap font-medium">{choice}</div>
+          { direction ?  <div>{direction === "up" ? <BsTriangleFill /> :  <BsTriangleFill className="rotate-180" />}</div> : null }
+          <div>{convertDollarsToCents(share_price)}</div>
+        </div>
+      </Link>
+    </IconContext.Provider>
   );
 }
 
@@ -83,7 +85,7 @@ export default function Tickers() {
   }
 
   return (
-    <div className="w-full flex justify-between items-center bg-purple-50 py-2 px-2 lg:px-5 space-x-3 overflow-auto">
+    <div className="w-full flex justify-between items-center bg-primary py-3 space-x-3 overflow-auto">
       <TickerCarousel duration={20}>
         {tickers.map(({ choice, choice_market_id, share_price, direction }, index) => {
           if (choice && choice_market_id && share_price) {

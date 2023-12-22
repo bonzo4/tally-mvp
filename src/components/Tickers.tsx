@@ -19,7 +19,7 @@ interface TickerProps {
   choice: string;
   choice_market_id: number;
   share_price: number;
-  direction: string;
+  direction: string | null;
 }
 
 function Ticker({
@@ -34,7 +34,7 @@ function Ticker({
       <div className="h-full min-w-[200px] flex justify-center items-center space-x-1">
         <div className="whitespace-nowrap">{choice}</div>
         <div>{convertDollarsToCents(share_price)}</div>
-        <div>{direction === "up" ? <FcBullish /> : <FcBearish />}</div>
+        <div>{direction === "up" ? <FcBullish /> : (direction === "down" ? <FcBearish /> : null )}</div>
       </div>
     </Link>
   );
@@ -86,7 +86,7 @@ export default function Tickers() {
     <div className="w-full flex justify-between items-center bg-purple-50 py-2 px-2 lg:px-5 space-x-3 overflow-auto">
       <TickerCarousel duration={20}>
         {tickers.map(({ choice, choice_market_id, share_price, direction }, index) => {
-          if (choice && choice_market_id && share_price && direction) {
+          if (choice && choice_market_id && share_price) {
             return (
               <Ticker
                 key={index}

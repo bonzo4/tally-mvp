@@ -78,7 +78,7 @@ export default function Tickers() {
   // framer-motion-ticker library needs tickers.length or will crash
   if (loading || !tickers.length) {
     return (
-      <div className="w-full h-[48px] flex justify-center items-center bg-primary py-3 space-x-3 overflow-auto">
+      <div className="w-full h-[48px] flex justify-center items-center bg-tally-primary py-3 space-x-3 overflow-auto">
         <AiOutlineLoading3Quarters className="animate-spin mx-auto" />
         {""}
       </div>
@@ -86,7 +86,7 @@ export default function Tickers() {
   }
 
   return (
-    <div className="w-full flex justify-between items-center bg-primary py-3 space-x-3 overflow-auto">
+    <div className="w-full flex justify-between items-center bg-tally-primary py-3 space-x-3 overflow-auto">
       <TickerCarousel duration={20}>
         {tickers.map(({ choice, choice_market_id, share_price, direction }, index) => {
           if (choice && choice_market_id && share_price) {

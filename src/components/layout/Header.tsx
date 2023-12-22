@@ -35,7 +35,7 @@ export default function Header({ authUser }: HeaderProps) {
   return (
     <header className="flex flex-row bg-black items-center justify-between px-4 lg:px-16 py-3 space-x-5">
       <div className="flex flex-row flex-grow space-x-5 items-center">
-        <Link href="/" className="text-xl text-primary font-bold whitespace-nowrap">TALLY MARKET</Link>
+        <Link href="/" className="text-xl text-tally-primary font-bold whitespace-nowrap">TALLY MARKET</Link>
         <div className="hidden lg:block flex-grow max-w-[400px]">
           <SearchBar />
         </div>
@@ -75,13 +75,13 @@ export default function Header({ authUser }: HeaderProps) {
               href="/login"
               className="hover:cursor-pointer underline hover:no-underline"
             >
-              <Button className="bg-black text-primary border border-primary hover:bg-zinc-800">Log In</Button>
+              <Button className="bg-black text-tally-primary border border-tally-primary hover:bg-zinc-800">Log In</Button>
             </Link>
             <Link
               href="/login"
               className="hover:cursor-pointer underline hover:no-underline"
             >
-              <Button className="bg-primary text-black hover:bg-secondary">Sign up</Button>
+              <Button className="bg-tally-primary text-black hover:bg-tally-secondary">Sign up</Button>
             </Link>
           </>
         )}

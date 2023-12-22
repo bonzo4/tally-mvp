@@ -42,7 +42,7 @@ export default function HamburgerMenu({className}: {className?: string}) {
   const { width, height } = useWindowSize()
   return (
     <div className={className}>
-      <IconContext.Provider value={{ className: "text-primary text-xl" }}>
+      <IconContext.Provider value={{ className: "text-tally-primary text-xl" }}>
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" className="bg-transparent border-0 hover:bg-zinc-800 focus:ring-0">
@@ -51,7 +51,7 @@ export default function HamburgerMenu({className}: {className?: string}) {
         </SheetTrigger>
         <SheetContent className="w-3/4 bg-black">
           <SheetHeader className="text-left mb-10">
-            <Link href="/" className="text-xl text-primary font-bold whitespace-nowrap">TALLY MARKET</Link>
+            <Link href="/" className="text-xl text-tally-primary font-bold whitespace-nowrap">TALLY MARKET</Link>
           </SheetHeader>
           <SearchBar />
           <div className="space-y-5 flex flex-col items-end text-sm text-white font-bold mt-10">
@@ -64,12 +64,12 @@ export default function HamburgerMenu({className}: {className?: string}) {
           <div className="flex flex-col space-y-3 mt-10">
             <SheetClose asChild>
               <Link href="/login" className="hover:cursor-pointer underline hover:no-underline" >
-                <Button className="w-full bg-black text-primary border border-primary hover:bg-zinc-800">Log In</Button>
+                <Button className="w-full bg-black text-tally-primary border border-tally-primary hover:bg-zinc-800">Log In</Button>
               </Link>
             </SheetClose>
             <SheetClose asChild>
               <Link href="/login" className="hover:cursor-pointer underline hover:no-underline" >
-                <Button className="w-full bg-primary text-black hover:bg-secondary">Sign up</Button>
+                <Button className="w-full bg-tally-primary text-black hover:bg-tally-secondary">Sign up</Button>
               </Link>
             </SheetClose>
           </div>

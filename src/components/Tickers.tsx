@@ -78,8 +78,9 @@ export default function Tickers() {
   // framer-motion-ticker library needs tickers.length or will crash
   if (loading || !tickers.length) {
     return (
-      <div className="w-full justify-center items-center bg-purple-50 py-2 px-2 lg:px-5 space-x-3 overflow-hidden">
+      <div className="w-full h-[48px] flex justify-center items-center bg-primary py-3 space-x-3 overflow-auto">
         <AiOutlineLoading3Quarters className="animate-spin mx-auto" />
+        {""}
       </div>
     );
   }

@@ -20,6 +20,7 @@ module.exports = {
     extend: {
       fontFamily: {
         mono: ["var(--font-roboto)", ...fontFamily.mono],
+        sans: ["MontSerrat", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",

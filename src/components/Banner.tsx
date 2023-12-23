@@ -68,6 +68,28 @@ function Slide({ src, alt, href }: { src: string, alt: string, href: string }) {
   )
 }
 
+
+function DotButton({ isCurrent }: { isCurrent: boolean } ) {
+  let opacity = isCurrent ? "opacity-100" : "opacity-50"
+  return (
+    <button className={`w-[0.6rem] h-[0.6rem] rounded-full bg-white ${opacity}`}>
+    </button>
+  )
+}
+
+function DotNavigation() {
+  return (
+    <div id="higuys" className="absolute bottom-0 left-0 lg:right-0 flex justify-center items-center px-4 pb-4 space-x-2">
+      <DotButton isCurrent={false} />
+      <DotButton isCurrent={true} />
+      <DotButton isCurrent={false} />
+      <DotButton isCurrent={false} />
+      <DotButton isCurrent={false} />
+    </div>
+  )
+}
+
+
 const autoplayOptions = {
   delay: 5000,
   stopOnInteraction: false,
@@ -80,7 +102,7 @@ function Carousel({ banners }: { banners: Banner[] }) {
 
 
   return (
-    <div className="embla overflow-hidden flex flex-grow" ref={emblaRef}>
+    <div className="embla overflow-hidden relative flex flex-grow" ref={emblaRef}>
       <div className="embla__container flex w-full">
         {
           banners.map(({ banner, description, link }, index) => {
@@ -92,6 +114,7 @@ function Carousel({ banners }: { banners: Banner[] }) {
           })
         }
       </div>
+      <DotNavigation />
     </div>
   )
 }

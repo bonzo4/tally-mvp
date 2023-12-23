@@ -7,10 +7,10 @@ import { createServerClient } from "@supabase/ssr";
 
 import Banner from "@/components/Banner";
 import Tickers from "@/components/Tickers";
-import { MarketTeaserProps, MarketTeaser } from "@/components/MarketTeaser";
+import { MarketTileProps, MarketTile } from "@/components/MarketTile";
 import { getMarketsBanners } from "@/lib/supabase/marketsBanners";
 
-const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
+const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
     title: "Will Trump win the Republican Nominee?",
     category: "Politics",
@@ -52,16 +52,16 @@ function MarketsGallery() {
   return (
     <div className="w-full space-y-5">
       <div>
-        <h2 className="text-4xl font-bold">Markets</h2>
+        <h2 className="text-4xl font-bold text-white">Markets</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[1]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[2]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[3]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[4]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[1]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[2]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[3]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[4]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
       </div>
     </div>
   )
@@ -69,7 +69,7 @@ function MarketsGallery() {
 
 function FairLaunchTeaser() {
   return (
-    <div className="w-full h-[15vw] bg-yellow-100">
+    <div className="w-full h-[180px] rounded-2xl bg-yellow-100">
     </div>
   )
 }
@@ -78,9 +78,9 @@ function FairLaunchGallery() {
   return (
     <div className="w-full space-y-5">
       <div>
-        <h2 className="text-4xl font-bold">Fair Launch</h2>
+        <h2 className="text-4xl font-bold text-white">Fair Launch</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
         <FairLaunchTeaser />
         <FairLaunchTeaser />
         <FairLaunchTeaser />
@@ -111,10 +111,10 @@ export default async function MarketsPage() {
   const marketsBanners = await getMarketsBanners({ supabase });
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-black">
       <Tickers />
       <Banner banners={marketsBanners} />
-      <div className="w-full flex flex-col space-y-5 p-3 lg:p-10">
+      <div className="w-full flex flex-col space-y-5 p-4 lg:p-16">
         <FairLaunchGallery />
         <MarketsGallery />
       </div>

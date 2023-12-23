@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { MarketTeaserProps, MarketTeaser } from "@/components/MarketTeaser";
+import { MarketTileProps, MarketTile } from "@/components/MarketTile";
 import { SubMarket } from "@/lib/supabase/markets";
 
-const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
+const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
     title: "Will Trump win the Republican Nominee?",
     category: "Politics",
@@ -65,13 +65,13 @@ export default function PredictionMarkets({
         </Link>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]} />
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[1]} />
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[2]} />
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[3]} />
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[4]} />
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]} />
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[1]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[2]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[3]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[4]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]} />
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]} />
       </div>
       <div>
         <Link href="/markets">

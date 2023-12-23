@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export interface MarketTeaserProps {
+export interface MarketTileProps {
   title: string;
   category: string;
   image: string;
@@ -9,7 +9,7 @@ export interface MarketTeaserProps {
   noPrice: number;
 }
 
-export function MarketTeaser({ title, category, image, yesPrice, noPrice }: MarketTeaserProps) {
+export function MarketTile({ title, category, image, yesPrice, noPrice }: MarketTileProps) {
   return (
     <div>
       <Link href="/">

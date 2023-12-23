@@ -1,16 +1,19 @@
 import { Database } from "@/lib/types";
-import { getLandingBanners } from "@/lib/supabase/landingBanners";
-import { getSubMarkets } from "@/lib/supabase/markets";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-import Banner from "@/components/Banner";
-import Tickers from "@/components/Tickers";
-import { MarketTeaserProps, MarketTeaser } from "@/components/MarketTeaser";
+import { getLandingBanners } from "@/lib/supabase/landingBanners";
 import { getMarketsBanners } from "@/lib/supabase/marketsBanners";
+import { getSubMarkets } from "@/lib/supabase/markets";
 
-const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
+import Banner from "@/components/Banner";
+import FilterMarkets from "./components/FilterMarkets";
+import { MarketTileProps, MarketTile } from "@/components/MarketTile";
+import Tickers from "@/components/Tickers";
+
+
+const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
     title: "Will Trump win the Republican Nominee?",
     category: "Politics",
@@ -47,21 +50,26 @@ const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
     noPrice: 72,
   },
 ]
-
 function MarketsGallery() {
   return (
     <div className="w-full space-y-5">
-      <div>
-        <h2 className="text-4xl font-bold">Markets</h2>
+      <div className="px-4 lg:px-16">
+        <h2 className="text-4xl font-bold text-white">Prediction Markets</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[1]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[2]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[3]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[4]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
+      <div className="">
+        <FilterMarkets />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 lg:gap-2 px-4 lg:px-16">
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[1]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[2]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[3]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[4]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[1]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[2]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[3]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[4]}/>
       </div>
     </div>
   )
@@ -69,25 +77,22 @@ function MarketsGallery() {
 
 function FairLaunchTeaser() {
   return (
-    <div className="w-full h-[15vw] bg-yellow-100">
+    <div className="w-full h-[180px] rounded-2xl bg-yellow-100">
     </div>
   )
 }
 
 function FairLaunchGallery() {
   return (
-    <div className="w-full space-y-5">
+    <div className="w-full space-y-5 px-4 lg:px-16">
       <div>
-        <h2 className="text-4xl font-bold">Fair Launch</h2>
+        <h2 className="text-4xl font-bold text-white">Fair Launch</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <FairLaunchTeaser />
-        <FairLaunchTeaser />
-        <FairLaunchTeaser />
-        <FairLaunchTeaser />
-        <FairLaunchTeaser />
-        <FairLaunchTeaser />
-        <FairLaunchTeaser />
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[1]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[2]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[3]}/>
       </div>
     </div>
   )
@@ -111,10 +116,10 @@ export default async function MarketsPage() {
   const marketsBanners = await getMarketsBanners({ supabase });
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-black pb-4 lg:pb-16">
       <Tickers />
       <Banner banners={marketsBanners} />
-      <div className="w-full flex flex-col space-y-5 p-3 lg:p-10">
+      <div className="w-full flex flex-col space-y-16">
         <FairLaunchGallery />
         <MarketsGallery />
       </div>

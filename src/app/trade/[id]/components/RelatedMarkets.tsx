@@ -1,6 +1,6 @@
-import { MarketTeaser, MarketTeaserProps } from "@/components/MarketTeaser";
+import { MarketTile, MarketTileProps } from "@/components/MarketTile";
 
-const TEST_MARKET_TEASER_DATA: MarketTeaserProps[] = [
+const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
     title: "Will the USA confirm the existence of aliens?",
     category: "Science",
@@ -31,9 +31,9 @@ export default function RelatedMarkets() {
         <h2 className="text-4xl font-bold">Recent Polls</h2>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[0]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[1]}/>
-        <MarketTeaser {...TEST_MARKET_TEASER_DATA[2]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[1]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[2]}/>
       </div>
     </div>
   )

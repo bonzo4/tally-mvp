@@ -25,6 +25,7 @@ module.exports = {
       colors: {
         "tally-primary": "hsl(var(--tally-primary))",
         "tally-secondary": "hsl(var(--tally-secondary))",
+        "tally-red": "hsl(var(--tally-red))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

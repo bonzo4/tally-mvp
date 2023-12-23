@@ -38,6 +38,7 @@
     /* tally css variables */
     --tally-primary: 147.6 100% 63.7%;
     --tally-secondary: 147.5 100% 48.8%;
+    --tally-red: 0 100% 72%;
   }
  
   .dark {

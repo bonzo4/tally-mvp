@@ -1,9 +1,6 @@
-import { Database } from "@/lib/types";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import { getLandingBanners} from "@/lib/supabase/landingBanners";
+import { getLandingBanners } from "@/lib/supabase/landingBanners";
 import { getSubMarkets } from "@/lib/supabase/markets";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import Tickers from "@/components/Tickers";
 import Banner from "@/components/Banner";
@@ -14,19 +11,7 @@ import Insights from "./components/Insights";
 import Guide from "./components/Guide";
 
 export default async function LandingPage() {
-  const cookieStore = cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
+  const supabase = createServerSupabaseClient();
 
   const subMarkets = await getSubMarkets({ supabase });
   const landingBanners = await getLandingBanners({ supabase });

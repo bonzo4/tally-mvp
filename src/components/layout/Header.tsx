@@ -1,16 +1,16 @@
 "use client";
 
-import { Database } from "@/lib/types";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import { createBrowserClient } from "@supabase/ssr";
 import { useUser } from "@/hooks/useUser";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import HamburgerMenu from "@/components/HamburgerMenu";
 import SearchBar from "@/components/SearchBar";
+
+import { cn } from "@/lib/utils";
+import { createClientSupabaseClient } from "@/lib/supabase/client";
 
 type HeaderProps = {
   authUser: User | null;
@@ -25,21 +25,21 @@ function HeaderLink({ href, title }: { href: string; title: string }) {
 }
 
 export default function Header({ authUser }: HeaderProps) {
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabase = createClientSupabaseClient();
 
   const user = useUser({ supabase, user: authUser });
 
   return (
     <header className="flex flex-row bg-black items-center justify-between px-4 lg:px-16 py-3 space-x-5">
       <div className="flex flex-row flex-grow space-x-5 items-center">
-        <Link
-          href="/"
-          className="text-xl text-tally-primary font-bold whitespace-nowrap"
-        >
-          TALLY MARKET
+        <Link href="/" className="">
+          <h1
+            className={cn(
+              "text-[25px] leading-[30px] font-bold text-tally-primary whitespace-nowrap -tracking-[0.07em]"
+            )}
+          >
+            TALLY MARKET
+          </h1>
         </Link>
         <div className="hidden lg:block flex-grow max-w-[400px]">
           <SearchBar />

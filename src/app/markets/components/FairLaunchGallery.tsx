@@ -54,11 +54,14 @@ export default function FairLaunchGallery() {
       <div>
         <h2 className="text-4xl font-bold text-white">Fair Launch</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
-        <MarketTile {...TEST_MARKET_TILE_DATA[0]} />
-        <MarketTile {...TEST_MARKET_TILE_DATA[1]} />
-        <MarketTile {...TEST_MARKET_TILE_DATA[2]} />
-        <MarketTile {...TEST_MARKET_TILE_DATA[3]} />
+      <div className="flex overflow-x-auto space-x-5 lg:space-x-0 lg:grid lg:grid-cols-4 lg:gap-2">
+        {
+          TEST_MARKET_TILE_DATA.map((market, index) => {
+              return (
+                <MarketTile key={index} className={"min-w-[80%]"} {...market} />
+              )
+          })
+        }
       </div>
     </div>
   );

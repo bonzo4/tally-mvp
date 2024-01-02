@@ -7,7 +7,8 @@ import { convertNumberToDollars } from "@/lib/formats";
 import { IconContext } from "react-icons";
 import { BsChat } from "react-icons/bs";
 
-export interface MarketTileProps {
+
+export interface MarketTileProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   category: string;
   image: string;
@@ -61,9 +62,9 @@ function Title({ title }: { title: string }) {
   )
 }
 
-export function MarketTile({ title, category, image, yesPrice, noPrice }: MarketTileProps) {
+export function MarketTile({ title, category, image, yesPrice, noPrice, ...restProps }: MarketTileProps) {
   return (
-    <div>
+    <div {...restProps}>
       <Link href="/">
         <div className="relative min-h-[200px] flex flex-col h-full rounded-2xl shadow space-y-2">
           <Image 

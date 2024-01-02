@@ -1,9 +1,10 @@
 "use client";
 
+import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Autoplay from 'embla-carousel-autoplay'
-import useEmblaCarousel from 'embla-carousel-react'
+import useEmblaCarousel, { EmblaCarouselType } from 'embla-carousel-react'
 import { LandingBanner } from "@/lib/supabase/landingBanners";
 import { MarketsBanner } from "@/lib/supabase/marketsBanners";
 import { Badge } from "@/components/ui/badge";
@@ -68,27 +69,19 @@ function Slide({ src, alt, href }: { src: string, alt: string, href: string }) {
   )
 }
 
+interface DotButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    isCurrent: boolean;
+}
 
-function DotButton({ isCurrent }: { isCurrent: boolean } ) {
+function DotButton(props: DotButtonProps) {
+  const { isCurrent, ...restProps } = props
   let opacity = isCurrent ? "opacity-100" : "opacity-50"
+
   return (
-    <button className={`w-[0.6rem] h-[0.6rem] rounded-full bg-white ${opacity}`}>
+    <button {...restProps} className={`w-[0.6rem] h-[0.6rem] rounded-full bg-white ${opacity}`}>
     </button>
   )
 }
-
-function DotNavigation() {
-  return (
-    <div id="higuys" className="absolute bottom-0 left-0 lg:right-0 flex justify-center items-center px-4 pb-4 space-x-2">
-      <DotButton isCurrent={false} />
-      <DotButton isCurrent={true} />
-      <DotButton isCurrent={false} />
-      <DotButton isCurrent={false} />
-      <DotButton isCurrent={false} />
-    </div>
-  )
-}
-
 
 const autoplayOptions = {
   delay: 5000,
@@ -96,11 +89,26 @@ const autoplayOptions = {
 }
 
 function Carousel({ banners }: { banners: Banner[] }) {
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay(autoplayOptions)
   ])
 
+  const scrollTo = useCallback(
+    (index: number) => emblaApi && emblaApi.scrollTo(index)
+  , [emblaApi])
 
+  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    onSelect(emblaApi)
+    emblaApi.on('reInit', onSelect)
+    emblaApi.on('select', onSelect)
+  }, [emblaApi, onSelect])
+ 
   return (
     <div className="embla overflow-hidden relative flex flex-grow" ref={emblaRef}>
       <div className="embla__container flex w-full">
@@ -114,7 +122,15 @@ function Carousel({ banners }: { banners: Banner[] }) {
           })
         }
       </div>
-      <DotNavigation />
+      <div className="absolute bottom-0 left-0 lg:right-0 flex justify-center items-center px-4 pb-4 space-x-2">
+      {
+        banners.map((_, index) => {
+          return (
+            <DotButton isCurrent={index == selectedIndex} onClick={() => scrollTo(index)} />
+          )
+        })
+      }
+      </div>
     </div>
   )
 }

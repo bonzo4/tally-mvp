@@ -91,7 +91,7 @@ const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
 
 function Tiles({ markets }: { markets: MarketTileProps[] }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 lg:gap-2 px-4 lg:px-16">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-2 px-4 lg:px-16">
       {
         markets.map((market, index) => {
           return <MarketTile key={index} {...market} />

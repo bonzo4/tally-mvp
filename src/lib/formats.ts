@@ -5,3 +5,11 @@ export function convertDollarsToCents(dollars: number): string {
   }).format(dollars * 100)
   return `${valueFormatted}¢`
 }
+
+export function convertNumberToDollars(value: number): string {
+  return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: 'USD',
+      maximumFractionDigits: 0, 
+  }).format(value)
+}

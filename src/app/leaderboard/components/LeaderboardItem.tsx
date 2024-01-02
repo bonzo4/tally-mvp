@@ -1,16 +1,10 @@
 import MedalRankDisplay from "./MedalRankDisplay"
 
-export default function LeaderboardItem({ name, rank, value }: { name: string, rank: number, value: number }) {
-  const valueFormatted = new Intl.NumberFormat(
-    'en-US', 
-    { 
-      style: 'currency', 
-      currency: 'USD', 
-      maximumFractionDigits: 0, 
-      minimumFractionDigits: 0 
-    }
-  ).format(value)
+import { convertNumberToDollars } from "@/lib/formats";
 
+export default function LeaderboardItem({ name, rank, value }: { name: string, rank: number, value: number }) {
+  const valueFormatted = convertNumberToDollars(value)
+  
   let backgroundColor: string;
   switch (rank) {
     case 1:

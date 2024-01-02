@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
+import { convertNumberToDollars } from "@/lib/formats";
+
+import { IconContext } from "react-icons";
+import { BsChat } from "react-icons/bs";
 
 export interface MarketTileProps {
   title: string;
@@ -16,7 +20,6 @@ function TransparentToGrayGradientOverlay() {
     <div className="absolute bottom-0 left-0 w-full h-full rounded-b-2xl bg-gradient-to-t from-gray-800 to-transparent"></div>
   )
 }
-
 
 function YesNoPriceBar({ yesPrice, noPrice }: { yesPrice: number, noPrice: number }) {
   return (
@@ -37,10 +40,15 @@ function YesNoPriceBar({ yesPrice, noPrice }: { yesPrice: number, noPrice: numbe
   )
 }
 
-function Footer() {
+function Footer({betTotal, commentTotal}: { betTotal: number, commentTotal: number }) {
+  const betTotalFormatted = convertNumberToDollars(betTotal);
   return (
     <div className="w-full flex justify-between">
-      <div className="text-sm text-gray-400">$2,432,543 bet</div>
+      <div className="text-sm text-gray-400">{`${betTotalFormatted} bet`}</div>
+      <div className="flex items-center space-x-1">
+        <BsChat className="text-gray-400"/>
+        <div className="text-xs text-gray-400">{commentTotal}</div>
+      </div>
     </div>
   )
 }
@@ -52,7 +60,6 @@ function Title({ title }: { title: string }) {
     </div>
   )
 }
-
 
 export function MarketTile({ title, category, image, yesPrice, noPrice }: MarketTileProps) {
   return (
@@ -74,7 +81,7 @@ export function MarketTile({ title, category, image, yesPrice, noPrice }: Market
               <Title title={title} />
               <YesNoPriceBar yesPrice={yesPrice} noPrice={noPrice} />
             </div>
-            <Footer />
+            <Footer betTotal={2432542.94561} commentTotal={40} />
           </div>
         </div>
       </Link>

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSubMarkets } from "@/lib/supabase/markets";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
+import { getTickers } from "@/lib/supabase/tickers";
 
 export async function GET(req: NextRequest) {
   try {
     const supabase = createRouteSupabaseClient();
 
-    const data = await getSubMarkets({ supabase });
+    const data = await getTickers({ supabase });
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {

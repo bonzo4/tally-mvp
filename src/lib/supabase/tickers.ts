@@ -3,11 +3,11 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { PostgrestResponse } from "@supabase/postgrest-js";
 import { fetchQuery } from "./fetch";
 
-export type Tickers = Database["public"]["Tables"]["market_tickers"]["Row"];
+export type Ticker = Database["public"]["Tables"]["market_tickers"]["Row"];
 
 const getTickersQuery = async (
   supabase: SupabaseClient<Database>
-): Promise<PostgrestResponse<Tickers>> => {
+): Promise<PostgrestResponse<Ticker>> => {
   return await supabase
     .from("market_tickers")
     .select("*")

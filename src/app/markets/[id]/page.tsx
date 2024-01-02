@@ -34,7 +34,6 @@ export default function MarketPage({ params }: { params: { id: number } }) {
 
   return (
     <div className="w-full h-full flex flex-col items-center">
-      <Tickers />
       <Banner {...page_props} />
       <Countdown {...page_props} />
       <div className="lg:w-[70vw] h-full flex flex-col justify-center items-center px-2 lg:px-0 pb-5">

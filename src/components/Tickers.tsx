@@ -6,14 +6,14 @@ import { createBrowserClient } from "@supabase/ssr";
 
 import { Database } from "@/lib/types";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Tickers } from "@/lib/supabase/tickers";
-import TickerCarousel from './TickerCarousel';
+import { Ticker } from "@/lib/supabase/tickers";
+import TickerCarousel from "./TickerCarousel";
 import { convertDollarsToCents } from "@/lib/formats";
 
 import { IconContext } from "react-icons";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BsTriangleFill } from "react-icons/bs";
-
+import { useTickers } from "@/hooks/useTickers";
 
 interface TickerProps {
   choice: string;
@@ -22,7 +22,7 @@ interface TickerProps {
   direction: string | null;
 }
 
-function Ticker({
+function TickerCell({
   choice,
   choice_market_id,
   share_price,
@@ -34,7 +34,15 @@ function Ticker({
       <Link href={href}>
         <div className="h-full min-w-[200px] flex justify-center items-center space-x-2">
           <div className="whitespace-nowrap font-medium">{choice}</div>
-          { direction ?  <div>{direction === "up" ? <BsTriangleFill /> :  <BsTriangleFill className="rotate-180" />}</div> : null }
+          {direction ? (
+            <div>
+              {direction === "up" ? (
+                <BsTriangleFill />
+              ) : (
+                <BsTriangleFill className="rotate-180" />
+              )}
+            </div>
+          ) : null}
           <div>{convertDollarsToCents(share_price)}</div>
         </div>
       </Link>
@@ -42,38 +50,15 @@ function Ticker({
   );
 }
 
-function useTickers(
-  supabase: SupabaseClient<Database>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-) {
-  const [tickers, setTickers] = useState<Tickers[]>([]);
-  useEffect(() => {
-    const getTickers = async () => {
-      const { data, error } = await supabase
-        .from("market_tickers")
-        .select("*")
-        .eq("active", true)
-        .order("share_price", { ascending: false })
-        .limit(10);
-      if (error) console.log("error", error);
-      else setTickers(data);
-    };
-    getTickers();
-    setLoading(false);
-  }, [supabase, setLoading]);
-  return tickers;
-}
-
 export default function Tickers() {
   const [loading, setLoading] = useState(true);
-
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  const tickers = useTickers(supabase, setLoading);
+  const tickers = useTickers({ supabase, setLoading });
 
   // framer-motion-ticker library needs tickers.length or will crash
   if (loading || !tickers.length) {
@@ -88,19 +73,21 @@ export default function Tickers() {
   return (
     <div className="w-full flex justify-between items-center bg-tally-primary py-3 space-x-3 overflow-auto">
       <TickerCarousel duration={20}>
-        {tickers.map(({ choice, choice_market_id, share_price, direction }, index) => {
-          if (choice && choice_market_id && share_price) {
-            return (
-              <Ticker
-                key={index}
-                choice={choice}
-                choice_market_id={choice_market_id}
-                share_price={share_price}
-                direction={direction}
-              />
-            )
+        {tickers.map(
+          ({ choice, choice_market_id, share_price, direction }, index) => {
+            if (choice && choice_market_id && share_price) {
+              return (
+                <TickerCell
+                  key={index}
+                  choice={choice}
+                  choice_market_id={choice_market_id}
+                  share_price={share_price}
+                  direction={direction}
+                />
+              );
+            }
           }
-        })}
+        )}
       </TickerCarousel>
     </div>
   );

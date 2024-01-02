@@ -95,12 +95,13 @@ function Carousel({ banners }: { banners: Banner[] }) {
   ])
 
   const scrollTo = useCallback(
-    (index: number) => emblaApi && emblaApi.scrollTo(index)
-  , [emblaApi])
+    (index: number) => emblaApi && emblaApi.scrollTo(index), 
+    [emblaApi]
+  )
 
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
     setSelectedIndex(emblaApi.selectedScrollSnap())
-  }, [emblaApi])
+  }, [])
 
   useEffect(() => {
     if (!emblaApi) return
@@ -126,7 +127,7 @@ function Carousel({ banners }: { banners: Banner[] }) {
       {
         banners.map((_, index) => {
           return (
-            <DotButton isCurrent={index == selectedIndex} onClick={() => scrollTo(index)} />
+            <DotButton key={index} isCurrent={index == selectedIndex} onClick={() => scrollTo(index)} />
           )
         })
       }

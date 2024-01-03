@@ -6,6 +6,7 @@ import Tickers from "@/components/Tickers";
 import Banner from "@/components/Banner";
 import FairLaunch from "./components/FairLaunch";
 import PredictionMarkets from "./components/PredictionMarkets";
+import Promotions from "./components/Promotions";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
@@ -19,11 +20,12 @@ export default async function LandingPage() {
   return (
     <div className="w-full">
       <Banner banners={landingBanners} />
-      <div className="w-full flex flex-col space-y-5 px-10 py-10">
+      <div className="w-full flex flex-col space-y-5 py-10 bg-black">
+        <Promotions />
+        <PredictionMarkets subMarkets={subMarkets} />
         <div className="w-full flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
           <div className="md:w-[60vw] space-y-5">
             <FairLaunch />
-            <PredictionMarkets subMarkets={subMarkets} />
           </div>
           <div className="md:w-[40vw]">
             <LiveNewsFeed />

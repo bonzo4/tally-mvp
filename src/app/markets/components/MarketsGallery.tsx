@@ -116,10 +116,7 @@ export default function MarketsGallery() {
 
   return (
     <div className="w-full space-y-5">
-      <div className="px-4 lg:px-16">
-        <h2 className="text-4xl font-bold text-white">Prediction Markets</h2>
-      </div>
-      <div className="">
+      <div>
         <FilterMarkets handleFilterChange={handleFilterChange} selected={currentFilter}/>
       </div>
       <Tiles markets={filteredMarkets} />

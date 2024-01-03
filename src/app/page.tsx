@@ -24,14 +24,7 @@ export default async function LandingPage() {
         <Promotions />
         <PredictionMarkets subMarkets={subMarkets} />
         <Insights />
-        <div className="w-full flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
-          <div className="md:w-[60vw] space-y-5">
-            <FairLaunch />
-          </div>
-          <div className="md:w-[40vw]">
-            <LiveNewsFeed />
-          </div>
-        </div>
+        <LiveNewsFeed />
         <div className="w-full flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
           <div className="md:w-[60vw] space-y-5">
           </div>

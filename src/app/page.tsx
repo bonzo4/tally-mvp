@@ -20,9 +20,10 @@ export default async function LandingPage() {
   return (
     <div className="w-full">
       <Banner banners={landingBanners} />
-      <div className="w-full flex flex-col space-y-5 py-10 bg-black">
+      <div className="w-full flex flex-col space-y-12 py-10">
         <Promotions />
         <PredictionMarkets subMarkets={subMarkets} />
+        <Insights />
         <div className="w-full flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
           <div className="md:w-[60vw] space-y-5">
             <FairLaunch />
@@ -33,7 +34,6 @@ export default async function LandingPage() {
         </div>
         <div className="w-full flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5">
           <div className="md:w-[60vw] space-y-5">
-            <Insights />
           </div>
           <div className="md:w-[40vw]">
             <Guide />

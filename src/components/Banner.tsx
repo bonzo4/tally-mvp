@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Autoplay from 'embla-carousel-autoplay'
-import useEmblaCarousel, { EmblaCarouselType } from 'embla-carousel-react'
+import useEmblaCarousel from 'embla-carousel-react'
+import { EmblaCarouselType } from 'embla-carousel'
 import { LandingBanner } from "@/lib/supabase/landingBanners";
 import { MarketsBanner } from "@/lib/supabase/marketsBanners";
 import { Badge } from "@/components/ui/badge";

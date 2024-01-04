@@ -41,7 +41,7 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          "flex flex-col min-h-screen bg-background font-mono antialiased",
+          "flex flex-col min-h-screen bg-background font-mono antialiased bg-black",
           gotham.className
         )}
       >

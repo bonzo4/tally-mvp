@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { convertNumberToDollars } from "@/lib/formats";
 
-import { IconContext } from "react-icons";
 import { BsChat } from "react-icons/bs";
 
 

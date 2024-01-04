@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 
 const TEST_CATEGORIES = [
   "All",
-  "New",
+  "Fair Launch 🚀",
+  "New 🔥",
   "Politics",
   "Sports",
   "Economy",
@@ -51,15 +52,28 @@ function FilterButton(props: FilterButtonProps) {
   )
 }
 
+function PseudoLeftMargin() {
+  return (
+    <div className="min-w-[8px] lg:min-w-[56px]"></div>
+  )
+}
+
+function PseudoRightMargin() {
+  return (
+    <div className="min-w-[8px] lg:min-w-[56px]"></div>
+  )
+}
+
 export default function FilterMarkets({ handleFilterChange, selected }: { handleFilterChange: (filter: string) => void, selected: string }) {
   return (
     <div className="flex space-x-2 overflow-auto no-scrollbar">
-      <div className="min-w-[16px] lg:min-w-[64px] -mr-2"></div>
+      <PseudoLeftMargin />
       {
         TEST_CATEGORIES.map((category, index) => {
           return <FilterButton key={index} onClick={() => handleFilterChange(category)} category={category} selected={selected} />
         })
       }
+      <PseudoRightMargin />
     </div>
   )
 }

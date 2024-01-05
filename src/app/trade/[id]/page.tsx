@@ -47,16 +47,18 @@ export default async function TradePage() {
   return (
     <div className="w-full">
       <Banner banners={marketsBanners} />
-      <div className="w-full grid grid-cols-1 lg:grid-cols-3 p-4 lg:px-16 lg:py-5 space-x-5">
-        <div className="lg:col-span-2 flex flex-col space-y-5 py-5">
-          <Chart />
-          <OrderDrawer />
-          <TradingTabs />
-          <RelatedMarkets />
+      <div className="w-full px-4 lg:px-16 pt-4 pb-16">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-3 space-x-5 mb-10">
+          <div className="lg:col-span-2 flex flex-col space-y-5 py-5">
+            <Chart />
+            <OrderDrawer />
+            <TradingTabs />
+          </div>
+          <div className="hidden lg:block col-span-1 py-5">
+            <Order/>
+          </div>
         </div>
-        <div className="hidden lg:block col-span-1 py-5">
-          <Order/>
-        </div>
+        <RelatedMarkets />
       </div>
     </div>
   );

@@ -173,17 +173,14 @@ function SellOrderSummary() {
 
 export default function Order() {
   return (
-    <Tabs defaultValue="buy">
-      <TabsList className="grid w-full grid-cols-2 bg-zinc-900">
+    <Tabs className="flex flex-col overflow-auto" defaultValue="buy">
+      <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
         <TabsTrigger className="data-[state=active]:bg-zinc-700 data-[state=active]:text-gray-300" value="buy">Buy</TabsTrigger>
         <TabsTrigger className="data-[state=active]:bg-zinc-700 data-[state=active]:text-gray-300" value="sell">Sell</TabsTrigger>
       </TabsList>
-      <TabsContent className="" value="buy">
-        <Card className="bg-zinc-900 border-0">
-          <CardHeader className="px-2 lg:px-6">
-            <CardDescription className="text-gray-300">Purchase shares by amount.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-2 lg:px-6 space-y-3">
+      <TabsContent className="flex flex-col overflow-auto" value="buy">
+        <Card className="flex flex-col overflow-auto bg-zinc-900 border-0">
+          <CardContent className="overflow-auto px-2 lg:px-6 py-4 space-y-3">
             <OrderItem title="Donald Trump" color="red" yesPrice={60} noPrice={40} selected="No" />
             <OrderItem title="Ron Desantis" color="orange" yesPrice={33} noPrice={67} selected="Yes" />
             <OrderItem title="Nikki Haley" color="yellow" yesPrice={4} noPrice={96} selected={null}/>
@@ -191,22 +188,19 @@ export default function Order() {
             <OrderItem title="Joe Biden" color="blue" yesPrice={1} noPrice={99} selected="No" />
             <OrderItem title="Gavin Newsom" color="purple" yesPrice={1} noPrice={99} selected="No" />
           </CardContent>
-          <CardFooter className="px-2 lg:px-6">
+          <CardFooter className="px-2 lg:px-6 py-4">
             <BuyOrderSummary/>
           </CardFooter>
         </Card>
       </TabsContent>
-      <TabsContent value="sell">
-        <Card className="bg-zinc-900 border-0">
-          <CardHeader className="px-2 lg:px-6">
-            <CardDescription className="text-gray-300">Sell shares by number of shares.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-2 lg:px-6 space-y-3">
+      <TabsContent className="flex flex-col overflow-auto" value="sell">
+        <Card className="flex flex-col overflow-auto bg-zinc-900 border-0">
+          <CardContent className="overflow-auto px-2 lg:px-6 py-4 space-y-3">
             <OrderItem title="Donald Trump" color="red" yesPrice={60} noPrice={40} selected={"No"} />
             <OrderItem title="Ron Desantis" color="orange" yesPrice={33} noPrice={67} selected={"Yes"} />
             <OrderItem title="Nikki Haley" color="yellow" yesPrice={4} noPrice={96} selected={null} />
           </CardContent>
-          <CardFooter className="px-2 lg:px-6">
+          <CardFooter className="px-2 lg:px-6 py-4">
             <SellOrderSummary/>
           </CardFooter>
         </Card>

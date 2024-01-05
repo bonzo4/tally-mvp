@@ -6,6 +6,7 @@ import Chat from "./components/Chat";
 import Copy from "./components/Copy";
 import Header from "./components/Header";
 import Order from "./components/Order";
+import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
@@ -19,6 +20,7 @@ export default async function TradePage() {
 
   return (
     <div>
+      <OrderDrawer />
       <Banner banners={marketsBanners} />
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 p-4 lg:px-16 lg-py-5 space-x-5">
         <div className="col-span-2 flex flex-col space-y-5 py-5">

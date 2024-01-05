@@ -18,7 +18,7 @@ export default function OrderDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <div className="fixed lg:hidden z-50 bottom-4 w-full px-4">
+        <div className="sticky lg:hidden z-50 bottom-4 w-full">
         <Button className="w-full bg-tally-primary hover:bg-tally-primary text-black">
           Place Bet
         </Button>

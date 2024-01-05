@@ -8,6 +8,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
+import Banner from "@/components/Banner"
 import Chart from "./components/Chart";
 import Chat from "./components/Chat";
 import Copy from "./components/Copy";
@@ -17,8 +18,6 @@ import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
-
-import Banner from "@/components/Banner"
 
 function TradingTabs() {
   return (
@@ -55,7 +54,7 @@ export default async function TradePage() {
           <TradingTabs />
           <RelatedMarkets />
         </div>
-        <div className="hidden lg:block sticky col-span-1 top-0 h-screen overflow-auto py-5">
+        <div className="hidden lg:block col-span-1 sticky top-0 h-screen overflow-auto py-5">
           <Order/>
         </div>
       </div>

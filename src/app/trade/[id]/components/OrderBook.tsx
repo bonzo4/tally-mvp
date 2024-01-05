@@ -1,11 +1,8 @@
 
-export default function OrderBook()  {
+export default function Orderbook()  {
   return (
-    <div className="flex flex-col space-y-2">
-      <div>
-        <h2 className="text-4xl font-bold">Order Book</h2>
-      </div>
-      <div className="bg-purple-100 h-[400px]">
+    <div className="w-full flex flex-col"> 
+      <div className="min-h-[400px] bg-zinc-800">
       </div>
     </div>
   )

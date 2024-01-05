@@ -32,17 +32,11 @@ function Poll() {
 
 export default function Polls() {
   return (
-    <div className="flex flex-col h-full space-y-5">
-      <div>
-        <h3 className="text-2xl">The Latest</h3>
-        <h2 className="text-4xl font-bold">Recent Polls</h2>
-      </div>
-      <div className="flex flex-col space-y-5">
-        <Poll />
-        <Poll />
-        <Poll />
-        <Poll />
-      </div>
+    <div className="flex flex-col space-y-5">
+      <Poll />
+      <Poll />
+      <Poll />
+      <Poll />
     </div>
   )
 }

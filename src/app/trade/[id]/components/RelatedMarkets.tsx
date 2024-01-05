@@ -28,12 +28,13 @@ export default function RelatedMarkets() {
   return (
     <div className="w-full flex flex-col space-y-5">
       <div>
-        <h2 className="text-4xl font-bold">Recent Polls</h2>
+        <h2 className="text-3xl text-white font-bold">Related Markets</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
         <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
         <MarketTile {...TEST_MARKET_TILE_DATA[1]}/>
         <MarketTile {...TEST_MARKET_TILE_DATA[2]}/>
+        <MarketTile {...TEST_MARKET_TILE_DATA[0]}/>
       </div>
     </div>
   )

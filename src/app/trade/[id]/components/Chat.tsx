@@ -1,9 +1,8 @@
 
 export default function Chat() {
   return (
-    <div className="w-full h-full min-h-[400px] flex flex-col"> 
-      <div className="h-full w-full bg-green-200">
-        Chat
+    <div className="w-full flex flex-col"> 
+      <div className="min-h-[400px] bg-zinc-700">
       </div>
     </div>
   )

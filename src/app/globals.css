@@ -39,7 +39,14 @@
     --tally-primary: 147.6 100% 63.7%;
     --tally-secondary: 147.5 100% 48.8%;
     --tally-red: 0 100% 72%;
+    --tally-orange: 18 97% 54%;
+    --tally-yellow: 57 100% 72%;
+    --tally-green: 137 100% 52%;
+    --tally-blue: 204 97% 54%;
+    --tally-purple: 284 100% 72%;
+    --tally-indigo: 241 100% 72%;
   }
+
  
   .dark {
     /*shadcn css variables*/

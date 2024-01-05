@@ -54,7 +54,7 @@ export default async function TradePage() {
           <TradingTabs />
           <RelatedMarkets />
         </div>
-        <div className="hidden lg:block col-span-1 sticky top-0 h-screen overflow-auto py-5">
+        <div className="hidden lg:block col-span-1 py-5">
           <Order/>
         </div>
       </div>

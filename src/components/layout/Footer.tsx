@@ -77,10 +77,10 @@ function Links() {
       <div className="flex flex-col space-y-2 flex-grow mr-12 md:flex-grow-0 lg:mr-24">
         <Subtitle title="Explore" />
         <TextLink href="/" name="Fair Launch" />
-        <TextLink href="/" name="Markets" />
+        <TextLink href="/markets" name="Markets" />
         <TextLink href="/" name="Insights" />
         <TextLink href="/" name="FAQ" />
-        <TextLink href="/" name="Leaderboard" />
+        <TextLink href="/leaderboard" name="Leaderboard" />
       </div>
       <div className="flex flex-col space-y-2 flex-grow md:flex-grow-0 lg:mr-24">
         <Subtitle title="Follow us" />

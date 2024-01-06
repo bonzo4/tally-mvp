@@ -1,6 +1,10 @@
-import React from 'react';
-import { AnimationPlaybackControls, useAnimate, useInView } from 'framer-motion';
-import { v4 as uuidv4 } from 'uuid';
+import React from "react";
+import {
+  AnimationPlaybackControls,
+  useAnimate,
+  useInView,
+} from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 
 const TICKER_DIRECTION_LEFT = -1;
 const TICKER_DIRECTION_RIGHT = 1;
@@ -26,8 +30,10 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
     direction = TICKER_DIRECTION_LEFT,
   } = props;
   const tickerRef = React.useRef<HTMLDivElement>(null);
-  const [tickerUUID, setTickerUUID] = React.useState<string>('');
-  const [tickerContentWidth, setTickerContentWidth] = React.useState<number | null>(0);
+  const [tickerUUID, setTickerUUID] = React.useState<string>("");
+  const [tickerContentWidth, setTickerContentWidth] = React.useState<
+    number | null
+  >(0);
   const [numDupes, setNumDupes] = React.useState<number>(1);
   const [scope, animate] = useAnimate();
   const [animationControls, setAnimationControls] = React.useState<
@@ -43,7 +49,8 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
     let contentWidth = 0;
 
     for (let index = 0; index < children.length; index++) {
-      const element = document.getElementById(tickerUUID + '_' + index)?.clientWidth;
+      const element = document.getElementById(tickerUUID + "_" + index)
+        ?.clientWidth;
       if (element) {
         contentWidth += element;
       }
@@ -54,7 +61,12 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
 
   React.useEffect(() => {
     if (tickerRef.current && tickerContentWidth) {
-      setNumDupes(Math.max(Math.ceil((2 * tickerRef.current.clientWidth) / tickerContentWidth), 1));
+      setNumDupes(
+        Math.max(
+          Math.ceil((2 * tickerRef.current.clientWidth) / tickerContentWidth),
+          1
+        )
+      );
     }
   }, [tickerContentWidth]);
 
@@ -63,12 +75,20 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
       const controls = animate(
         scope.current,
         { x: tickerContentWidth ? tickerContentWidth * direction : 0 },
-        { ease: 'linear', duration, repeat: Infinity }
+        { ease: "linear", duration, repeat: Infinity }
       );
       controls.play();
       setAnimationControls(controls);
     }
-  }, [animate, animationControls, direction, duration, isInView, scope, tickerContentWidth]);
+  }, [
+    animate,
+    animationControls,
+    direction,
+    duration,
+    isInView,
+    scope,
+    tickerContentWidth,
+  ]);
 
   React.useEffect(() => {
     if (animationControls) {
@@ -85,9 +105,9 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
       className="FMT__container"
       ref={tickerRef}
       style={{
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -98,7 +118,7 @@ const Ticker: React.FunctionComponent<TickerProps> = (props: TickerProps) => {
         // initial={false}
         // animate={{ x: tickerContentWidth * direction }}
         // transition={{ ease: 'linear', duration, repeat: Infinity }}
-        style={{ display: 'flex' }}
+        style={{ display: "flex" }}
       >
         {children.map((item, index) => (
           <div key={index} id={`${tickerUUID}_${index}`}>

@@ -20,7 +20,7 @@ export default async function LandingPage() {
   return (
     <div className="w-full">
       <Banner banners={landingBanners} />
-      <div className="w-full flex flex-col space-y-12 py-10">
+      <div className="flex w-full flex-col space-y-12 py-10">
         <Promotions />
         <PredictionMarkets subMarkets={subMarkets} />
         <Insights />

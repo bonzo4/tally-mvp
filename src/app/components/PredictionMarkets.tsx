@@ -7,7 +7,6 @@ import MarketsGallery from "@/app/markets/components/MarketsGallery";
 import { MarketTileProps, MarketTile } from "@/components/MarketTile";
 import { SubMarket } from "@/lib/supabase/markets";
 
-
 const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
     title: "Will Trump win the Republican Nominee?",
@@ -93,7 +92,6 @@ const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   },
 ];
 
-
 type PrediciontMarketProps = {
   subMarkets: SubMarket[];
 };
@@ -105,14 +103,15 @@ export default function PredictionMarkets({
     <div className="space-y-5">
       <div className="flex justify-between px-4 lg:px-16">
         <Link href="/markets">
-          <h2 className="text-2xl lg:text-4xl text-white font-bold hover:underline">
+          <h2 className="text-2xl font-bold text-white hover:underline lg:text-4xl">
             Prediction Markets
           </h2>
         </Link>
-        <Button className="text-tally-primary bg-black border border-tally-primary" asChild>
-          <Link href="/markets">
-            View All
-          </Link>
+        <Button
+          className="border border-tally-primary bg-black text-tally-primary"
+          asChild
+        >
+          <Link href="/markets">View All</Link>
         </Button>
       </div>
       <MarketsGallery />

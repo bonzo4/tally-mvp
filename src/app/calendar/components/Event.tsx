@@ -1,56 +1,74 @@
-import { Button } from '@/components/ui/button'
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-function DateStamp({month, day}:{ month: string, day: number }) {
+function DateStamp({ month, day }: { month: string; day: number }) {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center justify-center">
       <div className="text-md font-bold">{month}</div>
-      <div className="text-xl font-bold text-red-500 -mt-2">{day}</div>
+      <div className="-mt-2 text-xl font-bold text-red-500">{day}</div>
     </div>
-  )
+  );
 }
 
-function Header({ month, day, name }: { month: string, day: number, name: string }) {
+function Header({
+  month,
+  day,
+  name,
+}: {
+  month: string;
+  day: number;
+  name: string;
+}) {
   return (
     <div className="flex flex-row space-x-5">
-      <DateStamp month={month} day={day}/>
-      <div className="text-xl font-bold pr-10">{ name }</div>
+      <DateStamp month={month} day={day} />
+      <div className="pr-10 text-xl font-bold">{name}</div>
     </div>
-  )
+  );
 }
 
-function Description({description}: { description: string }) {
-  return (
-    <div>
-      {description}
-    </div>
-  )
+function Description({ description }: { description: string }) {
+  return <div>{description}</div>;
 }
 
-function Footer({ src, reminder }: { src?: string, reminder: string }) {
+function Footer({ src, reminder }: { src?: string; reminder: string }) {
   return (
     <div className={`flex flex-row-reverse justify-between`}>
-      <Button variant="secondary" className="self-end">Remind Me</Button>
-      { src ? (<Button variant="link" className="p-0"><a href={src}>Read More</a></Button>) : null }
+      <Button variant="secondary" className="self-end">
+        Remind Me
+      </Button>
+      {src ? (
+        <Button variant="link" className="p-0">
+          <a href={src}>Read More</a>
+        </Button>
+      ) : null}
     </div>
-  )
+  );
 }
 
 export interface EventProps {
-  month: string
-  day: number
-  name: string
-  description: string
-  src?: string
-  reminder: string
-  is_highlighted?: boolean
+  month: string;
+  day: number;
+  name: string;
+  description: string;
+  src?: string;
+  reminder: string;
+  is_highlighted?: boolean;
 }
 
-export function Event({ month, day, name, description, src, reminder, is_highlighted }: EventProps) {
+export function Event({
+  month,
+  day,
+  name,
+  description,
+  src,
+  reminder,
+  is_highlighted,
+}: EventProps) {
   const backgroundCssOptions = {
-     default: "bg-gray-50",
-    gradient: "bg-gradient-to-r from-red-100 to-blue-100"
-  }
+    default: "bg-gray-50",
+    gradient: "bg-gradient-to-r from-red-100 to-blue-100",
+  };
 
   let backgroundCss = backgroundCssOptions.default;
   if (is_highlighted) {
@@ -58,14 +76,15 @@ export function Event({ month, day, name, description, src, reminder, is_highlig
   }
 
   return (
-    <div className={`w-full h-full flex flex-col justify-between p-4 space-y-3 border border-gray-200 ${backgroundCss} shadow`}>
+    <div
+      className={`flex h-full w-full flex-col justify-between space-y-3 border border-gray-200 p-4 ${backgroundCss} shadow`}
+    >
       <div className="space-y-3">
-        <Header month={month} day={day} name={name}/>
+        <Header month={month} day={day} name={name} />
         <Separator />
-        <Description description={description}/>
+        <Description description={description} />
       </div>
       <Footer src={src} reminder={reminder} />
     </div>
-  )
+  );
 }
-

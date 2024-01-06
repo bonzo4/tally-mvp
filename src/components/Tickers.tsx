@@ -32,7 +32,7 @@ function TickerCell({
   return (
     <IconContext.Provider value={{ className: "opacity-50" }}>
       <Link href={href}>
-        <div className="h-full min-w-[200px] flex justify-center items-center space-x-2">
+        <div className="flex h-full min-w-[200px] items-center justify-center space-x-2">
           <div className="whitespace-nowrap font-medium">{choice}</div>
           {direction ? (
             <div>
@@ -63,15 +63,15 @@ export default function Tickers() {
   // framer-motion-ticker library needs tickers.length or will crash
   if (loading || !tickers.length) {
     return (
-      <div className="w-full h-[48px] flex justify-center items-center bg-tally-primary py-3 space-x-3 overflow-auto">
-        <AiOutlineLoading3Quarters className="animate-spin mx-auto" />
+      <div className="flex h-[48px] w-full items-center justify-center space-x-3 overflow-auto bg-tally-primary py-3">
+        <AiOutlineLoading3Quarters className="mx-auto animate-spin" />
         {""}
       </div>
     );
   }
 
   return (
-    <div className="w-full flex justify-between items-center bg-tally-primary py-3 space-x-3 overflow-auto">
+    <div className="flex w-full items-center justify-between space-x-3 overflow-auto bg-tally-primary py-3">
       <TickerCarousel duration={20}>
         {tickers.map(
           ({ choice, choice_market_id, share_price, direction }, index) => {

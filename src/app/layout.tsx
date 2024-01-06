@@ -41,12 +41,12 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          "flex flex-col min-h-screen bg-background font-mono antialiased bg-black",
+          "flex min-h-screen flex-col bg-background bg-black font-mono antialiased",
           gotham.className
         )}
       >
         <Header authUser={user} />
-        <main className="flex flex-col grow w-full items-center">
+        <main className="flex w-full grow flex-col items-center">
           {children}
         </main>
         <Footer />

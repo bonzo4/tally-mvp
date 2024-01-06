@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 
 export default function Account() {
-  const portfolio = "$500"
-  const balance = "$1000"
+  const portfolio = "$500";
+  const balance = "$1000";
   return (
-    <div className="w-full border border-black flex flex-col lg:flex-row space-y-3 lg:space-y-0 justify-between p-2 lg:p-5">
+    <div className="flex w-full flex-col justify-between space-y-3 border border-black p-2 lg:flex-row lg:space-y-0 lg:p-5">
       <div className="flex flex-col">
         <p className="text-lg">{`Portfolio: ${portfolio}`}</p>
         <p className="text-lg">{`Balance: ${balance}`}</p>
@@ -14,5 +14,5 @@ export default function Account() {
         <Button>Withdraw</Button>
       </div>
     </div>
-  )
+  );
 }

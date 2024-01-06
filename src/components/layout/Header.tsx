@@ -20,7 +20,7 @@ type HeaderProps = {
 
 function HeaderLink({ href, title }: { href: string; title: string }) {
   return (
-    <Link href={href} className="hover:underline whitespace-nowrap">
+    <Link href={href} className="whitespace-nowrap hover:underline">
       {title}
     </Link>
   );
@@ -32,35 +32,35 @@ export default function Header({ authUser }: HeaderProps) {
   const user = useUser({ supabase, user: authUser });
 
   return (
-    <div className="w-full flex flex-col">
-      <header className="flex flex-row bg-black items-center justify-between px-4 lg:px-16 py-3 space-x-5">
-        <div className="flex flex-row flex-grow space-x-5 items-center">
+    <div className="flex w-full flex-col">
+      <header className="flex flex-row items-center justify-between space-x-5 bg-black px-4 py-3 lg:px-16">
+        <div className="flex flex-grow flex-row items-center space-x-5">
           <Link href="/" className="">
             <h1
               className={cn(
-                "text-[25px] leading-[30px] font-bold text-tally-primary whitespace-nowrap -tracking-[0.07em]"
+                "whitespace-nowrap text-[25px] font-bold leading-[30px] -tracking-[0.07em] text-tally-primary"
               )}
             >
               TALLY MARKET
             </h1>
           </Link>
-          <div className="hidden lg:block flex-grow max-w-[400px]">
+          <div className="hidden max-w-[400px] flex-grow lg:block">
             <SearchBar />
           </div>
         </div>
-        <div className="space-x-3 hidden lg:flex text-sm text-white font-bold">
+        <div className="hidden space-x-3 text-sm font-bold text-white lg:flex">
           <HeaderLink href="/" title="Fair Launch" />
           <HeaderLink href="/markets" title="Markets" />
           <HeaderLink href="/" title="Insight" />
           <HeaderLink href="/" title="FAQ" />
           <HeaderLink href="/leaderboard" title="Leaderboard" />
         </div>
-        <div className="hidden lg:flex flex-row items-center justify-center space-x-3">
+        <div className="hidden flex-row items-center justify-center space-x-3 lg:flex">
           {user ? (
             <>
               <Link
                 href="/"
-                className="hover:cursor-pointer underline hover:no-underline"
+                className="underline hover:cursor-pointer hover:no-underline"
               >
                 {user.name}
               </Link>
@@ -70,7 +70,7 @@ export default function Header({ authUser }: HeaderProps) {
                 className="flex flex-row items-center justify-center space-x-2"
               >
                 <button
-                  className="underline hover:no-underline hover:cursor-pointer"
+                  className="underline hover:cursor-pointer hover:no-underline"
                   type="submit"
                 >
                   Sign out
@@ -81,15 +81,15 @@ export default function Header({ authUser }: HeaderProps) {
             <>
               <Link
                 href="/login"
-                className="hover:cursor-pointer underline hover:no-underline"
+                className="underline hover:cursor-pointer hover:no-underline"
               >
-                <Button className="bg-black text-tally-primary border border-tally-primary hover:bg-zinc-800">
+                <Button className="border border-tally-primary bg-black text-tally-primary hover:bg-zinc-800">
                   Log In
                 </Button>
               </Link>
               <Link
                 href="/login"
-                className="hover:cursor-pointer underline hover:no-underline"
+                className="underline hover:cursor-pointer hover:no-underline"
               >
                 <Button className="bg-tally-primary text-black hover:bg-tally-secondary">
                   Sign Up

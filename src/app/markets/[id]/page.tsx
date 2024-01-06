@@ -33,10 +33,10 @@ export default function MarketPage({ params }: { params: { id: number } }) {
   const page_props = TEST_MARKET_STATUS[id];
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
+    <div className="flex h-full w-full flex-col items-center">
       <Banner {...page_props} />
       <Countdown {...page_props} />
-      <div className="lg:w-[70vw] h-full flex flex-col justify-center items-center px-2 lg:px-0 pb-5">
+      <div className="flex h-full flex-col items-center justify-center px-2 pb-5 lg:w-[70vw] lg:px-0">
         <HowItWorks />
         <ActionItem {...page_props} />
         <OtherMarkets />

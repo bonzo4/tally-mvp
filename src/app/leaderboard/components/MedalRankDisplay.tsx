@@ -1,5 +1,4 @@
 export default function MedalRankDisplay({ rank }: { rank: number }) {
-
   let backgroundColor: string;
   switch (rank) {
     case 1:
@@ -16,8 +15,10 @@ export default function MedalRankDisplay({ rank }: { rank: number }) {
   }
 
   return (
-    <div className={`w-5 h-5 flex flex-shrink-0 items-center justify-center rounded-full ${backgroundColor}`}>
-      <span className="text-white font-bold text-xs">{rank}</span>
+    <div
+      className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${backgroundColor}`}
+    >
+      <span className="text-xs font-bold text-white">{rank}</span>
     </div>
-  )
+  );
 }

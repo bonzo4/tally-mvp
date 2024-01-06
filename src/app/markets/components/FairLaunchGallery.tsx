@@ -42,10 +42,10 @@ const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
     yesPrice: 28,
     noPrice: 72,
   },
-]
+];
 
 function FairLaunchTeaser() {
-  return <div className="w-full h-[180px] rounded-2xl bg-yellow-100"></div>;
+  return <div className="h-[180px] w-full rounded-2xl bg-yellow-100"></div>;
 }
 
 export default function FairLaunchGallery() {
@@ -54,14 +54,16 @@ export default function FairLaunchGallery() {
       <div>
         <h2 className="text-4xl font-bold text-white">Fair Launch</h2>
       </div>
-      <div className="flex overflow-x-auto space-x-5 md:space-x-0 xl:grid xl:grid-cols-4 md:gap-2">
-        {
-          TEST_MARKET_TILE_DATA.map((market, index) => {
-              return (
-                <MarketTile key={index} className={"min-w-[80%] md:min-w-[40%]"} {...market} />
-              )
-          })
-        }
+      <div className="flex space-x-5 overflow-x-auto md:gap-2 md:space-x-0 xl:grid xl:grid-cols-4">
+        {TEST_MARKET_TILE_DATA.map((market, index) => {
+          return (
+            <MarketTile
+              key={index}
+              className={"min-w-[80%] md:min-w-[40%]"}
+              {...market}
+            />
+          );
+        })}
       </div>
     </div>
   );

@@ -91,19 +91,19 @@ const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
 
 function Tiles({ markets }: { markets: MarketTileProps[] }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-2 px-4 lg:px-16">
-      {
-        markets.map((market, index) => {
-          return <MarketTile key={index} {...market} />
-        })
-      }
+    <div className="grid grid-cols-1 gap-5 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-2 lg:px-16 xl:grid-cols-4">
+      {markets.map((market, index) => {
+        return <MarketTile key={index} {...market} />;
+      })}
     </div>
-  )
+  );
 }
 
 export default function MarketsGallery() {
   const [currentFilter, setCurrentFilter] = useState<string>("All");
-  const [filteredMarkets, setFilteredMarkets] = useState<MarketTileProps[]>(TEST_MARKET_TILE_DATA);
+  const [filteredMarkets, setFilteredMarkets] = useState<MarketTileProps[]>(
+    TEST_MARKET_TILE_DATA
+  );
 
   const handleFilterChange = (filter: string) => {
     setCurrentFilter(filter);
@@ -111,16 +111,20 @@ export default function MarketsGallery() {
       setFilteredMarkets(TEST_MARKET_TILE_DATA);
       return;
     }
-    setFilteredMarkets(TEST_MARKET_TILE_DATA.filter((market) => market.category === filter))
-  }
+    setFilteredMarkets(
+      TEST_MARKET_TILE_DATA.filter((market) => market.category === filter)
+    );
+  };
 
   return (
     <div className="w-full space-y-5">
       <div>
-        <FilterMarkets handleFilterChange={handleFilterChange} selected={currentFilter}/>
+        <FilterMarkets
+          handleFilterChange={handleFilterChange}
+          selected={currentFilter}
+        />
       </div>
       <Tiles markets={filteredMarkets} />
     </div>
   );
 }
-

@@ -1,9 +1,4 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import {
   Table,
@@ -13,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 function AcitivitiesTable() {
   return (
@@ -54,7 +49,7 @@ function AcitivitiesTable() {
         </TableRow>
       </TableBody>
     </Table>
-  )
+  );
 }
 
 function TradesTable() {
@@ -114,15 +109,19 @@ function TradesTable() {
         </TableRow>
       </TableBody>
     </Table>
-  )
+  );
 }
 
 export default function Activities() {
   return (
     <Tabs defaultValue="activity" className="w-full">
       <TabsList className="w-full">
-        <TabsTrigger value="activity" className="w-full">Activity</TabsTrigger>
-        <TabsTrigger value="Trades" className="w-full">Trades</TabsTrigger>
+        <TabsTrigger value="activity" className="w-full">
+          Activity
+        </TabsTrigger>
+        <TabsTrigger value="Trades" className="w-full">
+          Trades
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="activity">
         <AcitivitiesTable />
@@ -131,6 +130,5 @@ export default function Activities() {
         <TradesTable />
       </TabsContent>
     </Tabs>
-  )
+  );
 }
-

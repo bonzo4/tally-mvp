@@ -28,52 +28,60 @@ const TEST_CATEGORIES = [
   "China",
   "Japan",
   "Tennis",
-]
+];
 
 interface FilterButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-    category: string;
-    selected: string;
+  category: string;
+  selected: string;
 }
 
 function FilterButton(props: FilterButtonProps) {
   const { category, selected, ...rest } = props;
 
-  const color = (category === selected) ? "bg-gray-100 text-black" : "bg-zinc-800 text-white";
-  const variant = (category === selected) ? "secondary" : "default";
+  const color =
+    category === selected ? "bg-gray-100 text-black" : "bg-zinc-800 text-white";
+  const variant = category === selected ? "secondary" : "default";
 
   return (
-    <Badge 
+    <Badge
       {...rest}
-      variant={variant} 
-      className={`${color} flex-shrink-0 font-medium py-2 px-3 hover:cursor-pointer`}
+      variant={variant}
+      className={`${color} flex-shrink-0 px-3 py-2 font-medium hover:cursor-pointer`}
     >
       {category}
     </Badge>
-  )
+  );
 }
 
 function PseudoLeftMargin() {
-  return (
-    <div className="min-w-[8px] lg:min-w-[56px]"></div>
-  )
+  return <div className="min-w-[8px] lg:min-w-[56px]"></div>;
 }
 
 function PseudoRightMargin() {
-  return (
-    <div className="min-w-[8px] lg:min-w-[56px]"></div>
-  )
+  return <div className="min-w-[8px] lg:min-w-[56px]"></div>;
 }
 
-export default function FilterMarkets({ handleFilterChange, selected }: { handleFilterChange: (filter: string) => void, selected: string }) {
+export default function FilterMarkets({
+  handleFilterChange,
+  selected,
+}: {
+  handleFilterChange: (filter: string) => void;
+  selected: string;
+}) {
   return (
-    <div className="flex space-x-2 overflow-auto no-scrollbar">
+    <div className="no-scrollbar flex space-x-2 overflow-auto">
       <PseudoLeftMargin />
-      {
-        TEST_CATEGORIES.map((category, index) => {
-          return <FilterButton key={index} onClick={() => handleFilterChange(category)} category={category} selected={selected} />
-        })
-      }
+      {TEST_CATEGORIES.map((category, index) => {
+        return (
+          <FilterButton
+            key={index}
+            onClick={() => handleFilterChange(category)}
+            category={category}
+            selected={selected}
+          />
+        );
+      })}
       <PseudoRightMargin />
     </div>
-  )
+  );
 }

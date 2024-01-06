@@ -1,5 +1,5 @@
-'use client'
-import { Button } from "@/components/ui/button"
+"use client";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -10,27 +10,26 @@ import {
   DrawerOverlay,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 
-import Order from "./Order"
+import Order from "./Order";
 
 export default function OrderDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <div className="sticky lg:hidden z-50 bottom-4 w-full">
-        <Button className="w-full bg-tally-primary hover:bg-tally-primary text-black">
-          Place Bet
-        </Button>
+        <div className="sticky bottom-4 z-50 w-full lg:hidden">
+          <Button className="w-full bg-tally-primary text-black hover:bg-tally-primary">
+            Place Bet
+          </Button>
         </div>
       </DrawerTrigger>
-      <DrawerContent className="bg-zinc-900 mt-5 max-h-[96%] px-4 border-0">
+      <DrawerContent className="mt-5 max-h-[96%] border-0 bg-zinc-900 px-4">
         <DrawerHeader>
-        { /* Header is for margin between top of content and drag bar. */ }
+          {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
         <Order />
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
-

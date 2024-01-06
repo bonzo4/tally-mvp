@@ -33,9 +33,9 @@ export default async function MarketsPage() {
   return (
     <div className="w-full bg-black pb-4 lg:pb-16">
       <Banner banners={marketsBanners} />
-      <div className="w-full flex flex-col">
+      <div className="flex w-full flex-col">
         <FairLaunchGallery />
-        <div className="px-4 lg:px-16 pt-16 py-5">
+        <div className="px-4 py-5 pt-16 lg:px-16">
           <h2 className="text-4xl font-bold text-white">Prediction Markets</h2>
         </div>
         <MarketsGallery />

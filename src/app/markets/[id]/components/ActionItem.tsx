@@ -31,7 +31,7 @@ export default function ActionItem(props: { status: string }) {
   }
 
   return (
-    <div className="w-full flex justify-center items-center pb-5">
+    <div className="flex w-full items-center justify-center pb-5">
       {actionItem}
     </div>
   );

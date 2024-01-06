@@ -3,13 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "yarn install && husky install",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 8889",
+    "start": "next start",
     "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:e2e": "playwright test"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -44,10 +43,6 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
-    "@playwright/test": "^1.40.1",
-    "@testing-library/jest-dom": "^6.1.6",
-    "@testing-library/react": "^14.1.2",
-    "@types/jest": "^29.5.11",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -56,11 +51,12 @@
     "dotenv": "^16.3.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
+    "eslint-config-prettier": "^9.1.0",
     "husky": "^8.0.3",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.0",
     "postcss": "^8",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "supabase": "^1.115.5",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",

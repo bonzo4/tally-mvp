@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "yarn install && husky install",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 8889",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {

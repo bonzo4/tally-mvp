@@ -34,7 +34,7 @@ export function LoginForm() {
       theme="dark"
       showLinks={false}
       providers={["google", "discord"]}
-      redirectTo="http://localhost:3000/auth/callback"
+      redirectTo={`${process.env.NEXT_PUBLIC_URL}/auth/callback`}
     />
   );
 }
@@ -69,7 +69,7 @@ export function SignupForm() {
       theme="dark"
       showLinks={false}
       providers={["google", "discord"]}
-      redirectTo="http://localhost:3000/auth/callback"
+      redirectTo={`${process.env.NEXT_PUBLIC_URL}/auth/callback`}
     />
   );
 }

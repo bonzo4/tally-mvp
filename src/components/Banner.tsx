@@ -37,7 +37,7 @@ function Info({ src, alt }: { src: string; alt: string }) {
           </div>
           <div className="lg:hidden">Bet: $2,544,324</div>
           <div className="lg:hidden">Expires: Nov 8th, 2024</div>
-          <div className="flex hidden flex-col lg:flex lg:flex-row lg:space-x-5">
+          <div className="hidden flex-col lg:flex lg:flex-row lg:space-x-5">
             <div>Bet: $2,544,324</div>
             <div>Expires: Nov 8th, 2024</div>
           </div>

@@ -30,7 +30,7 @@ export default function Month({
   }
 
   return (
-    <div className="flex flex-col space-y-5">
+    <div className="flex flex-col space-y-5 px-4 lg:px-16">
       <MonthName name={name} />
       <MonthGrid events={events} />
     </div>

@@ -24,7 +24,7 @@ function FilterButtonMonth(props: FilterButtonProps) {
 
   const variant = name === selected ? "secondary" : "default";
   const _className =
-    name === selected ? "" : "bg-zinc-900 text-gray-400 hover:bg-zinc-800";
+    name === selected ? "" : "bg-zinc-900 text-gray-400 hover:bg-zinc-800 mr-2";
 
   return (
     <FilterButtonPrimitive
@@ -42,9 +42,18 @@ interface FilterProps {
   setFilterMonth: (month: string) => void;
 }
 
+function PseudoLeftMargin() {
+  return <div className="min-w-[16px] lg:hidden"></div>;
+}
+
+function PseudoRightMargin() {
+  return <div className="min-w-[8px] lg:hidden"></div>;
+}
+
 export default function Filters({ filterMonth, setFilterMonth }: FilterProps) {
   return (
-    <div className="grid grid-cols-4 gap-2 lg:flex lg:space-x-2">
+    <div className="flex overflow-x-auto lg:flex lg:px-16">
+      <PseudoLeftMargin />
       {MONTHS.map((month, index) => (
         <FilterButtonMonth
           key={index}
@@ -53,6 +62,7 @@ export default function Filters({ filterMonth, setFilterMonth }: FilterProps) {
           onClick={() => setFilterMonth(month)}
         />
       ))}
+      <PseudoRightMargin />
     </div>
   );
 }

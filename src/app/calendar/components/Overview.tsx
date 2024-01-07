@@ -1,6 +1,6 @@
 export default function Overview() {
   return (
-    <div className="flex max-w-[800px] flex-col space-y-5">
+    <div className="flex max-w-[800px] flex-col space-y-5 px-4 lg:px-16">
       <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-3">
         <div>
           <h1 className="text-2xl font-bold text-white lg:text-4xl">

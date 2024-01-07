@@ -7,7 +7,7 @@ type CreateWalletReturn = {
   encryptedSecretKey: string;
 };
 
-export function CreateWallet(): CreateWalletReturn {
+export function createWallet(): CreateWalletReturn {
   createNewSolanaConnection({ type: "devnet" });
 
   const { publicKey, secretKey } = Keypair.generate();

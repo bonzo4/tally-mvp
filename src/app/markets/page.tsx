@@ -7,7 +7,6 @@ import Banner from "@/components/Banner";
 import FairLaunchGallery from "./components/FairLaunchGallery";
 import MarketsGallery from "./components/MarketsGallery";
 
-
 export default async function MarketsPage() {
   const cookieStore = cookies();
 

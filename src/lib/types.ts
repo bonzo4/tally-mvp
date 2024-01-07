@@ -9,7 +9,43 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      articles: {
+      _market_categories: {
+        Row: {
+          category_name: string;
+          created_at: string;
+          id: number;
+          prediction_market_id: number;
+        };
+        Insert: {
+          category_name: string;
+          created_at?: string;
+          id?: number;
+          prediction_market_id: number;
+        };
+        Update: {
+          category_name?: string;
+          created_at?: string;
+          id?: number;
+          prediction_market_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_market_categories_category_name_fkey";
+            columns: ["category_name"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["name"];
+          },
+          {
+            foreignKeyName: "_market_categories_prediction_market_id_fkey";
+            columns: ["prediction_market_id"];
+            isOneToOne: false;
+            referencedRelation: "prediction_markets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      blogs: {
         Row: {
           body: string;
           created_at: string;
@@ -75,30 +111,83 @@ export interface Database {
             referencedRelation: "choice_markets";
             referencedColumns: ["id"];
           },
-          {
-            foreignKeyName: "buy_orders_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
         ];
+      };
+      calendar_events: {
+        Row: {
+          created_at: string;
+          date: string;
+          description: string;
+          id: number;
+          is_important: boolean;
+          link: string;
+          title: string;
+        };
+        Insert: {
+          created_at?: string;
+          date?: string;
+          description: string;
+          id?: number;
+          is_important?: boolean;
+          link: string;
+          title: string;
+        };
+        Update: {
+          created_at?: string;
+          date?: string;
+          description?: string;
+          id?: number;
+          is_important?: boolean;
+          link?: string;
+          title?: string;
+        };
+        Relationships: [];
+      };
+      calendars: {
+        Row: {
+          created_at: string;
+          description: string;
+          id: number;
+          "last updated": string;
+          link: string;
+          slug: string;
+          title: string;
+        };
+        Insert: {
+          created_at?: string;
+          description: string;
+          id?: number;
+          "last updated"?: string;
+          link: string;
+          slug: string;
+          title: string;
+        };
+        Update: {
+          created_at?: string;
+          description?: string;
+          id?: number;
+          "last updated"?: string;
+          link?: string;
+          slug?: string;
+          title?: string;
+        };
+        Relationships: [];
       };
       categories: {
         Row: {
-          collection: string;
+          collection: string | null;
           created_at: string;
           id: number;
           name: string;
         };
         Insert: {
-          collection: string;
+          collection?: string | null;
           created_at?: string;
           id?: number;
           name: string;
         };
         Update: {
-          collection?: string;
+          collection?: string | null;
           created_at?: string;
           id?: number;
           name?: string;
@@ -206,7 +295,7 @@ export interface Database {
             foreignKeyName: "deposits_wallet_id_fkey";
             columns: ["wallet_id"];
             isOneToOne: false;
-            referencedRelation: "proxy_wallet";
+            referencedRelation: "proxy_wallets";
             referencedColumns: ["id"];
           },
         ];
@@ -533,14 +622,13 @@ export interface Database {
             foreignKeyName: "payout_wallet_id_fkey";
             columns: ["wallet_id"];
             isOneToOne: false;
-            referencedRelation: "proxy_wallet";
+            referencedRelation: "proxy_wallets";
             referencedColumns: ["id"];
           },
         ];
       };
       prediction_markets: {
         Row: {
-          category: string | null;
           created_at: string;
           end_time: string;
           id: number;
@@ -549,7 +637,6 @@ export interface Database {
           start_time: string;
         };
         Insert: {
-          category?: string | null;
           created_at?: string;
           end_time: string;
           id?: number;
@@ -558,7 +645,6 @@ export interface Database {
           start_time: string;
         };
         Update: {
-          category?: string | null;
           created_at?: string;
           end_time?: string;
           id?: number;
@@ -566,42 +652,45 @@ export interface Database {
           question?: string;
           start_time?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "prediction_markets_category_fkey";
-            columns: ["category"];
-            isOneToOne: false;
-            referencedRelation: "categories";
-            referencedColumns: ["name"];
-          },
-        ];
+        Relationships: [];
       };
-      proxy_wallet: {
+      proxy_wallets: {
         Row: {
           created_at: string;
-          encrypted_private_key: string;
+          encrypted_secret_key: string;
           id: number;
           public_key: string;
           unredeemable_balance: number;
           usdc_balance: number;
+          user_id: number;
         };
         Insert: {
           created_at?: string;
-          encrypted_private_key: string;
+          encrypted_secret_key: string;
           id?: number;
           public_key: string;
           unredeemable_balance?: number;
           usdc_balance?: number;
+          user_id: number;
         };
         Update: {
           created_at?: string;
-          encrypted_private_key?: string;
+          encrypted_secret_key?: string;
           id?: number;
           public_key?: string;
           unredeemable_balance?: number;
           usdc_balance?: number;
+          user_id?: number;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "proxy_wallets_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       rewards: {
         Row: {
@@ -850,7 +939,7 @@ export interface Database {
           {
             foreignKeyName: "users_user_id_fkey";
             columns: ["user_id"];
-            isOneToOne: false;
+            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
@@ -889,7 +978,7 @@ export interface Database {
             foreignKeyName: "withdraws_wallet_id_fkey";
             columns: ["wallet_id"];
             isOneToOne: false;
-            referencedRelation: "proxy_wallet";
+            referencedRelation: "proxy_wallets";
             referencedColumns: ["id"];
           },
         ];
@@ -908,6 +997,13 @@ export interface Database {
       is_admin: {
         Args: {
           user_id: string;
+        };
+        Returns: boolean;
+      };
+      is_owner: {
+        Args: {
+          auth_uid: string;
+          user_doc_id: number;
         };
         Returns: boolean;
       };

@@ -81,12 +81,9 @@ export default function Header({ authUser }: HeaderProps) {
                 method="post"
                 className="flex flex-row items-center justify-center space-x-2"
               >
-                <button
-                  className="underline hover:cursor-pointer hover:no-underline"
-                  type="submit"
-                >
-                  Sign out
-                </button>
+                <Button className="w-full bg-tally-primary text-black hover:bg-tally-secondary">
+                  Sign Out
+                </Button>
               </form>
             </>
           ) : (
@@ -110,7 +107,22 @@ export default function Header({ authUser }: HeaderProps) {
             </>
           )}
         </div>
-        <HamburgerMenu className="lg:hidden" />
+        <div className="flex flex-row items-center justify-center space-x-2 lg:hidden">
+          {user && (
+            <div className="overflow-hidden rounded-full border-2 border-tally-primary lg:hidden">
+              {user.icon && (
+                <Image
+                  src={user.icon}
+                  width={28}
+                  height={28}
+                  alt="User icon"
+                  className="object-cover"
+                />
+              )}
+            </div>
+          )}
+          <HamburgerMenu user={user} className="" />
+        </div>
       </header>
       <Tickers />
     </div>

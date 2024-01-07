@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 
 import MarketsGallery from "@/app/markets/components/MarketsGallery";
-import { MarketTileProps, MarketTile } from "@/components/MarketTile";
+import { MarketTileProps } from "@/components/MarketTile";
 import { SubMarket } from "@/lib/supabase/markets";
 
 const TEST_MARKET_TILE_DATA: MarketTileProps[] = [

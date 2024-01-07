@@ -4,26 +4,15 @@ import Link from "next/link";
 import { useWindowSize } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
 import { IconContext } from "react-icons";
-import { BsGraphUpArrow } from "react-icons/bs";
-import { CgInsights } from "react-icons/cg";
-import { FaDiscord } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { GoTrophy } from "react-icons/go";
-import { IoMdBook } from "react-icons/io";
-import { MdOutlineRocketLaunch } from "react-icons/md";
-import { MdQuestionMark } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 import SearchBar from "@/components/SearchBar";

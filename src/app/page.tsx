@@ -2,9 +2,7 @@ import { getLandingBanners } from "@/lib/supabase/landingBanners";
 import { getSubMarkets } from "@/lib/supabase/markets";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import Tickers from "@/components/Tickers";
 import Banner from "@/components/Banner";
-import FairLaunch from "./components/FairLaunch";
 import PredictionMarkets from "./components/PredictionMarkets";
 import Promotions from "./components/Promotions";
 import LiveNewsFeed from "./components/LiveNewsFeed";

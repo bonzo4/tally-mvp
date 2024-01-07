@@ -11,8 +11,9 @@ import SearchBar from "@/components/SearchBar";
 
 import { cn } from "@/lib/utils";
 import { createClientSupabaseClient } from "@/lib/supabase/client";
-import Ticker from "../TickerCarousel";
 import Tickers from "../Tickers";
+
+import Image from "next/image";
 
 type HeaderProps = {
   authUser: User | null;
@@ -60,9 +61,20 @@ export default function Header({ authUser }: HeaderProps) {
             <>
               <Link
                 href="/"
-                className="underline hover:cursor-pointer hover:no-underline"
+                className="flex flex-row items-center justify-center space-x-3 text-white underline hover:cursor-pointer hover:no-underline"
               >
-                {user.name}
+                {user.icon && (
+                  <div className="overflow-hidden rounded-full border-2 border-transparent hover:border-tally-primary">
+                    <Image
+                      src={user.icon}
+                      width={35}
+                      height={35}
+                      alt="Icon"
+                      quality={100}
+                    />
+                  </div>
+                )}
+                <span className="">{user.name}</span>
               </Link>
               <form
                 action="/auth/signout"

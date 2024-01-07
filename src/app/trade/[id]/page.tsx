@@ -6,8 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Banner from "@/components/Banner";
 import Chart from "./components/Chart";
 import Chat from "./components/Chat";
-import Copy from "./components/Copy";
-import Header from "./components/Header";
 import Order from "./components/Order";
 import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";

@@ -1,4 +1,3 @@
-import Tickers from "@/components/Tickers";
 import DisplayPicture from "./components/DisplayPicture";
 import Overview from "./components/Overview";
 import Account from "./components/Account";

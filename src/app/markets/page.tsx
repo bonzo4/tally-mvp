@@ -1,17 +1,12 @@
-import { Database } from "@/lib/types";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-import { getLandingBanners } from "@/lib/supabase/landingBanners";
 import { getMarketsBanners } from "@/lib/supabase/marketsBanners";
-import { getSubMarkets } from "@/lib/supabase/markets";
 
 import Banner from "@/components/Banner";
 import FairLaunchGallery from "./components/FairLaunchGallery";
 import MarketsGallery from "./components/MarketsGallery";
 
-import Tickers from "@/components/Tickers";
 
 export default async function MarketsPage() {
   const cookieStore = cookies();

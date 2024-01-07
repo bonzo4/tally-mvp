@@ -17,7 +17,7 @@ export default function Login() {
         <LoginForm />
         <div className="mt-8">
           <p className="text-center text-gray-400">
-            Don't yet have an account?{" "}
+            Don&apos;t yet have an account?{" "}
             <Link href="/signup" className="underline">
               Sign up.
             </Link>

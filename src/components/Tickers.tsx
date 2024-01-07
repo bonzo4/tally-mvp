@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 
-import { Database } from "@/lib/types";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Ticker } from "@/lib/supabase/tickers";
 import TickerCarousel from "./TickerCarousel";
 import { convertDollarsToCents } from "@/lib/formats";
 

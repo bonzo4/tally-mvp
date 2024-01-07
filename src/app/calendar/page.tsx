@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Overview from "./components/Overview";
 import Filters from "./components/Filters";

@@ -1,4 +1,3 @@
-import Tickers from "@/components/Tickers";
 import Banner from "./components/Banner";
 import Countdown from "./components/Countdown";
 import HowItWorks from "./components/HowItWorks";

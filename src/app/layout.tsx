@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/layout/Header";

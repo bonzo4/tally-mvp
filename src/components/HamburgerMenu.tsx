@@ -4,29 +4,20 @@ import Link from "next/link";
 import { useWindowSize } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
 import { IconContext } from "react-icons";
-import { BsGraphUpArrow } from "react-icons/bs";
-import { CgInsights } from "react-icons/cg";
-import { FaDiscord } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { GoTrophy } from "react-icons/go";
-import { IoMdBook } from "react-icons/io";
-import { MdOutlineRocketLaunch } from "react-icons/md";
-import { MdQuestionMark } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 import SearchBar from "@/components/SearchBar";
+import { UserDoc } from "@/lib/user";
+import Image from "next/image";
 
 function SheetLink({ href, title }: { href: string; title: string }) {
   return (
@@ -38,7 +29,12 @@ function SheetLink({ href, title }: { href: string; title: string }) {
   );
 }
 
-export default function HamburgerMenu({ className }: { className?: string }) {
+type HamburgerMenuProps = {
+  user: UserDoc | null;
+  className?: string;
+};
+
+export default function HamburgerMenu({ className, user }: HamburgerMenuProps) {
   const { width, height } = useWindowSize();
   return (
     <div className={className}>
@@ -69,28 +65,56 @@ export default function HamburgerMenu({ className }: { className?: string }) {
               <SheetLink href="/" title="FAQ" />
               <SheetLink href="/leaderboard" title="Leaderboard" />
             </div>
-            <div className="mt-10 flex flex-col space-y-3">
-              <SheetClose asChild>
-                <Link
-                  href="/login"
-                  className="underline hover:cursor-pointer hover:no-underline"
-                >
-                  <Button className="w-full border border-tally-primary bg-black text-tally-primary hover:bg-zinc-800">
-                    Log In
-                  </Button>
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link
-                  href="/login"
-                  className="underline hover:cursor-pointer hover:no-underline"
+            {user ? (
+              <div className="mt-10 flex flex-col space-y-3">
+                <div className="mx-auto  flex w-full flex-row items-center justify-center space-x-3">
+                  <div className="overflow-hidden rounded-full border-2 border-tally-primary">
+                    {user.icon && (
+                      <Image
+                        src={user.icon}
+                        width={32}
+                        height={32}
+                        alt="User icon"
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
+                  <span className="text-white">{user.name}</span>
+                </div>
+                <form
+                  action="/auth/signout"
+                  method="post"
+                  className="flex w-full flex-row items-center justify-center space-x-2"
                 >
                   <Button className="w-full bg-tally-primary text-black hover:bg-tally-secondary">
-                    Sign up
+                    Sign Out
                   </Button>
-                </Link>
-              </SheetClose>
-            </div>
+                </form>
+              </div>
+            ) : (
+              <div className="mt-10 flex flex-col space-y-3">
+                <SheetClose asChild>
+                  <Link
+                    href="/login"
+                    className="underline hover:cursor-pointer hover:no-underline"
+                  >
+                    <Button className="w-full border border-tally-primary bg-black text-tally-primary hover:bg-zinc-800">
+                      Log In
+                    </Button>
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link
+                    href="/login"
+                    className="underline hover:cursor-pointer hover:no-underline"
+                  >
+                    <Button className="w-full bg-tally-primary text-black hover:bg-tally-secondary">
+                      Sign up
+                    </Button>
+                  </Link>
+                </SheetClose>
+              </div>
+            )}
           </SheetContent>
         </Sheet>
       </IconContext.Provider>

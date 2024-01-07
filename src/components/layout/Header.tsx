@@ -11,8 +11,9 @@ import SearchBar from "@/components/SearchBar";
 
 import { cn } from "@/lib/utils";
 import { createClientSupabaseClient } from "@/lib/supabase/client";
-import Ticker from "../TickerCarousel";
 import Tickers from "../Tickers";
+
+import Image from "next/image";
 
 type HeaderProps = {
   authUser: User | null;
@@ -60,21 +61,29 @@ export default function Header({ authUser }: HeaderProps) {
             <>
               <Link
                 href="/"
-                className="underline hover:cursor-pointer hover:no-underline"
+                className="flex flex-row items-center justify-center space-x-3 text-white underline hover:cursor-pointer hover:no-underline"
               >
-                {user.name}
+                {user.icon && (
+                  <div className="overflow-hidden rounded-full border-2 border-transparent hover:border-tally-primary">
+                    <Image
+                      src={user.icon}
+                      width={35}
+                      height={35}
+                      alt="Icon"
+                      quality={100}
+                    />
+                  </div>
+                )}
+                <span className="">{user.name}</span>
               </Link>
               <form
                 action="/auth/signout"
                 method="post"
                 className="flex flex-row items-center justify-center space-x-2"
               >
-                <button
-                  className="underline hover:cursor-pointer hover:no-underline"
-                  type="submit"
-                >
-                  Sign out
-                </button>
+                <Button className="w-full bg-tally-primary text-black hover:bg-tally-secondary">
+                  Sign Out
+                </Button>
               </form>
             </>
           ) : (
@@ -98,7 +107,22 @@ export default function Header({ authUser }: HeaderProps) {
             </>
           )}
         </div>
-        <HamburgerMenu className="lg:hidden" />
+        <div className="flex flex-row items-center justify-center space-x-2 lg:hidden">
+          {user && (
+            <div className="overflow-hidden rounded-full border-2 border-tally-primary lg:hidden">
+              {user.icon && (
+                <Image
+                  src={user.icon}
+                  width={28}
+                  height={28}
+                  alt="User icon"
+                  className="object-cover"
+                />
+              )}
+            </div>
+          )}
+          <HamburgerMenu user={user} className="" />
+        </div>
       </header>
       <Tickers />
     </div>

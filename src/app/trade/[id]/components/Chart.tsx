@@ -7,11 +7,9 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  TooltipProps,
   ResponsiveContainer,
 } from "recharts";
 
-import { ButtonProps } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import FilterButtonPrimitive, {
   FilterButtonProps,

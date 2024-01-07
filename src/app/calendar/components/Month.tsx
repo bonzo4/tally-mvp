@@ -3,7 +3,7 @@ import { Event, EventProps } from "./Event";
 function MonthName({ name }: { name: string }) {
   return (
     <div>
-      <h2 className="text-2xl font-bold">{name}</h2>
+      <h2 className="text-2xl font-bold text-white">{name}</h2>
     </div>
   );
 }
@@ -30,7 +30,7 @@ export default function Month({
   }
 
   return (
-    <div className="flex flex-col space-y-5 px-4 lg:px-16">
+    <div className="flex flex-col space-y-5 px-4 pt-4 lg:px-16">
       <MonthName name={name} />
       <MonthGrid events={events} />
     </div>

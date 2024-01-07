@@ -97,7 +97,7 @@ export default function Header({ authUser }: HeaderProps) {
                 </Button>
               </Link>
               <Link
-                href="/login"
+                href="/signup"
                 className="underline hover:cursor-pointer hover:no-underline"
               >
                 <Button className="bg-tally-primary text-black hover:bg-tally-secondary">

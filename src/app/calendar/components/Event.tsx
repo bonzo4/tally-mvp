@@ -29,9 +29,9 @@ function Header({
   name: string;
 }) {
   return (
-    <div className="flex flex-row space-x-5">
+    <div className="flex flex-row space-x-3">
       <DateStamp month={month} day={day} />
-      <div className="pr-10 font-bold text-white">{name}</div>
+      <div className="font-bold text-white">{name}</div>
     </div>
   );
 }

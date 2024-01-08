@@ -10,7 +10,7 @@ function MonthName({ name }: { name: string }) {
 
 function MonthGrid({ events }: { events: EventProps[] }) {
   return (
-    <div className="grid gap-5 lg:grid-cols-3">
+    <div className="grid gap-6 lg:grid-cols-3">
       {events.map((event, index) => {
         return <Event key={index} {...event} />;
       })}
@@ -30,7 +30,7 @@ export default function Month({
   }
 
   return (
-    <div className="flex flex-col space-y-5 px-4 pt-4 lg:px-16">
+    <div className="flex flex-col space-y-6 px-4 pt-4 lg:px-16">
       <MonthName name={name} />
       <MonthGrid events={events} />
     </div>

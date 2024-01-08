@@ -24,13 +24,13 @@ function FilterButtonMonth(props: FilterButtonProps) {
 
   const variant = name === selected ? "secondary" : "default";
   const _className =
-    name === selected ? "" : "bg-zinc-900 text-gray-400 hover:bg-zinc-800 mr-2";
+    name === selected ? "" : "bg-zinc-900 text-gray-400 hover:bg-zinc-800";
 
   return (
     <FilterButtonPrimitive
       {...rest}
       variant={variant}
-      className={cn(className, _className)}
+      className={cn(className, _className, "mr-2")}
     >
       {name}
     </FilterButtonPrimitive>

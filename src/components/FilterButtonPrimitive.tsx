@@ -11,7 +11,7 @@ export default function FilterButtonPrimitive(props: ButtonProps) {
   return (
     <Button
       {...rest}
-      className={`${className} flex-shrink-0 rounded-full py-2 font-medium`}
+      className={`${className} flex-shrink-0 rounded-full px-4 py-2 font-medium`}
     >
       {children}
     </Button>

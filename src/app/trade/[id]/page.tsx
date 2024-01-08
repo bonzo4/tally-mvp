@@ -56,13 +56,13 @@ export default async function TradePage() {
     <div className="w-full">
       <Banner banners={marketsBanners} />
       <div className="w-full px-4 pb-16 pt-4 lg:px-16">
-        <div className="mb-10 grid w-full grid-cols-1 space-x-5 lg:grid-cols-3">
-          <div className="flex flex-col space-y-5 py-5 lg:col-span-2">
+        <div className="mb-10 flex w-full space-x-12">
+          <div className="flex flex-grow flex-col space-y-8 py-5">
             <Chart />
             <OrderDrawer />
             <TradingTabs />
           </div>
-          <div className="col-span-1 hidden py-5 lg:block">
+          <div className="hidden py-5 lg:block">
             <Order />
           </div>
         </div>

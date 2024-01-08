@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input, InputProps } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { VscCircleFilled } from "react-icons/vsc";
@@ -116,7 +117,7 @@ function OrderItem({
     <div className="flex flex-col space-y-2">
       <div className="flex items-center space-x-1">
         <VscCircleFilled className={cn(dotColor, "")} />
-        <h2 className="text-xl text-white">{title}</h2>
+        <h2 className="text-lg text-white">{title}</h2>
       </div>
       <div className="grid w-full grid-cols-3 gap-3">
         <YesButton name="Yes" price={yesPrice} selected={selected} />
@@ -129,13 +130,13 @@ function OrderItem({
 
 function BuyOrderSummary() {
   return (
-    <div className="flex w-full flex-col space-y-5">
+    <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
       <div className="space-y-2">
         <div className="flex w-full items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white">Order Amount</h2>
+            <h2 className="text-lg font-bold text-white">Order Amount</h2>
           </div>
-          <div className="text-2xl font-bold text-white">$100</div>
+          <div className="text-lg font-bold text-white">$100</div>
         </div>
         <Button className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black">
           Buy
@@ -161,13 +162,13 @@ function BuyOrderSummary() {
 
 function SellOrderSummary() {
   return (
-    <div className="flex w-full flex-col space-y-5">
+    <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
       <div className="space-y-2">
         <div className="flex w-full items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white">Shares</h2>
+            <h2 className="text-lg font-bold text-white">Shares</h2>
           </div>
-          <div className="text-2xl font-bold text-white">$100</div>
+          <div className="text-lg font-bold text-white">$100</div>
         </div>
         <Button className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black">
           Sell
@@ -191,7 +192,10 @@ function SellOrderSummary() {
 
 export default function Order() {
   return (
-    <Tabs className="flex flex-col overflow-auto" defaultValue="buy">
+    <Tabs
+      className="flex flex-col overflow-auto lg:w-[350px]"
+      defaultValue="buy"
+    >
       <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
         <TabsTrigger
           className="data-[state=active]:bg-zinc-700 data-[state=active]:text-gray-300"
@@ -252,7 +256,8 @@ export default function Order() {
               selected="No"
             />
           </CardContent>
-          <CardFooter className="px-2 py-4 lg:px-6">
+          <CardFooter className="flex flex-col px-2 py-4 lg:px-6">
+            <Separator className="bg-neutral-800" />
             <BuyOrderSummary />
           </CardFooter>
         </Card>
@@ -282,7 +287,8 @@ export default function Order() {
               selected={null}
             />
           </CardContent>
-          <CardFooter className="px-2 py-4 lg:px-6">
+          <CardFooter className="flex flex-col px-2 py-4 lg:px-6">
+            <Separator className="bg-neutral-800" />
             <SellOrderSummary />
           </CardFooter>
         </Card>

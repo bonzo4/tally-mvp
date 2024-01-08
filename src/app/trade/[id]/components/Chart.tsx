@@ -26,17 +26,17 @@ function FilterButtonChoice(props: FilterButtonProps) {
     color =
       name === selected
         ? "bg-tally-primary hover:bg-tally-primary/90 text-black"
-        : "bg-gray-800";
+        : "bg-zinc-800 hover:bg-tally-primary/20";
   } else if (name === "No") {
     color =
       name === selected
         ? "bg-tally-red hover:bg-tally-red/90 text-black"
-        : "bg-gray-800";
+        : "bg-zinc-800 hover:bg-tally-red/20";
   } else if (name === "Maybe") {
     color =
       name === selected
         ? "bg-orange-400 hover:bg-orange-400/90 text-black"
-        : "bg-gray-800";
+        : "bg-zinc-800";
   }
   return (
     <FilterButtonPrimitive {...rest} className={`${color} ${className}`}>
@@ -48,10 +48,13 @@ function FilterButtonChoice(props: FilterButtonProps) {
 function FilterButtonTime(props: FilterButtonProps) {
   const { name, selected, ...rest } = props;
 
-  const variant = name === selected ? "secondary" : "default";
+  const className =
+    name === selected
+      ? "bg-white text-black hover:bg-neutral-200"
+      : "text-white bg-zinc-900 hover: hover:bg-zinc-800";
 
   return (
-    <FilterButtonPrimitive {...rest} variant={variant}>
+    <FilterButtonPrimitive {...rest} className={className}>
       {name}
     </FilterButtonPrimitive>
   );
@@ -95,7 +98,7 @@ export default function Chart() {
           Price Chart
         </h2>
       </div>
-      <div className="flex w-full flex-col justify-between space-y-2 md:flex-row md:space-y-0">
+      <div className="flex w-full flex-col justify-between space-y-4 md:flex-row md:space-y-0">
         <div className="flex justify-between space-x-2">
           <FilterButtonChoice
             className="flex-grow"
@@ -129,7 +132,12 @@ export default function Chart() {
             data={data}
             margin={{ top: 5, right: 0, left: 25, bottom: 5 }}
           >
-            <XAxis axisLine={false} tickLine={false} dataKey="name" />
+            <XAxis
+              axisLine={false}
+              dataKey="name"
+              tickLine={false}
+              tickMargin={15}
+            />
             <YAxis
               axisLine={false}
               tickLine={false}

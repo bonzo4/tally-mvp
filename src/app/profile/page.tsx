@@ -15,7 +15,7 @@ export default function Profile() {
           </div>
           <Account />
         </div>
-        <div className="mb-5 flex w-full flex-col space-y-2 md:flex-row md:space-x-5 md:space-y-0 lg:mb-12 lg:w-3/4">
+        <div className="mb-5 flex w-full flex-col space-y-4 md:flex-row md:space-x-5 md:space-y-0 lg:mb-12">
           <Ranking />
           <Ranking />
           <Ranking />

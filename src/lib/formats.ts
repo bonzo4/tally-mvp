@@ -21,3 +21,9 @@ export function formatDollarsWithCents(value: number): string {
     maximumFractionDigits: 2,
   }).format(value);
 }
+
+export function formatNumberWithCommasNoDecimals(value: number): string {
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(value);
+}

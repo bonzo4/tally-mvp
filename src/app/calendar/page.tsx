@@ -83,7 +83,7 @@ export default function Calendar() {
   );
 
   return (
-    <div className="flex w-full flex-col space-y-5 px-5 py-5 lg:px-10">
+    <div className="flex w-full flex-col space-y-5 pb-20 pt-10">
       <Overview />
       <Filters filterMonth={filterMonth} setFilterMonth={setFilterMonth} />
       {filterMonth === "All" || filterMonth === "Jan" ? (

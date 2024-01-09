@@ -86,6 +86,7 @@ export interface Database {
           is_important: boolean;
           link: string;
           title: string;
+          type: string;
         };
         Insert: {
           created_at?: string;
@@ -95,6 +96,7 @@ export interface Database {
           is_important?: boolean;
           link: string;
           title: string;
+          type?: string;
         };
         Update: {
           created_at?: string;
@@ -104,6 +106,7 @@ export interface Database {
           is_important?: boolean;
           link?: string;
           title?: string;
+          type?: string;
         };
         Relationships: [];
       };
@@ -795,6 +798,7 @@ export interface Database {
       sub_markets: {
         Row: {
           banner: string;
+          card_title: string | null;
           created_at: string;
           fair_launch_end: string;
           fair_launch_start: string;
@@ -815,6 +819,7 @@ export interface Database {
         };
         Insert: {
           banner: string;
+          card_title?: string | null;
           created_at?: string;
           fair_launch_end: string;
           fair_launch_start: string;
@@ -835,6 +840,7 @@ export interface Database {
         };
         Update: {
           banner?: string;
+          card_title?: string | null;
           created_at?: string;
           fair_launch_end?: string;
           fair_launch_start?: string;

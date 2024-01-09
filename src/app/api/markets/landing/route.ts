@@ -32,30 +32,32 @@ export async function GET(req: NextRequest) {
       options: { category },
     });
 
-    const resData: PredictionMarketData[] = data.map((market) => {
-      const subMarkets = market.sub_markets.map((subMarket) => {
-        const prices = subMarket.choice_markets.map((choiceMarket) => ({
-          title: choiceMarket.title,
-          price: choiceMarket.share_price,
-        }));
+    const resData: PredictionMarketData[] = data
+      .filter((market) => market.sub_markets.length)
+      .map((market) => {
+        const subMarkets = market.sub_markets.map((subMarket) => {
+          const prices = subMarket.choice_markets.map((choiceMarket) => ({
+            title: choiceMarket.title,
+            price: choiceMarket.share_price,
+          }));
+
+          return {
+            icon: subMarket.icon,
+            title: subMarket.card_title ?? subMarket.title,
+            prices,
+          };
+        });
 
         return {
-          icon: subMarket.icon,
-          title: subMarket.title,
-          prices,
+          id: market.id,
+          title: market.title,
+          category: market.category,
+          image: market.thumbnail,
+          totalPot: market.total_pot,
+          totalComments: market.total_comments,
+          subMarkets,
         };
       });
-
-      return {
-        id: market.id,
-        title: market.title,
-        category: market.category,
-        image: market.thumbnail,
-        totalPot: market.total_pot,
-        totalComments: market.total_comments,
-        subMarkets,
-      };
-    });
 
     return NextResponse.json(resData, { status: 200 });
   } catch (error) {

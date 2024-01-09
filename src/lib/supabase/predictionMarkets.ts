@@ -55,3 +55,33 @@ export const getPredictionMarketCards = async ({
     query: getPredictionMarketsQuery,
     options,
   });
+
+type GetPredictionMarketByIdQueryOptions = {
+  id: number;
+};
+
+type GetPredictionMarketByIdOptions = {
+  supabase: SupabaseClient<Database>;
+  options: GetPredictionMarketByIdQueryOptions;
+};
+
+const getPredictionMarketByIdQuery = async ({
+  supabase,
+  options: { id },
+}: GetPredictionMarketByIdOptions) => {
+  return await supabase.from("prediction_markets").select("*").eq("id", id);
+};
+
+export const getPredictionMarketById = async ({
+  supabase,
+  options: { id },
+}: GetPredictionMarketByIdOptions) => {
+  return await fetchQuery<
+    PredictionMarket,
+    GetPredictionMarketByIdQueryOptions
+  >({
+    supabase: supabase,
+    query: getPredictionMarketByIdQuery,
+    options: { id },
+  });
+};

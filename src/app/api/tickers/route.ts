@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
     const supabase = createRouteSupabaseClient();
 
     const data = await getTickers({ supabase, options: {} });
-    console.log(data);
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {

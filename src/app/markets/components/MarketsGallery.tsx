@@ -134,18 +134,19 @@ export default function MarketsGallery({
         />
       </div> */}
       <div className="grid grid-cols-1 gap-5 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-2 lg:px-16 xl:grid-cols-4">
-        {markets.length === 0 &&
+        {markets.length &&
           markets.map((market) => {
             return (
-              <MarketTile
-                key={market.id}
-                title={market.title}
-                category={market.category}
-                image={market.image}
-                totalPot={market.totalPot}
-                totalComments={market.totalComments}
-                subMarkets={market.subMarkets}
-              />
+              <div key={market.id}>
+                <MarketTile
+                  title={market.title}
+                  category={market.category}
+                  image={market.image}
+                  totalPot={market.totalPot}
+                  totalComments={market.totalComments}
+                  subMarkets={market.subMarkets}
+                />
+              </div>
             );
           })}
       </div>

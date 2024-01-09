@@ -9,7 +9,7 @@ import Insights from "./components/Insights";
 import Guide from "./components/Guide";
 import { PredictionMarketData } from "./api/markets/landing/route";
 
-async function getPredictionMarketData() {
+async function getLandingMarketCards() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/markets/landing`);
   return (await res.json()) as PredictionMarketData[];
 }
@@ -17,7 +17,7 @@ async function getPredictionMarketData() {
 export default async function LandingPage() {
   const supabase = createServerSupabaseClient();
 
-  const predictionMarkets = await getPredictionMarketData();
+  const predictionMarkets = await getLandingMarketCards();
   const landingBanners = await getLandingBanners({ supabase, options: {} });
 
   console.log(predictionMarkets);

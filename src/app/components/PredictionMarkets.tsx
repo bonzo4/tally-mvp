@@ -3,101 +3,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import MarketsGallery from "@/app/markets/components/MarketsGallery";
-import { MarketTileProps } from "@/components/MarketTile";
-import { SubMarket } from "@/lib/supabase/markets";
 
-const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
-  {
-    title: "Will Trump win the Republican Nominee?",
-    category: "Politics",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-2.jpg",
-    yesPrice: 50,
-    noPrice: 50,
-  },
-  {
-    title: "Will the USA confirm the existence of aliens?",
-    category: "Science",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
-    yesPrice: 1,
-    noPrice: 99,
-  },
-  {
-    title: "Will Shohei Ohtani join the Dodgers?",
-    category: "Sports",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-    yesPrice: 97,
-    noPrice: 3,
-  },
-  {
-    title:
-      "Will Claudine Gay, Harvard college president who testified on antisemitism, stay through 2023?",
-    category: "Education",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-    yesPrice: 97,
-    noPrice: 3,
-  },
-  {
-    title: "Will US inflation be >0.2% from Nov to Dec 2023?",
-    category: "Economy",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-4.jpg",
-    yesPrice: 28,
-    noPrice: 72,
-  },
-  {
-    title: "Will Trump win the Republican Nominee?",
-    category: "Politics",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-2.jpg",
-    yesPrice: 50,
-    noPrice: 50,
-  },
-  {
-    title: "Will the USA confirm the existence of aliens?",
-    category: "Science",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
-    yesPrice: 1,
-    noPrice: 99,
-  },
-  {
-    title: "Will Shohei Ohtani join the Dodgers?",
-    category: "Sports",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-    yesPrice: 97,
-    noPrice: 3,
-  },
-  {
-    title:
-      "Will Claudine Gay, Harvard college president who testified on antisemitism, stay through 2023?",
-    category: "Education",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-    yesPrice: 97,
-    noPrice: 3,
-  },
-  {
-    title: "Will US inflation be >0.2% from Nov to Dec 2023?",
-    category: "Economy",
-    image:
-      "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-4.jpg",
-    yesPrice: 28,
-    noPrice: 72,
-  },
-];
+import { PredictionMarketData } from "../api/markets/landing/route";
 
-type PrediciontMarketProps = {
-  subMarkets: SubMarket[];
+type PredictionMarketProps = {
+  predictionMarkets: PredictionMarketData[];
 };
 
 export default function PredictionMarkets({
-  subMarkets,
-}: PrediciontMarketProps) {
+  predictionMarkets,
+}: PredictionMarketProps) {
   return (
     <div className="space-y-5">
       <div className="flex justify-between px-4 lg:px-16">
@@ -113,7 +28,7 @@ export default function PredictionMarkets({
           <Link href="/markets">View All</Link>
         </Button>
       </div>
-      <MarketsGallery />
+      <MarketsGallery predictionMarkets={predictionMarkets} />
     </div>
   );
 }

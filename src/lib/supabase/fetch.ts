@@ -4,21 +4,29 @@ import { cache } from "react";
 import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../types";
 
-type QueryFunction<T> = (
-  supabase: SupabaseClient<Database>
-) => Promise<PostgrestResponse<T>>;
-
-export type FetchQueryProps<T> = {
+type QueryFunctionOptions<T> = {
   supabase: SupabaseClient<Database>;
-  query: QueryFunction<T>;
+  options: T;
 };
 
-export async function fetchQuery<T>({
+type QueryFunction<T, Options> = ({
+  supabase,
+  options,
+}: QueryFunctionOptions<Options>) => Promise<PostgrestResponse<T>>;
+
+export type FetchQueryProps<T, Options> = {
+  supabase: SupabaseClient<Database>;
+  query: QueryFunction<T, Options>;
+  options: Options;
+};
+
+export async function fetchQuery<T, Options>({
   supabase,
   query,
-}: FetchQueryProps<T>): Promise<T[]> {
+  options,
+}: FetchQueryProps<T, Options>): Promise<T[]> {
   return cache(async () => {
-    const { data, error } = await query(supabase);
+    const { data, error } = await query({ supabase, options });
 
     if (error) throw error;
     return data as T[];

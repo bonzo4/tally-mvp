@@ -9,42 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      _market_categories: {
-        Row: {
-          category_name: string;
-          created_at: string;
-          id: number;
-          prediction_market_id: number;
-        };
-        Insert: {
-          category_name: string;
-          created_at?: string;
-          id?: number;
-          prediction_market_id: number;
-        };
-        Update: {
-          category_name?: string;
-          created_at?: string;
-          id?: number;
-          prediction_market_id?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "_market_categories_category_name_fkey";
-            columns: ["category_name"];
-            isOneToOne: false;
-            referencedRelation: "categories";
-            referencedColumns: ["name"];
-          },
-          {
-            foreignKeyName: "_market_categories_prediction_market_id_fkey";
-            columns: ["prediction_market_id"];
-            isOneToOne: false;
-            referencedRelation: "prediction_markets";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       blogs: {
         Row: {
           body: string;
@@ -122,6 +86,7 @@ export interface Database {
           is_important: boolean;
           link: string;
           title: string;
+          type: string;
         };
         Insert: {
           created_at?: string;
@@ -131,6 +96,7 @@ export interface Database {
           is_important?: boolean;
           link: string;
           title: string;
+          type?: string;
         };
         Update: {
           created_at?: string;
@@ -140,6 +106,7 @@ export interface Database {
           is_important?: boolean;
           link?: string;
           title?: string;
+          type?: string;
         };
         Relationships: [];
       };
@@ -204,28 +171,31 @@ export interface Database {
       };
       choice_markets: {
         Row: {
-          choice: string;
           created_at: string;
+          icon: string;
           id: number;
           lp_amount: number;
           share_price: number;
           sub_market_id: number;
+          title: string;
         };
         Insert: {
-          choice: string;
           created_at?: string;
+          icon: string;
           id?: number;
           lp_amount?: number;
-          share_price?: number;
+          share_price: number;
           sub_market_id: number;
+          title: string;
         };
         Update: {
-          choice?: string;
           created_at?: string;
+          icon?: string;
           id?: number;
           lp_amount?: number;
           share_price?: number;
           sub_market_id?: number;
+          title?: string;
         };
         Relationships: [
           {
@@ -629,30 +599,56 @@ export interface Database {
       };
       prediction_markets: {
         Row: {
+          banner: string;
+          category: string | null;
           created_at: string;
           end_time: string;
+          icon: string;
           id: number;
-          image: string;
-          question: string;
+          slug: string;
           start_time: string;
+          thumbnail: string;
+          title: string;
+          total_comments: number;
+          total_pot: number;
         };
         Insert: {
+          banner: string;
+          category?: string | null;
           created_at?: string;
           end_time: string;
+          icon: string;
           id?: number;
-          image: string;
-          question: string;
+          slug: string;
           start_time: string;
+          thumbnail: string;
+          title: string;
+          total_comments?: number;
+          total_pot?: number;
         };
         Update: {
+          banner?: string;
+          category?: string | null;
           created_at?: string;
           end_time?: string;
+          icon?: string;
           id?: number;
-          image?: string;
-          question?: string;
+          slug?: string;
           start_time?: string;
+          thumbnail?: string;
+          title?: string;
+          total_comments?: number;
+          total_pot?: number;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "prediction_markets_category_fkey";
+            columns: ["category"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["name"];
+          },
+        ];
       };
       proxy_wallets: {
         Row: {
@@ -802,54 +798,63 @@ export interface Database {
       sub_markets: {
         Row: {
           banner: string;
+          card_title: string | null;
           created_at: string;
-          description: string;
           fair_launch_end: string;
           fair_launch_start: string;
+          icon: string;
           id: number;
-          image: string;
           lp_amount: number;
           prediction_market_id: number;
           resolution_end: string;
           resolution_start: string;
+          slug: string;
           start_time: string;
+          thumbnail: string;
           title: string;
+          total_pot: number;
           trading_end: string;
           trading_start: string;
           winning_choice_id: number | null;
         };
         Insert: {
           banner: string;
+          card_title?: string | null;
           created_at?: string;
-          description: string;
           fair_launch_end: string;
           fair_launch_start: string;
+          icon: string;
           id?: number;
-          image: string;
           lp_amount?: number;
           prediction_market_id: number;
           resolution_end: string;
           resolution_start: string;
+          slug: string;
           start_time?: string;
+          thumbnail: string;
           title: string;
+          total_pot?: number;
           trading_end: string;
           trading_start: string;
           winning_choice_id?: number | null;
         };
         Update: {
           banner?: string;
+          card_title?: string | null;
           created_at?: string;
-          description?: string;
           fair_launch_end?: string;
           fair_launch_start?: string;
+          icon?: string;
           id?: number;
-          image?: string;
           lp_amount?: number;
           prediction_market_id?: number;
           resolution_end?: string;
           resolution_start?: string;
+          slug?: string;
           start_time?: string;
+          thumbnail?: string;
           title?: string;
+          total_pot?: number;
           trading_end?: string;
           trading_start?: string;
           winning_choice_id?: number | null;

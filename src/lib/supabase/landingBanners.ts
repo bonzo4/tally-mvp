@@ -6,9 +6,16 @@ import { fetchQuery } from "./fetch";
 export type LandingBanner =
   Database["public"]["Tables"]["landing_banners"]["Row"];
 
-const getLandingBannersQuery = async (
-  supabase: SupabaseClient<Database>
-): Promise<PostgrestResponse<LandingBanner>> => {
+type GetLandingBannersQueryOptions = {};
+
+type GetLandingBannersOptions = {
+  supabase: SupabaseClient<Database>;
+  options: GetLandingBannersQueryOptions;
+};
+
+const getLandingBannersQuery = async ({
+  supabase,
+}: GetLandingBannersOptions): Promise<PostgrestResponse<LandingBanner>> => {
   return await supabase
     .from("landing_banners")
     .select("*")
@@ -18,6 +25,9 @@ const getLandingBannersQuery = async (
 
 export const getLandingBanners = async ({
   supabase,
-}: {
-  supabase: SupabaseClient<Database>;
-}) => await fetchQuery({ supabase: supabase, query: getLandingBannersQuery });
+}: GetLandingBannersOptions) =>
+  await fetchQuery<LandingBanner, GetLandingBannersQueryOptions>({
+    supabase: supabase,
+    query: getLandingBannersQuery,
+    options: {},
+  });

@@ -22,7 +22,7 @@ export default async function MarketsPage() {
     }
   );
 
-  const marketsBanners = await getMarketsBanners({ supabase });
+  const marketsBanners = await getMarketsBanners({ supabase, options: {} });
 
   return (
     <div className="w-full bg-black pb-4 lg:pb-16">
@@ -32,7 +32,7 @@ export default async function MarketsPage() {
         <div className="px-4 py-5 pt-16 lg:px-16">
           <h2 className="text-4xl font-bold text-white">Prediction Markets</h2>
         </div>
-        <MarketsGallery />
+        <MarketsGallery predictionMarkets={[]} />
       </div>
     </div>
   );

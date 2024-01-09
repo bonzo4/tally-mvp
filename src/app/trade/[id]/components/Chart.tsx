@@ -51,7 +51,7 @@ function FilterButtonTime(props: FilterButtonProps) {
   const className =
     name === selected
       ? "bg-white text-black hover:bg-neutral-200"
-      : "text-white bg-zinc-900 hover: hover:bg-zinc-800";
+      : "text-white bg-zinc-900 hover:bg-zinc-800";
 
   return (
     <FilterButtonPrimitive {...rest} className={className}>

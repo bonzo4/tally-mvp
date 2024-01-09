@@ -1,100 +1,59 @@
 "use client";
 
+import { createBrowserClient } from "@supabase/ssr";
 import { useState } from "react";
+
+import { useCalendar } from "@/hooks/useCalendar";
+import { Calendar as CalendarType } from "@/lib/supabase/calendar";
 
 import Overview from "./components/Overview";
 import Filters from "./components/Filters";
 import Month from "./components/Month";
 
-const TEST_EVENT_DATA = [
-  {
-    month: "JAN",
-    day: 10,
-    name: "Republican presidential debate hosted by CNN.",
-    description:
-      "A Republican presidential primary debate will take place at Drake University in Des Moine, Iowa.",
-    src: "/",
-    reminder: "/",
-    is_highlighted: true,
-  },
-  {
-    month: "JAN",
-    day: 15,
-    name: "Iowa Republican caucuses.",
-    description: "",
-    reminder: "/",
-    is_highlighted: false,
-  },
-  {
-    month: "JAN",
-    day: 21,
-    name: "Republican presidential debate hosted by CNN.",
-    description:
-      "A Republican presidential primary debate will take place at Drake University in Des Moine, Iowa.",
-    src: "/",
-    reminder: "/",
-    is_highlighted: true,
-  },
-  {
-    month: "JAN",
-    day: 23,
-    name: "New Hampshire Republican presidential primary election.",
-    description: "Democratic primary is non-binding.",
-    reminder: "/",
-    is_highlighted: false,
-  },
-  {
-    month: "JAN",
-    day: 31,
-    name: "FEC year-end report due.",
-    description: "For presidential and congressional candidate committees.",
-    reminder: "/",
-    is_highlighted: false,
-  },
-  {
-    month: "FEB",
-    day: 3,
-    name: "South Carolina Democratic presidential primary election",
-    description: "",
-    reminder: "/",
-    is_highlighted: false,
-  },
-  {
-    month: "FEB",
-    day: 6,
-    name: "Nevada Democratic presidential primary election",
-    description: "Republican primary is non-binding.",
-    reminder: "/",
-    is_highlighted: false,
-  },
+const MONTHS = [
+  { key: "Jan", name: "January 2024" },
+  { key: "Feb", name: "February 2024" },
+  { key: "Mar", name: "March 2024" },
+  { key: "Apr", name: "April 2024" },
+  { key: "May", name: "May 2024" },
+  { key: "Jun", name: "June 2024" },
+  { key: "Jul", name: "July 2024" },
+  { key: "Aug", name: "August 2024" },
+  { key: "Sep", name: "September 2024" },
+  { key: "Oct", name: "October 2024" },
+  { key: "Nov", name: "November 2024" },
+  { key: "Dec", name: "December 2024" },
 ];
 
 export default function Calendar() {
   const [filterMonth, setFilterMonth] = useState("All");
+  const [loading, setLoading] = useState(true);
 
-  const TEST_JANUARY_DATA = TEST_EVENT_DATA.filter(
-    (event) => event.month === "JAN"
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
-  const TEST_FEBRUARY_DATA = TEST_EVENT_DATA.filter(
-    (event) => event.month === "FEB"
-  );
-  const TEST_MARCH_DATA = TEST_EVENT_DATA.filter(
-    (event) => event.month === "MAR"
-  );
+
+  const calendar = useCalendar({ supabase, setLoading });
+
+  const eventsByMonth: Record<number, CalendarType[]> = {};
+  for (let i = 0; i < 12; i++) {
+    eventsByMonth[i] = calendar.filter((event) => {
+      const date = new Date(event.date);
+      return date.getMonth() === i;
+    });
+  }
 
   return (
     <div className="flex w-full flex-col space-y-5 pb-20 pt-10">
       <Overview />
       <Filters filterMonth={filterMonth} setFilterMonth={setFilterMonth} />
-      {filterMonth === "All" || filterMonth === "Jan" ? (
-        <Month name="January 2024" events={TEST_JANUARY_DATA} />
-      ) : null}
-      {filterMonth === "All" || filterMonth === "Feb" ? (
-        <Month name="February 2024" events={TEST_FEBRUARY_DATA} />
-      ) : null}
-      {filterMonth === "All" || filterMonth === "Mar" ? (
-        <Month name="March 2024" events={TEST_MARCH_DATA} />
-      ) : null}
+      {MONTHS.map(
+        ({ key, name }, index) =>
+          (filterMonth === "All" || filterMonth === key) && (
+            <Month name={name} events={eventsByMonth[index]} />
+          )
+      )}
     </div>
   );
 }

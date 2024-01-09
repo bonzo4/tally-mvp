@@ -13,6 +13,14 @@ export function convertNumberToDollars(value: number): string {
   }).format(value);
 }
 
+export function formatDollarsWithoutCents(value: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 export function formatDollarsWithCents(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

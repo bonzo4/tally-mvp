@@ -6,7 +6,7 @@ export default function Account() {
   const balance = 1000;
 
   return (
-    <div className="flex h-full flex-col justify-between space-y-4 rounded-2xl bg-zinc-900 p-6 lg:w-[420px]">
+    <div className="flex h-full w-full flex-col justify-between space-y-4 rounded-2xl bg-zinc-900 p-6 lg:w-[420px]">
       <h2 className="text-xl font-medium text-white">My Wallet</h2>
       <div className="space-y-1">
         <div className="flex items-center justify-between">

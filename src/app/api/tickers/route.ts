@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = createRouteSupabaseClient();
 
-    const data = await getTickers({ supabase });
+    const data = await getTickers({ supabase, options: {} });
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {

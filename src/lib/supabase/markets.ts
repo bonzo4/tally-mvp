@@ -5,14 +5,22 @@ import { fetchQuery } from "./fetch";
 
 export type SubMarket = Database["public"]["Tables"]["sub_markets"]["Row"];
 
-const getSubMarketsQuery = async (
-  supabase: SupabaseClient<Database>
-): Promise<PostgrestResponse<SubMarket>> => {
+type GetSubMarketsQueryOptions = {};
+
+type GetSubMarketsOptions = {
+  supabase: SupabaseClient<Database>;
+  options: GetSubMarketsQueryOptions;
+};
+
+const getSubMarketsQuery = async ({
+  supabase,
+}: GetSubMarketsOptions): Promise<PostgrestResponse<SubMarket>> => {
   return await supabase.from("sub_markets").select("*");
 };
 
-export const getSubMarkets = async ({
-  supabase,
-}: {
-  supabase: SupabaseClient<Database>;
-}) => await fetchQuery({ supabase: supabase, query: getSubMarketsQuery });
+export const getSubMarkets = async ({ supabase }: GetSubMarketsOptions) =>
+  await fetchQuery<SubMarket, GetSubMarketsQueryOptions>({
+    supabase: supabase,
+    query: getSubMarketsQuery,
+    options: {},
+  });

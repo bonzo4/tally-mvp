@@ -50,7 +50,7 @@ function TradingTabs() {
 
 export default async function TradePage() {
   const supabase = createServerSupabaseClient();
-  const marketsBanners = await getMarketsBanners({ supabase });
+  const marketsBanners = await getMarketsBanners({ supabase, options: {} });
 
   return (
     <div className="w-full">

@@ -22,7 +22,7 @@ export default async function MarketsPage() {
     }
   );
 
-  const marketsBanners = await getMarketsBanners({ supabase });
+  const marketsBanners = await getMarketsBanners({ supabase, options: {} });
 
   return (
     <div className="w-full bg-black pb-4 lg:pb-16">

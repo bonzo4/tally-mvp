@@ -12,8 +12,8 @@ import Guide from "./components/Guide";
 export default async function LandingPage() {
   const supabase = createServerSupabaseClient();
 
-  const subMarkets = await getSubMarkets({ supabase });
-  const landingBanners = await getLandingBanners({ supabase });
+  const subMarkets = await getSubMarkets({ supabase, options: {} });
+  const landingBanners = await getLandingBanners({ supabase, options: {} });
 
   return (
     <div className="w-full">

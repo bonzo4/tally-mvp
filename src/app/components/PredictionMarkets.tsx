@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import MarketsGallery from "@/app/markets/components/MarketsGallery";
-import { PredictionMarket } from "@/lib/supabase/predictionMarkets";
+
+import { PredictionMarketData } from "../api/markets/landing/route";
 
 type PredictionMarketProps = {
-  predictionMarkets: PredictionMarket[];
+  predictionMarkets: PredictionMarketData[];
 };
 
 export default function PredictionMarkets({

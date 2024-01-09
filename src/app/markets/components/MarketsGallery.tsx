@@ -3,8 +3,7 @@
 import { useState } from "react";
 import FilterMarkets from "./FilterMarkets";
 import { MarketTileProps, MarketTile } from "@/components/MarketTile";
-import { PredictionMarket } from "@/lib/supabase/predictionMarkets";
-import { useRouter } from "next/navigation";
+import { PredictionMarketData } from "@/app/api/markets/landing/route";
 
 const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
@@ -102,21 +101,18 @@ function Tiles({ markets }: { markets: MarketTileProps[] }) {
 }
 
 type MarketsGalleryProps = {
-  predictionMarkets: PredictionMarket[];
+  predictionMarkets: PredictionMarketData[];
 };
 
 export default function MarketsGallery({
   predictionMarkets,
 }: MarketsGalleryProps) {
-  const [markets, setMarkets] = useState<PredictionMarket[]>(predictionMarkets);
+  const [markets, setMarkets] =
+    useState<PredictionMarketData[]>(predictionMarkets);
   const [currentFilter, setCurrentFilter] = useState<string>("All");
   const [filteredMarkets, setFilteredMarkets] = useState<MarketTileProps[]>(
     TEST_MARKET_TILE_DATA
   );
-
-  const router = useRouter();
-
-  router.replace("/markets");
 
   const handleFilterChange = (filter: string) => {
     setCurrentFilter(filter);
@@ -136,6 +132,12 @@ export default function MarketsGallery({
           handleFilterChange={handleFilterChange}
           selected={currentFilter}
         />
+      </div>
+      <div className="grid grid-cols-1 gap-5 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-2 lg:px-16 xl:grid-cols-4">
+        {/* {markets.length === 0 &&
+          markets.map((market) => {
+            return <MarketTile key={market.id} {...market} />;
+          })} */}
       </div>
       <Tiles markets={filteredMarkets} />
     </div>

@@ -7,11 +7,11 @@ import Promotions from "./components/Promotions";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
-import { PredictionMarket } from "@/lib/supabase/predictionMarkets";
+import { PredictionMarketData } from "./api/markets/landing/route";
 
 async function getPredictionMarketData() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/markets/landing`);
-  return (await res.json()) as PredictionMarket[];
+  return (await res.json()) as PredictionMarketData[];
 }
 
 export default async function LandingPage() {
@@ -19,6 +19,8 @@ export default async function LandingPage() {
 
   const predictionMarkets = await getPredictionMarketData();
   const landingBanners = await getLandingBanners({ supabase, options: {} });
+
+  console.log(predictionMarkets);
 
   return (
     <div className="w-full">

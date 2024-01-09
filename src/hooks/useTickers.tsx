@@ -12,12 +12,12 @@ export function useTickers({ supabase, setLoading }: useTickersOptions) {
   const [tickers, setTickers] = useState<Ticker[]>([]);
   useEffect(() => {
     const getTickers = async () => {
-      const res = await fetch("/api/tickers");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/tickers`);
 
       const data = await res.json();
 
       if (data.error) {
-        console.log(data.error);
+        console.error(data.error);
         return;
       }
 

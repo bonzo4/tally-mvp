@@ -3,6 +3,8 @@
 import { useState } from "react";
 import FilterMarkets from "./FilterMarkets";
 import { MarketTileProps, MarketTile } from "@/components/MarketTile";
+import { PredictionMarket } from "@/lib/supabase/predictionMarkets";
+import { useRouter } from "next/navigation";
 
 const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
   {
@@ -99,11 +101,22 @@ function Tiles({ markets }: { markets: MarketTileProps[] }) {
   );
 }
 
-export default function MarketsGallery() {
+type MarketsGalleryProps = {
+  predictionMarkets: PredictionMarket[];
+};
+
+export default function MarketsGallery({
+  predictionMarkets,
+}: MarketsGalleryProps) {
+  const [markets, setMarkets] = useState<PredictionMarket[]>(predictionMarkets);
   const [currentFilter, setCurrentFilter] = useState<string>("All");
   const [filteredMarkets, setFilteredMarkets] = useState<MarketTileProps[]>(
     TEST_MARKET_TILE_DATA
   );
+
+  const router = useRouter();
+
+  router.replace("/markets");
 
   const handleFilterChange = (filter: string) => {
     setCurrentFilter(filter);

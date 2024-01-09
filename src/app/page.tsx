@@ -1,5 +1,4 @@
 import { getLandingBanners } from "@/lib/supabase/landingBanners";
-import { getSubMarkets } from "@/lib/supabase/markets";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import Banner from "@/components/Banner";
@@ -8,11 +7,17 @@ import Promotions from "./components/Promotions";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
+import { PredictionMarket } from "@/lib/supabase/predictionMarkets";
+
+async function getPredictionMarketData() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/markets/landing`);
+  return (await res.json()) as PredictionMarket[];
+}
 
 export default async function LandingPage() {
   const supabase = createServerSupabaseClient();
 
-  const subMarkets = await getSubMarkets({ supabase, options: {} });
+  const predictionMarkets = await getPredictionMarketData();
   const landingBanners = await getLandingBanners({ supabase, options: {} });
 
   return (
@@ -20,7 +25,7 @@ export default async function LandingPage() {
       <Banner banners={landingBanners} />
       <div className="flex w-full flex-col space-y-12 py-10">
         <Promotions />
-        <PredictionMarkets subMarkets={subMarkets} />
+        <PredictionMarkets predictionMarkets={predictionMarkets} />
         <Insights />
         <LiveNewsFeed />
         <Guide />

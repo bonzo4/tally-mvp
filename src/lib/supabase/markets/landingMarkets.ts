@@ -11,24 +11,24 @@ type GetPredictionMarketsQueryOptions = {
   category?: string;
 };
 
+type SubMarketWithChoiceMarkets = SubMarket & {
+  choice_markets: ChoiceMarket[];
+};
+
+export type PredictionMarketsWithSubMarkets = {
+  sub_markets: SubMarketWithChoiceMarkets[];
+} & PredictionMarket;
+
 type GetPredictionMarketsOptions = {
   supabase: SupabaseClient<Database>;
   options: GetPredictionMarketsQueryOptions;
 };
 
-type SubMarketWithChoiceMarkets = SubMarket & {
-  choice_markets: ChoiceMarket[];
-};
-
-type PredictionMarketsCard = {
-  sub_markets: SubMarketWithChoiceMarkets[];
-} & PredictionMarket;
-
 async function getPredictionMarketsQuery({
   supabase,
   options: { category },
 }: GetPredictionMarketsOptions): Promise<
-  PostgrestResponse<PredictionMarketsCard>
+  PostgrestResponse<PredictionMarketsWithSubMarkets>
 > {
   let query = supabase
     .from("prediction_markets")
@@ -55,7 +55,7 @@ export async function getPredictionMarketCards({
   options,
 }: GetPredictionMarketsOptions) {
   return await fetchQuery<
-    PredictionMarketsCard,
+    PredictionMarketsWithSubMarkets,
     GetPredictionMarketsQueryOptions
   >({
     supabase: supabase,

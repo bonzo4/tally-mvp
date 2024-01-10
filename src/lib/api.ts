@@ -3,6 +3,7 @@ import { LandingBanner } from "./supabase/banners/landingBanners";
 import { MarketsBanner } from "./supabase/banners/marketsBanners";
 import { Newsletter } from "@/app/api/blogs/route";
 import { NewsletterWithContent } from "@/app/api/blogs/[id]/route";
+import { PredictionMarketsWithSubMarkets } from "./supabase/markets/landingMarkets";
 
 export async function getCategoryData() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/categories`);
@@ -39,4 +40,12 @@ export async function getBlog(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/blogs/${id}`);
 
   return (await res.json()) as NewsletterWithContent;
+}
+
+export async function getTradingMarketData(slug: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/markets/trade/${slug}`
+  );
+
+  return (await res.json()) as PredictionMarketsWithSubMarkets;
 }

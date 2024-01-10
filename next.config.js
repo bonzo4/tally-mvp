@@ -20,6 +20,12 @@ const nextConfig = {
         port: "",
         pathname: "/avatars/**",
       },
+      {
+        protocol: "https",
+        hostname: "beehiiv-images-production.s3.amazonaws.com",
+        port: "",
+        pathname: "/uploads/asset/file/**",
+      },
     ],
   },
 };

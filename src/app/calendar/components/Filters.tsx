@@ -1,7 +1,4 @@
-import FilterButtonPrimitive, {
-  FilterButtonProps,
-} from "@/components/FilterButtonPrimitive";
-import { cn } from "@/lib/utils";
+import { FilterButton } from "@/components/FilterButton";
 
 const MONTHS = [
   "All",
@@ -18,24 +15,6 @@ const MONTHS = [
   "Nov",
   "Dec",
 ];
-
-function FilterButtonMonth(props: FilterButtonProps) {
-  const { name, selected, className, ...rest } = props;
-
-  const variant = name === selected ? "secondary" : "default";
-  const _className =
-    name === selected ? "" : "bg-zinc-900 text-gray-400 hover:bg-zinc-800";
-
-  return (
-    <FilterButtonPrimitive
-      {...rest}
-      variant={variant}
-      className={cn(className, _className, "mr-2")}
-    >
-      {name}
-    </FilterButtonPrimitive>
-  );
-}
 
 interface FilterProps {
   filterMonth: string;
@@ -55,7 +34,8 @@ export default function Filters({ filterMonth, setFilterMonth }: FilterProps) {
     <div className="flex overflow-x-auto lg:flex lg:px-16">
       <PseudoLeftMargin />
       {MONTHS.map((month, index) => (
-        <FilterButtonMonth
+        <FilterButton
+          className="mr-2"
           key={index}
           name={month}
           selected={filterMonth}

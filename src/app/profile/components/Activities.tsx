@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import FilterButtonPrimitive from "@/components/FilterButtonPrimitive";
+import { FilterButtonPrimitive } from "@/components/FilterButton";
 import { formatDollarsWithCents } from "@/lib/formats";
 
 interface FairLaunchRowProps {

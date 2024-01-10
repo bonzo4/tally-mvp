@@ -1,6 +1,3 @@
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { getMarketsBanners } from "@/lib/supabase/marketsBanners";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Banner from "@/components/Banner";
@@ -11,6 +8,7 @@ import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
+import { getMarketBannersData } from "@/lib/api";
 
 function TradingTabs() {
   return (
@@ -49,8 +47,7 @@ function TradingTabs() {
 }
 
 export default async function TradePage() {
-  const supabase = createServerSupabaseClient();
-  const marketsBanners = await getMarketsBanners({ supabase, options: {} });
+  const marketsBanners = await getMarketBannersData();
 
   return (
     <div className="w-full">

@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-import { getMarketsBanners } from "@/lib/supabase/marketsBanners";
+import { getMarketsBanners } from "@/lib/supabase/banners/marketsBanners";
 
 import Banner from "@/components/Banner";
 import FairLaunchGallery from "./components/FairLaunchGallery";

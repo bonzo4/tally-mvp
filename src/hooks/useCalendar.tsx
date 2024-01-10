@@ -10,6 +10,7 @@ type useCalendarOptions = {
 
 export function useCalendar({ supabase, setLoading }: useCalendarOptions) {
   const [calendar, setCalendar] = useState<Calendar[]>([]);
+  const [lastUpdated, setLastUpdated] = useState<Calendar[]>([]);
   useEffect(() => {
     const getCalendar = async () => {
       const res = await fetch("/api/calendar");
@@ -21,10 +22,12 @@ export function useCalendar({ supabase, setLoading }: useCalendarOptions) {
         return;
       }
 
-      setCalendar(data);
+      const { calendar, lastUpdated } = data;
+      setCalendar(calendar);
+      setLastUpdated(lastUpdated);
       setLoading(false);
     };
     getCalendar();
   }, [supabase, setLoading]);
-  return calendar;
+  return { calendar: calendar, lastUpdated: lastUpdated };
 }

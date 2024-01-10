@@ -34,8 +34,7 @@ export default function Calendar() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  const calendar = useCalendar({ supabase, setLoading });
-
+  const { calendar, lastUpdated } = useCalendar({ supabase, setLoading });
   const eventsByMonth: Record<number, CalendarType[]> = {};
   for (let i = 0; i < 12; i++) {
     eventsByMonth[i] = calendar.filter((event) => {
@@ -46,7 +45,7 @@ export default function Calendar() {
 
   return (
     <div className="flex w-full flex-col space-y-5 pb-20 pt-10">
-      <Overview />
+      {!loading ? <Overview lastUpdated={lastUpdated[0].created_at} /> : null}
       <Filters filterMonth={filterMonth} setFilterMonth={setFilterMonth} />
       {MONTHS.map(
         ({ key, name }, index) =>

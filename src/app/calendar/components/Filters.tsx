@@ -1,4 +1,5 @@
-import FilterButtonPrimitive, {
+import {
+  FilterButtonPrimitive,
   FilterButtonProps,
 } from "@/components/FilterButtonPrimitive";
 import { cn } from "@/lib/utils";

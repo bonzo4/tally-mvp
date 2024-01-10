@@ -6,7 +6,7 @@ export interface FilterButtonProps extends ButtonProps {
   selected: string;
 }
 
-export default function FilterButtonPrimitive(props: ButtonProps) {
+export function FilterButtonPrimitive(props: ButtonProps) {
   const { children, className, ...rest } = props;
 
   return (

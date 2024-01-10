@@ -11,7 +11,8 @@ import {
 } from "recharts";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import FilterButtonPrimitive, {
+import {
+  FilterButtonPrimitive,
   FilterButtonProps,
 } from "@/components/FilterButtonPrimitive";
 import { formatDollarsWithCents } from "@/lib/formats";

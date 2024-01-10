@@ -8,12 +8,12 @@ import {
   getBlogs,
   getCategoryData,
   getLandingBannersData,
-  getLandingMarketCards,
+  getPredictionMarkets,
 } from "@/lib/api";
 
 export default async function LandingPage() {
   const categories = await getCategoryData();
-  const predictionMarkets = await getLandingMarketCards();
+  const predictionMarkets = await getPredictionMarkets();
   const landingBanners = await getLandingBannersData();
   const blogs = await getBlogs();
 

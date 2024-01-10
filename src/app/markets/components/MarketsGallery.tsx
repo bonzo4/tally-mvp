@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import FilterMarkets from "./FilterMarkets";
-import { LandingPredictionMarketData } from "@/app/api/markets/landing/route";
+import { PredictionMarketData } from "@/app/api/markets/route";
 import MarketTile from "@/components/MarketTile";
 
 type MarketsGalleryProps = {
-  predictionMarkets: LandingPredictionMarketData[];
+  predictionMarkets: PredictionMarketData[];
   categories: string[];
   limit?: number;
 };
@@ -17,13 +17,13 @@ export default function MarketsGallery({
   limit,
 }: MarketsGalleryProps) {
   const [markets, setMarkets] =
-    useState<LandingPredictionMarketData[]>(predictionMarkets);
+    useState<PredictionMarketData[]>(predictionMarkets);
   const [currentFilter, setCurrentFilter] = useState<string>("Top");
 
   useEffect(() => {
     const getFilteredMarkets = async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/markets/landing?category=${currentFilter}&limit=${limit}`
+        `${process.env.NEXT_PUBLIC_URL}/api/markets?category=${currentFilter}&limit=${limit}`
       );
       const data = await res.json();
       setMarkets(data);

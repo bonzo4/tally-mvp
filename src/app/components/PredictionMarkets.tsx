@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 
 import MarketsGallery from "@/app/markets/components/MarketsGallery";
 
-import { LandingPredictionMarketData } from "../api/markets/landing/route";
+import { PredictionMarketData } from "../api/markets/route";
 
 type PredictionMarketProps = {
-  predictionMarkets: LandingPredictionMarketData[];
+  predictionMarkets: PredictionMarketData[];
   categories: string[];
 };
 

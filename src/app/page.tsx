@@ -5,6 +5,7 @@ import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
 import {
+  getBlogs,
   getCategoryData,
   getLandingBannersData,
   getLandingMarketCards,
@@ -14,6 +15,7 @@ export default async function LandingPage() {
   const categories = await getCategoryData();
   const predictionMarkets = await getLandingMarketCards();
   const landingBanners = await getLandingBannersData();
+  const blogs = await getBlogs();
 
   return (
     <div className="w-full">
@@ -24,8 +26,12 @@ export default async function LandingPage() {
           predictionMarkets={predictionMarkets}
           categories={["Top", "New🎉", ...categories]}
         />
-        <Insights />
-        <LiveNewsFeed />
+
+        <div className="flex flex-col space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+          <Insights blogs={blogs} />
+          <LiveNewsFeed />
+        </div>
+
         <Guide />
       </div>
     </div>

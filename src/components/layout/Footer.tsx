@@ -89,7 +89,7 @@ function Links() {
         <Subtitle title="Explore" />
         <TextLink href="/" name="Fair Launch" />
         <TextLink href="/markets" name="Markets" />
-        <TextLink href="/" name="Insights" />
+        <TextLink href="/blogs" name="Blogs" />
         <TextLink href="/" name="FAQ" />
         <TextLink href="/leaderboard" name="Leaderboard" />
       </div>

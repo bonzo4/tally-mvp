@@ -11,9 +11,11 @@ import {
 } from "recharts";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import FilterButtonPrimitive, {
+import {
+  FilterButtonPrimitive,
+  FilterButton,
   FilterButtonProps,
-} from "@/components/FilterButtonPrimitive";
+} from "@/components/FilterButton";
 import { formatDollarsWithCents } from "@/lib/formats";
 
 const BG_GRAY_900 = "rgb(17 24 39)";
@@ -40,21 +42,6 @@ function FilterButtonChoice(props: FilterButtonProps) {
   }
   return (
     <FilterButtonPrimitive {...rest} className={`${color} ${className}`}>
-      {name}
-    </FilterButtonPrimitive>
-  );
-}
-
-function FilterButtonTime(props: FilterButtonProps) {
-  const { name, selected, ...rest } = props;
-
-  const className =
-    name === selected
-      ? "bg-white text-black hover:bg-neutral-200"
-      : "text-white bg-zinc-900 hover:bg-zinc-800";
-
-  return (
-    <FilterButtonPrimitive {...rest} className={className}>
       {name}
     </FilterButtonPrimitive>
   );
@@ -115,7 +102,7 @@ export default function Chart() {
         </div>
         <div className="flex justify-between space-x-2">
           {TEST_TIME_FILTERS.map((time, index) => (
-            <FilterButtonTime
+            <FilterButton
               key={index}
               name={time}
               selected={timeFilter}

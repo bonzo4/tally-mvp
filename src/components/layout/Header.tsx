@@ -52,7 +52,7 @@ export default function Header({ authUser }: HeaderProps) {
         <div className="hidden space-x-3 text-sm font-bold text-white lg:flex">
           <HeaderLink href="/" title="Fair Launch" />
           <HeaderLink href="/markets" title="Markets" />
-          <HeaderLink href="/" title="Insight" />
+          <HeaderLink href="/blogs" title="Blogs" />
           <HeaderLink href="/" title="FAQ" />
           <HeaderLink href="/leaderboard" title="Leaderboard" />
         </div>

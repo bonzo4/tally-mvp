@@ -1,4 +1,5 @@
 import { Button, ButtonProps } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export interface FilterButtonProps extends ButtonProps {
   name: string;
@@ -15,5 +16,20 @@ export default function FilterButtonPrimitive(props: ButtonProps) {
     >
       {children}
     </Button>
+  );
+}
+
+export function FilterButton(props: FilterButtonProps) {
+  const { name, selected, className, ...rest } = props;
+
+  let _className =
+    name === selected
+      ? "bg-white text-black hover:bg-white/90"
+      : "bg-zinc-900 text-gray-400 hover:bg-zinc-800";
+
+  return (
+    <FilterButtonPrimitive {...rest} className={cn(className, _className)}>
+      {name}
+    </FilterButtonPrimitive>
   );
 }

@@ -50,7 +50,7 @@ export default function Calendar() {
       {MONTHS.map(
         ({ key, name }, index) =>
           (filterMonth === "All" || filterMonth === key) && (
-            <Month name={name} events={eventsByMonth[index]} />
+            <Month key={index} name={name} events={eventsByMonth[index]} />
           )
       )}
     </div>

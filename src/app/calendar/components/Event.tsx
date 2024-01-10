@@ -1,11 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 import { cn } from "@/lib/utils";
 
 import { CiBellOn } from "react-icons/ci";
-import { MdArrowForwardIos } from "react-icons/md";
 
 function EventTypeBadge({ type }: { type: string }) {
   const bgCssOptions: Record<string, string> = {

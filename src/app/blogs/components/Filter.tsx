@@ -1,5 +1,9 @@
 import { FilterButton } from "@/components/FilterButton";
 
+function PseudoMargin() {
+  return <div className="w-[24px] md:hidden"></div>;
+}
+
 export default function Filter({
   selected,
   setSelected,
@@ -8,7 +12,8 @@ export default function Filter({
   setSelected: (s: string) => void;
 }) {
   return (
-    <div className="flex space-x-4">
+    <div className="flex w-full space-x-4 overflow-x-auto md:justify-center">
+      <PseudoMargin />
       <FilterButton
         selected={selected}
         onClick={() => setSelected("Category One")}
@@ -29,6 +34,7 @@ export default function Filter({
         onClick={() => setSelected("Category Four")}
         name="Category Four"
       />
+      <PseudoMargin />
     </div>
   );
 }

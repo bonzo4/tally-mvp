@@ -6,8 +6,8 @@ import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import { EmblaCarouselType } from "embla-carousel";
-import { LandingBanner } from "@/lib/supabase/landingBanners";
-import { MarketsBanner } from "@/lib/supabase/marketsBanners";
+import { LandingBanner } from "@/lib/supabase/banners/landingBanners";
+import { MarketsBanner } from "@/lib/supabase/banners/marketsBanners";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 

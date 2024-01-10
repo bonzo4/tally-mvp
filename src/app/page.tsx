@@ -1,20 +1,19 @@
-import { getLandingBanners } from "@/lib/supabase/landingBanners";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-
 import Banner from "@/components/Banner";
 import PredictionMarkets from "./components/PredictionMarkets";
 import Promotions from "./components/Promotions";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
-import { getCategoryData, getLandingMarketCards } from "@/lib/api";
+import {
+  getCategoryData,
+  getLandingBannersData,
+  getLandingMarketCards,
+} from "@/lib/api";
 
 export default async function LandingPage() {
-  const supabase = createServerSupabaseClient();
-
   const categories = await getCategoryData();
   const predictionMarkets = await getLandingMarketCards();
-  const landingBanners = await getLandingBanners({ supabase, options: {} });
+  const landingBanners = await getLandingBannersData();
 
   return (
     <div className="w-full">

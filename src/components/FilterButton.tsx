@@ -1,11 +1,6 @@
 import { Button, ButtonProps } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export interface FilterButtonProps extends ButtonProps {
-  name: string;
-  selected: string;
-}
-
 export function FilterButtonPrimitive(props: ButtonProps) {
   const { children, className, ...rest } = props;
 
@@ -17,6 +12,11 @@ export function FilterButtonPrimitive(props: ButtonProps) {
       {children}
     </Button>
   );
+}
+
+export interface FilterButtonProps extends ButtonProps {
+  name: string;
+  selected: string;
 }
 
 export function FilterButton(props: FilterButtonProps) {

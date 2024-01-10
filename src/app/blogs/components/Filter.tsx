@@ -1,4 +1,4 @@
-import { FilterButton } from "@/components/FilterButtonPrimitive";
+import { FilterButton } from "@/components/FilterButton";
 
 export default function Filter({
   selected,

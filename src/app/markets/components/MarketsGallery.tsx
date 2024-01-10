@@ -1,138 +1,44 @@
 "use client";
 
-import { useState } from "react";
-// import FilterMarkets from "./FilterMarkets";
-import { PredictionMarketData } from "@/app/api/markets/landing/route";
+import { useEffect, useState } from "react";
+import FilterMarkets from "./FilterMarkets";
+import { LandingPredictionMarketData } from "@/app/api/markets/landing/route";
 import MarketTile from "@/components/MarketTile";
 
-// const TEST_MARKET_TILE_DATA: MarketTileProps[] = [
-//   {
-//     title: "Will Trump win the Republican Nominee?",
-//     category: "Politics",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-2.jpg",
-//     yesPrice: 50,
-//     noPrice: 50,
-//   },
-//   {
-//     title: "Will the USA confirm the existence of aliens?",
-//     category: "Science",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
-//     yesPrice: 1,
-//     noPrice: 99,
-//   },
-//   {
-//     title: "Will Shohei Ohtani join the Dodgers?",
-//     category: "Sports",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-//     yesPrice: 97,
-//     noPrice: 3,
-//   },
-//   {
-//     title:
-//       "Will Claudine Gay, Harvard college president who testified on antisemitism, stay through 2023?",
-//     category: "Education",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-//     yesPrice: 97,
-//     noPrice: 3,
-//   },
-//   {
-//     title: "Will US inflation be >0.2% from Nov to Dec 2023?",
-//     category: "Economy",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-4.jpg",
-//     yesPrice: 28,
-//     noPrice: 72,
-//   },
-//   {
-//     title: "Will Trump win the Republican Nominee?",
-//     category: "Politics",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-2.jpg",
-//     yesPrice: 50,
-//     noPrice: 50,
-//   },
-//   {
-//     title: "Will the USA confirm the existence of aliens?",
-//     category: "Science",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-3.jpg",
-//     yesPrice: 1,
-//     noPrice: 99,
-//   },
-//   {
-//     title: "Will Shohei Ohtani join the Dodgers?",
-//     category: "Sports",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-//     yesPrice: 97,
-//     noPrice: 3,
-//   },
-//   {
-//     title:
-//       "Will Claudine Gay, Harvard college president who testified on antisemitism, stay through 2023?",
-//     category: "Education",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg",
-//     yesPrice: 97,
-//     noPrice: 3,
-//   },
-//   {
-//     title: "Will US inflation be >0.2% from Nov to Dec 2023?",
-//     category: "Economy",
-//     image:
-//       "https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-4.jpg",
-//     yesPrice: 28,
-//     noPrice: 72,
-//   },
-// ];
-
-// function Tiles({ markets }: { markets: MarketTileProps[] }) {
-//   return (
-//     <div className="grid grid-cols-1 gap-5 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-2 lg:px-16 xl:grid-cols-4">
-//       {markets.map((market, index) => {
-//         return <MarketTile key={index} {...market} />;
-//       })}
-//     </div>
-//   );
-// }
-
 type MarketsGalleryProps = {
-  predictionMarkets: PredictionMarketData[];
+  predictionMarkets: LandingPredictionMarketData[];
+  categories: string[];
 };
 
 export default function MarketsGallery({
   predictionMarkets,
+  categories,
 }: MarketsGalleryProps) {
   const [markets, setMarkets] =
-    useState<PredictionMarketData[]>(predictionMarkets);
-  const [currentFilter, setCurrentFilter] = useState<string>("All");
-  // const [filteredMarkets, setFilteredMarkets] = useState<MarketTileProps[]>(
-  //   TEST_MARKET_TILE_DATA
-  // );
+    useState<LandingPredictionMarketData[]>(predictionMarkets);
+  const [currentFilter, setCurrentFilter] = useState<string>("Top");
 
-  // const handleFilterChange = (filter: string) => {
-  //   setCurrentFilter(filter);
-  //   if (filter === "All") {
-  //     setFilteredMarkets(TEST_MARKET_TILE_DATA);
-  //     return;
-  //   }
-  //   setFilteredMarkets(
-  //     TEST_MARKET_TILE_DATA.filter((market) => market.category === filter)
-  //   );
-  // };
+  useEffect(() => {
+    const getFilteredMarkets = async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/markets/landing?category=${currentFilter}`
+      );
+      const data = await res.json();
+      setMarkets(data);
+    };
+
+    getFilteredMarkets();
+  }, [currentFilter]);
 
   return (
     <div className="w-full space-y-5">
-      {/* <div>
+      <div>
         <FilterMarkets
-          handleFilterChange={handleFilterChange}
+          categories={categories}
+          handleFilterChange={setCurrentFilter}
           selected={currentFilter}
         />
-      </div> */}
+      </div>
       <div className="grid grid-cols-1 gap-5 px-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-2 lg:px-16 xl:grid-cols-4">
         {markets.length &&
           markets.map((market) => {

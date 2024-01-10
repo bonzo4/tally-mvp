@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { getPredictionMarketCards } from "@/lib/supabase/predictionMarkets";
+import { getPredictionMarketCards } from "@/lib/supabase/landing/predictionMarkets";
 
-export type PredictionMarketData = {
+export type LandingPredictionMarketData = {
   id: number;
   title: string;
   category: string | null;
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       options: { category },
     });
 
-    const resData: PredictionMarketData[] = data
+    const resData: LandingPredictionMarketData[] = data
       .filter((market) => market.sub_markets.length)
       .map((market) => {
         const subMarkets = market.sub_markets.map((subMarket) => {

@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button";
 
 import MarketsGallery from "@/app/markets/components/MarketsGallery";
 
-import { PredictionMarketData } from "../api/markets/landing/route";
+import { LandingPredictionMarketData } from "../api/markets/landing/route";
 
 type PredictionMarketProps = {
-  predictionMarkets: PredictionMarketData[];
+  predictionMarkets: LandingPredictionMarketData[];
+  categories: string[];
 };
 
 export default function PredictionMarkets({
   predictionMarkets,
+  categories,
 }: PredictionMarketProps) {
   return (
-    <div className="space-y-5">
+    <div className="flex flex-col space-y-5">
       <div className="flex justify-between px-4 lg:px-16">
         <Link href="/markets">
           <h2 className="text-2xl font-bold text-white hover:underline lg:text-4xl">
@@ -28,7 +30,11 @@ export default function PredictionMarkets({
           <Link href="/markets">View All</Link>
         </Button>
       </div>
-      <MarketsGallery predictionMarkets={predictionMarkets} />
+      <div className="flex flex-row justify-between px-4 lg:px-16"></div>
+      <MarketsGallery
+        predictionMarkets={predictionMarkets}
+        categories={categories}
+      />
     </div>
   );
 }

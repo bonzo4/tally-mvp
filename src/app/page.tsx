@@ -24,9 +24,8 @@ export default async function LandingPage() {
         <Promotions />
         <PredictionMarkets
           predictionMarkets={predictionMarkets}
-          categories={["Top", "New🎉", ...categories]}
+          categories={["Top", "New 🎉", ...categories]}
         />
-
         <div className="flex flex-col space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <Insights blogs={blogs} />
           <LiveNewsFeed />

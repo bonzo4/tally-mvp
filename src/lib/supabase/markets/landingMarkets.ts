@@ -40,7 +40,7 @@ async function getPredictionMarketsQuery({
   if (category) {
     if (category === "Top") {
       query = query.order("total_pot", { ascending: false });
-    } else if (category === "New🎉") {
+    } else if (category === "New 🎉") {
       query = query.order("created_at", { ascending: false });
     } else {
       query = query.eq("category", category);

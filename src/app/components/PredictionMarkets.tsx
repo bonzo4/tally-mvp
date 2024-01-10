@@ -34,6 +34,7 @@ export default function PredictionMarkets({
       <MarketsGallery
         predictionMarkets={predictionMarkets}
         categories={categories}
+        limit={12}
       />
     </div>
   );

@@ -23,13 +23,14 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
 
   const category = searchParams.get("category") ?? undefined;
+  const limit = searchParams.get("limit") ?? undefined;
 
   try {
     const supabase = createRouteSupabaseClient();
 
     const data = await getPredictionMarketCards({
       supabase,
-      options: { category },
+      options: { category, limit: Number(limit) },
     });
 
     const resData: LandingPredictionMarketData[] = data

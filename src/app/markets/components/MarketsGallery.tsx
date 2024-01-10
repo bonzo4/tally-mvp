@@ -8,11 +8,13 @@ import MarketTile from "@/components/MarketTile";
 type MarketsGalleryProps = {
   predictionMarkets: LandingPredictionMarketData[];
   categories: string[];
+  limit?: number;
 };
 
 export default function MarketsGallery({
   predictionMarkets,
   categories,
+  limit,
 }: MarketsGalleryProps) {
   const [markets, setMarkets] =
     useState<LandingPredictionMarketData[]>(predictionMarkets);
@@ -21,7 +23,7 @@ export default function MarketsGallery({
   useEffect(() => {
     const getFilteredMarkets = async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/markets/landing?category=${currentFilter}`
+        `${process.env.NEXT_PUBLIC_URL}/api/markets/landing?category=${currentFilter}&limit=${limit}`
       );
       const data = await res.json();
       setMarkets(data);

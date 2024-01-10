@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
           return {
             icon: subMarket.icon,
-            title: subMarket.card_title ?? subMarket.title,
+            title: subMarket.title ?? subMarket.title,
             prices,
           };
         });

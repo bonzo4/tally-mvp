@@ -798,7 +798,6 @@ export interface Database {
       sub_markets: {
         Row: {
           banner: string;
-          card_title: string | null;
           created_at: string;
           fair_launch_end: string;
           fair_launch_start: string;
@@ -819,7 +818,6 @@ export interface Database {
         };
         Insert: {
           banner: string;
-          card_title?: string | null;
           created_at?: string;
           fair_launch_end: string;
           fair_launch_start: string;
@@ -840,7 +838,6 @@ export interface Database {
         };
         Update: {
           banner?: string;
-          card_title?: string | null;
           created_at?: string;
           fair_launch_end?: string;
           fair_launch_start?: string;

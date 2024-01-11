@@ -13,7 +13,7 @@ function Header() {
 }
 
 export default async function Page() {
-  const blogs = await getBlogs(12);
+  const blogs = await getBlogs(12, 1);
   if (!blogs) {
     return;
   }

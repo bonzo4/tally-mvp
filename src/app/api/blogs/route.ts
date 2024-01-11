@@ -22,7 +22,9 @@ export async function GET(req: NextRequest) {
 
   const limit = searchParams.get("limit") ?? 5;
 
-  const url = `https://api.beehiiv.com/v2/publications/${process.env.BEE_HIIV_ID}/posts?status=confirmed&limit=${limit}&order_by=publish_date&direction=desc`;
+  const page = Number(searchParams.get("page")) ?? 1;
+
+  const url = `https://api.beehiiv.com/v2/publications/${process.env.BEE_HIIV_ID}/posts?status=confirmed&limit=${limit}&order_by=publish_date&direction=desc&page=${page}`;
 
   if (contentTags) {
     url.concat(`&content_tags=${contentTags}`);

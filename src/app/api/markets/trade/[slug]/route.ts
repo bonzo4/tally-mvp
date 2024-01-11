@@ -1,4 +1,4 @@
-import { PredictionMarketsWithSubMarkets } from "@/lib/supabase/markets/landingMarkets";
+import { PredictionMarketsWithSubMarkets } from "@/lib/supabase/markets/predictionMarkets";
 import { getTradeMarkets } from "@/lib/supabase/markets/tradeMarket";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";

@@ -1,7 +1,7 @@
 import { Database } from "@/lib/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { fetchQuery } from "../fetch";
-import { PredictionMarketsWithSubMarkets } from "./landingMarkets";
+import { PredictionMarketsWithSubMarkets } from "./predictionMarkets";
 
 type GetTradeMarketsQueryOptions = {
   slug: string;

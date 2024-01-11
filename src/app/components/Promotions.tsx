@@ -68,7 +68,7 @@ function PseudoMargin() {
 export default function Promotions() {
   return (
     <div className="flex space-x-5 md:px-4 lg:px-16">
-      <div className="no-scrollbar flex space-x-5 overflow-x-auto md:grid md:grid-cols-2 md:gap-5 md:space-x-0">
+      <div className="no-scrollbar flex w-full space-x-5 overflow-x-auto md:grid md:grid-cols-2 md:gap-5 md:space-x-0">
         {/* This element needed to give a left margin to the first element for horizontal scrolling that uses overflow. */}
         <PseudoMargin />
         <SignUpPromotion />

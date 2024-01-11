@@ -16,7 +16,7 @@ export default function PredictionMarkets({
   categories,
 }: PredictionMarketProps) {
   return (
-    <div className="flex flex-col space-y-5">
+    <div className="flex flex-col space-y-4">
       <div className="flex justify-between px-4 lg:px-16">
         <Link href="/markets">
           <h2 className="text-2xl font-bold text-white hover:underline lg:text-4xl">
@@ -30,7 +30,6 @@ export default function PredictionMarkets({
           <Link href="/markets">View All</Link>
         </Button>
       </div>
-      <div className="flex flex-row justify-between px-4 lg:px-16"></div>
       <MarketsGallery
         predictionMarkets={predictionMarkets}
         categories={categories}

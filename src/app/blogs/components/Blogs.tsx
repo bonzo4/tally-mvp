@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-// import { debounce } from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import BlogTile from "./BlogTile";
 import Filter from "./Filter";
 import { Newsletter } from "@/app/api/blogs/route";
 import { getBlogs } from "@/lib/api";
+import { throttle } from "@/lib/utils";
 
 export default function Blogs({ blogs }: { blogs: Newsletter[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,22 +24,25 @@ export default function Blogs({ blogs }: { blogs: Newsletter[] }) {
     }
   };
 
-  const fetchMoreBlogs = async () => {
+  // Wrap in useCallback so we can use it in useEffect
+  // without triggering useEffect on every render.
+  const fetchMoreBlogs = useCallback(async () => {
     const blogs = await getBlogs(12, page + 1);
     setBlogsFetched((prev) => [...prev, ...blogs]);
     setPage((prev) => prev + 1);
-  };
+  }, [page]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const throttleHandleScroll = throttle(() => handleScroll(), 250);
+    window.addEventListener("scroll", throttleHandleScroll);
+    return () => window.removeEventListener("scroll", throttleHandleScroll);
   }, []);
 
   useEffect(() => {
     if (isInView) {
       fetchMoreBlogs();
     }
-  }, [isInView]);
+  }, [fetchMoreBlogs, isInView]);
 
   return (
     <div className="flex w-full flex-col items-center space-y-8 lg:space-y-16">

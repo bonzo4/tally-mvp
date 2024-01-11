@@ -9,6 +9,7 @@ export type PredictionMarket =
 
 type GetPredictionMarketsQueryOptions = {
   category?: string;
+  limit?: number;
 };
 
 type GetPredictionMarketsOptions = {
@@ -26,21 +27,30 @@ type PredictionMarketsCard = {
 
 async function getPredictionMarketsQuery({
   supabase,
-  options: { category },
+  options: { category, limit },
 }: GetPredictionMarketsOptions): Promise<
   PostgrestResponse<PredictionMarketsCard>
 > {
-  let query = supabase
-    .from("prediction_markets")
-    .select(
-      "*, sub_markets(*, choice_markets!choice_markets_sub_market_id_fkey(*))"
-    )
-    .limit(12);
+  let query;
+  if (limit) {
+    query = supabase
+      .from("prediction_markets")
+      .select(
+        "*, sub_markets(*, choice_markets!choice_markets_sub_market_id_fkey(*))"
+      )
+      .limit(limit);
+  } else {
+    query = supabase
+      .from("prediction_markets")
+      .select(
+        "*, sub_markets(*, choice_markets!choice_markets_sub_market_id_fkey(*))"
+      );
+  }
 
   if (category) {
     if (category === "Top") {
       query = query.order("total_pot", { ascending: false });
-    } else if (category === "New🎉") {
+    } else if (category === "New 🎉") {
       query = query.order("created_at", { ascending: false });
     } else {
       query = query.eq("category", category);

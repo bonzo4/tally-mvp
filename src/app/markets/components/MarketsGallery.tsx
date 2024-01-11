@@ -30,7 +30,7 @@ export default function MarketsGallery({
     };
 
     getFilteredMarkets();
-  }, [currentFilter]);
+  }, [currentFilter, limit]);
 
   return (
     <div className="w-full space-y-5">

@@ -1,4 +1,4 @@
-import { LandingPredictionMarketData } from "@/app/api/markets/landing/route";
+import { PredictionMarketData } from "@/app/api/markets/route";
 import { LandingBanner } from "./supabase/banners/landingBanners";
 import { MarketsBanner } from "./supabase/banners/marketsBanners";
 import { Newsletter } from "@/app/api/blogs/route";
@@ -11,11 +11,11 @@ export async function getCategoryData() {
   return (await res.json()) as string[];
 }
 
-export async function getLandingMarketCards(category: string = "Top") {
+export async function getPredictionMarkets(category: string = "Top") {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/markets/landing?category=${category}`
+    `${process.env.NEXT_PUBLIC_URL}/api/markets?category=${category}`
   );
-  return (await res.json()) as LandingPredictionMarketData[];
+  return (await res.json()) as PredictionMarketData[];
 }
 
 export async function getLandingBannersData() {

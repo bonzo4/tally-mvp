@@ -3,7 +3,7 @@ import { getBlogs } from "@/lib/api";
 
 function Header() {
   return (
-    <div className="max-w-[750px] space-y-4 px-4 lg:px-16">
+    <div className="max-w-[800px] space-y-4 px-4 lg:px-16">
       <div className="mb-4 text-center font-bold text-tally-primary">Blog</div>
       <h2 className="text-center text-2xl font-bold text-white lg:text-6xl">
         The latest happenings in the Tally Market world

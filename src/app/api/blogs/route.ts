@@ -5,7 +5,7 @@ export type Newsletter = {
   title: string;
   subtitle: string;
   publish_date: number;
-  display_date: string;
+  displayed_date: string;
   authors: string[];
   thumbnail_url: string;
   subject_line: string;

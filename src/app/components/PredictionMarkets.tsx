@@ -4,15 +4,11 @@ import { Button } from "@/components/ui/button";
 
 import MarketsGallery from "@/app/markets/components/MarketsGallery";
 
-import { PredictionMarketData } from "../api/markets/route";
-
 type PredictionMarketProps = {
-  predictionMarkets: PredictionMarketData[];
   categories: string[];
 };
 
 export default function PredictionMarkets({
-  predictionMarkets,
   categories,
 }: PredictionMarketProps) {
   return (
@@ -30,11 +26,7 @@ export default function PredictionMarkets({
           <Link href="/markets">View All</Link>
         </Button>
       </div>
-      <MarketsGallery
-        predictionMarkets={predictionMarkets}
-        categories={categories}
-        limit={12}
-      />
+      <MarketsGallery categories={categories} limit={12} />
     </div>
   );
 }

@@ -32,10 +32,7 @@ export default async function MarketsPage() {
         <div className="px-4 lg:px-16">
           <h2 className="text-4xl font-bold text-white">Prediction Markets</h2>
         </div>
-        <MarketsGallery
-          predictionMarkets={[]}
-          categories={["Top", "New 🎉", ...categories]}
-        />
+        <MarketsGallery categories={["Top", "New 🎉", ...categories]} />
       </div>
     </div>
   );

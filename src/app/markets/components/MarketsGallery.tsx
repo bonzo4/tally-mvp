@@ -6,18 +6,15 @@ import { PredictionMarketData } from "@/app/api/markets/route";
 import MarketTile from "@/components/MarketTile";
 
 type MarketsGalleryProps = {
-  predictionMarkets: PredictionMarketData[];
   categories: string[];
   limit?: number;
 };
 
 export default function MarketsGallery({
-  predictionMarkets,
   categories,
   limit,
 }: MarketsGalleryProps) {
-  const [markets, setMarkets] =
-    useState<PredictionMarketData[]>(predictionMarkets);
+  const [markets, setMarkets] = useState<PredictionMarketData[]>([]);
   const [currentFilter, setCurrentFilter] = useState<string>("Top");
 
   useEffect(() => {

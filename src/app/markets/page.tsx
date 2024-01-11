@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 import { getMarketsBanners } from "@/lib/supabase/banners/marketsBanners";
+import { getCategoryData } from "@/lib/api";
 
 import Banner from "@/components/Banner";
 import MarketsGallery from "./components/MarketsGallery";
@@ -21,6 +22,7 @@ export default async function MarketsPage() {
     }
   );
 
+  const categories = await getCategoryData();
   const marketsBanners = await getMarketsBanners({ supabase, options: {} });
 
   return (
@@ -30,7 +32,10 @@ export default async function MarketsPage() {
         <div className="px-4 py-5 pt-8 lg:px-16">
           <h2 className="text-4xl font-bold text-white">Prediction Markets</h2>
         </div>
-        <MarketsGallery predictionMarkets={[]} categories={[]} />
+        <MarketsGallery
+          predictionMarkets={[]}
+          categories={["Top", "New 🎉", ...categories]}
+        />
       </div>
     </div>
   );

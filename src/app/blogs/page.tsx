@@ -1,13 +1,9 @@
-"use client";
-
-import { useState } from "react";
-
-import Filter from "./components/Filter";
-import BlogTile from "./components/BlogTile";
+import Blogs from "./components/Blogs";
+import { getBlogs } from "@/lib/api";
 
 function Header() {
   return (
-    <div className="max-w-[750px] space-y-4 px-4 lg:px-16">
+    <div className="max-w-[800px] space-y-4 px-4 lg:px-16">
       <div className="mb-4 text-center font-bold text-tally-primary">Blog</div>
       <h2 className="text-center text-2xl font-bold text-white lg:text-6xl">
         The latest happenings in the Tally Market world
@@ -16,31 +12,15 @@ function Header() {
   );
 }
 
-function BlogGrid() {
-  return (
-    <div className="grid w-full grid-cols-1 gap-8 px-4 md:grid-cols-2 lg:grid-cols-3 lg:px-16">
-      <BlogTile />
-      <BlogTile />
-      <BlogTile />
-      <BlogTile />
-      <BlogTile />
-      <BlogTile />
-      <BlogTile />
-      <BlogTile />
-    </div>
-  );
-}
-
-export default function Page() {
-  const [selected, setSelected] = useState<string>("Category One");
-
+export default async function Page() {
+  const blogs = await getBlogs(12, 1);
+  if (!blogs) {
+    return;
+  }
   return (
     <div className="flex w-full flex-col items-center space-y-12 py-14 lg:space-y-20 lg:py-28">
       <Header />
-      <div className="flex w-full flex-col items-center space-y-8 lg:space-y-16">
-        <Filter selected={selected} setSelected={setSelected} />
-        <BlogGrid />
-      </div>
+      {blogs ? <Blogs blogs={blogs} /> : null}
     </div>
   );
 }

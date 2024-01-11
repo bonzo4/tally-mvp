@@ -9,7 +9,7 @@ import { getBlogs, getCategoryData, getLandingBannersData } from "@/lib/api";
 export default async function LandingPage() {
   const categories = await getCategoryData();
   const landingBanners = await getLandingBannersData();
-  const blogs = await getBlogs();
+  const blogs = await getBlogs(5);
 
   return (
     <div className="w-full">

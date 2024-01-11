@@ -30,8 +30,10 @@ export async function getMarketBannersData() {
   return (await res.json()) as MarketsBanner[];
 }
 
-export async function getBlogs() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/blogs`);
+export async function getBlogs(limit: number = 12, page: number = 1) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/blogs?limit=${limit}&page=${page}`
+  );
 
   return (await res.json()) as Newsletter[];
 }

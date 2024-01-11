@@ -9,6 +9,39 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      _market_categories: {
+        Row: {
+          category: string;
+          created_at: string;
+          prediction_market_id: number;
+        };
+        Insert: {
+          category: string;
+          created_at?: string;
+          prediction_market_id: number;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          prediction_market_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_market_categories_category_fkey";
+            columns: ["category"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["name"];
+          },
+          {
+            foreignKeyName: "_market_categories_prediction_market_id_fkey";
+            columns: ["prediction_market_id"];
+            isOneToOne: false;
+            referencedRelation: "prediction_markets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       blogs: {
         Row: {
           body: string;
@@ -345,6 +378,45 @@ export interface Database {
           is_outgoing?: boolean;
           link?: string;
           title?: string;
+        };
+        Relationships: [];
+      };
+      leaderboard_users: {
+        Row: {
+          boost: number;
+          created_at: string;
+          day_volume: number;
+          icon: string;
+          id: number;
+          month_volume: number;
+          total_volume: number;
+          username: string;
+          week_volume: number;
+          win_rate: number;
+        };
+        Insert: {
+          boost: number;
+          created_at?: string;
+          day_volume?: number;
+          icon: string;
+          id?: number;
+          month_volume?: number;
+          total_volume?: number;
+          username: string;
+          week_volume?: number;
+          win_rate: number;
+        };
+        Update: {
+          boost?: number;
+          created_at?: string;
+          day_volume?: number;
+          icon?: string;
+          id?: number;
+          month_volume?: number;
+          total_volume?: number;
+          username?: string;
+          week_volume?: number;
+          win_rate?: number;
         };
         Relationships: [];
       };
@@ -798,12 +870,12 @@ export interface Database {
       sub_markets: {
         Row: {
           banner: string;
+          card_title: string | null;
           created_at: string;
           fair_launch_end: string;
           fair_launch_start: string;
           icon: string;
           id: number;
-          lp_amount: number;
           prediction_market_id: number;
           resolution_end: string;
           resolution_start: string;
@@ -818,12 +890,12 @@ export interface Database {
         };
         Insert: {
           banner: string;
+          card_title?: string | null;
           created_at?: string;
           fair_launch_end: string;
           fair_launch_start: string;
           icon: string;
           id?: number;
-          lp_amount?: number;
           prediction_market_id: number;
           resolution_end: string;
           resolution_start: string;
@@ -838,12 +910,12 @@ export interface Database {
         };
         Update: {
           banner?: string;
+          card_title?: string | null;
           created_at?: string;
           fair_launch_end?: string;
           fair_launch_start?: string;
           icon?: string;
           id?: number;
-          lp_amount?: number;
           prediction_market_id?: number;
           resolution_end?: string;
           resolution_start?: string;

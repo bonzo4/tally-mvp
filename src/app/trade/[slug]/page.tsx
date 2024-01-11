@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import Banner from "@/components/Banner";
 import Chart from "./components/Chart";
 import Chat from "./components/Chat";
 import Order from "./components/Order";
@@ -8,7 +7,8 @@ import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
-import { getMarketBannersData } from "@/lib/api";
+import { getTradingMarketData } from "@/lib/api";
+import Image from "next/image";
 
 function TradingTabs() {
   return (
@@ -46,12 +46,30 @@ function TradingTabs() {
   );
 }
 
-export default async function TradePage() {
-  const marketsBanners = await getMarketBannersData();
+export default async function TradePage({
+  params: { slug },
+}: {
+  params: { slug: string };
+}) {
+  const market = await getTradingMarketData(slug);
+
+  console.log(market);
 
   return (
     <div className="w-full">
-      <Banner banners={marketsBanners} />
+      <div className="flex min-h-[50vh] w-full flex-col bg-black">
+        <div className="flex space-x-5 text-white">
+          <div className="relative h-[80px] w-[80px] flex-shrink-0 lg:h-[120px] lg:w-[120px]">
+            <Image
+              src={market.banner}
+              alt="banner"
+              fill={true}
+              className="rounded-2xl object-cover"
+            />
+          </div>
+        </div>
+      </div>
+      {/* <Banner banners={marketsBanners} /> */}
       <div className="w-full px-4 pb-16 pt-4 lg:px-16">
         <div className="mb-10 flex w-full space-x-12">
           <div className="flex flex-grow flex-col space-y-8 py-5">

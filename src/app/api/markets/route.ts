@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
           return {
             icon: subMarket.icon,
-            title: subMarket.title ?? subMarket.title,
+            title: subMarket.card_title || subMarket.title,
             prices,
           };
         });

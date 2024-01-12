@@ -1,5 +1,5 @@
 import Blogs from "./components/Blogs";
-import { getBlogs } from "@/lib/api";
+import { getBlogs } from "@/lib/api/fetch";
 
 function Header() {
   return (

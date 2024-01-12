@@ -7,7 +7,7 @@ import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
-import { getTradingMarketData } from "@/lib/api";
+import { getTradingMarketData } from "@/lib/api/fetch";
 import Image from "next/image";
 
 function TradingTabs() {

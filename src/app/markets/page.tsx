@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 import { getMarketsBanners } from "@/lib/supabase/banners/marketsBanners";
-import { getCategoryData } from "@/lib/api";
+import { getCategoryData } from "@/lib/api/fetch";
 
 import Banner from "@/components/Banner";
 import MarketsGallery from "./components/MarketsGallery";

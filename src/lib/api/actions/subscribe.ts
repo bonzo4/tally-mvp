@@ -28,8 +28,6 @@ export async function subscribe(
       }),
     };
     const res = await fetch(url, options);
-    const data = await res.json();
-    console.log(data);
     if (res.status !== 200 && res.status !== 201) {
       throw new Error("Error subscribing. Please try again.");
     }

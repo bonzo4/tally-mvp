@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const resData: string[] = data.map((category) => category.name);
 
     return NextResponse.json(resData, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json(error.message, { status: 500 });
   }
 }

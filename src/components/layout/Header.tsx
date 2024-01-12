@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { User } from "@supabase/supabase-js";
-import { useUser } from "@/hooks/useUser";
 
 import { Button } from "@/components/ui/button";
 
@@ -10,13 +8,13 @@ import HamburgerMenu from "@/components/HamburgerMenu";
 import SearchBar from "@/components/SearchBar";
 
 import { cn } from "@/lib/utils";
-import { createClientSupabaseClient } from "@/lib/supabase/client";
 import Tickers from "../Tickers";
 
 import Image from "next/image";
+import { UserDoc } from "@/lib/supabase/user";
 
 type HeaderProps = {
-  authUser: User | null;
+  user: UserDoc | null;
 };
 
 function HeaderLink({ href, title }: { href: string; title: string }) {
@@ -27,11 +25,7 @@ function HeaderLink({ href, title }: { href: string; title: string }) {
   );
 }
 
-export default function Header({ authUser }: HeaderProps) {
-  const supabase = createClientSupabaseClient();
-
-  const user = useUser({ supabase, user: authUser });
-
+export default function Header({ user }: HeaderProps) {
   return (
     <div className="flex w-full flex-col">
       <header className="flex flex-row items-center justify-between space-x-5 bg-black px-4 py-3 lg:px-16">

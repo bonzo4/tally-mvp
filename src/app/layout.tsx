@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import localFont from "next/font/local";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { UserDoc, getUser } from "@/lib/supabase/user";
 
 const gotham = localFont({ src: "../../public/gotham_bold.otf" });
 
@@ -21,9 +22,14 @@ export default async function RootLayout({
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
+    data: { user: authUser },
   } = await supabase.auth.getUser();
 
+  let user: UserDoc | null = null;
+
+  if (authUser) {
+    user = await getUser({ supabase, options: { userId: authUser.id } });
+  }
   return (
     <html lang="en">
       <head>
@@ -44,7 +50,7 @@ export default async function RootLayout({
           gotham.className
         )}
       >
-        <Header authUser={user} />
+        <Header user={user} />
         <main className="flex w-full grow flex-col items-center">
           {children}
         </main>

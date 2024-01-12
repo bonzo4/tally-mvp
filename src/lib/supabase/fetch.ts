@@ -28,7 +28,9 @@ export async function fetchQuery<T, Options>({
   return cache(async () => {
     const { data, error } = await query({ supabase, options });
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
     return data as T[];
   })();
 }

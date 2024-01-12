@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import BlogTile from "./BlogTile";
 import Filter from "./Filter";
 import { Newsletter } from "@/app/api/blogs/route";
-import { getBlogs } from "@/lib/api";
+import { getBlogs } from "@/lib/api/fetch";
 import { throttle } from "@/lib/utils";
 
 export default function Blogs({ blogs }: { blogs: Newsletter[] }) {

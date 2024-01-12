@@ -1,9 +1,9 @@
 import { PredictionMarketData } from "@/app/api/markets/route";
-import { LandingBanner } from "./supabase/banners/landingBanners";
-import { MarketsBanner } from "./supabase/banners/marketsBanners";
+import { LandingBanner } from "../supabase/banners/landingBanners";
+import { MarketsBanner } from "../supabase/banners/marketsBanners";
 import { Newsletter } from "@/app/api/blogs/route";
 import { NewsletterWithContent } from "@/app/api/blogs/[id]/route";
-import { PredictionMarketsWithSubMarkets } from "./supabase/markets/predictionMarkets";
+import { PredictionMarketsWithSubMarkets } from "../supabase/markets/predictionMarkets";
 
 export async function getCategoryData() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/categories`);

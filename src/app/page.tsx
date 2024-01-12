@@ -4,7 +4,11 @@ import Promotions from "./components/Promotions";
 import LiveNewsFeed from "./components/LiveNewsFeed";
 import Insights from "./components/Insights";
 import Guide from "./components/Guide";
-import { getBlogs, getCategoryData, getLandingBannersData } from "@/lib/api";
+import {
+  getBlogs,
+  getCategoryData,
+  getLandingBannersData,
+} from "@/lib/api/fetch";
 
 export default async function LandingPage() {
   const categories = await getCategoryData();

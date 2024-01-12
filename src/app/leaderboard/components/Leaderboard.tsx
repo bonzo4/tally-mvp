@@ -1,32 +1,156 @@
-import LeaderboardItem from "./LeaderboardItem";
+"use client";
 
-export default function Leaderboard({ title }: { title: string }) {
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { Leaderboard } from "@/app/api/leaderboard/route";
+import LeaderboardItem from "./LeaderboardItem";
+import { FilterButton } from "@/components/FilterButton";
+import {
+  formatDollarsWithCents,
+  formatNumberWithCommasNoDecimals,
+} from "@/lib/formats";
+import { getLeaderboard } from "@/lib/api/fetch";
+
+const FILTERS = ["Day", "Week", "Month", "All"];
+
+function FilterByTimeInterval({
+  filter,
+  setFilter,
+}: {
+  filter: string;
+  setFilter: (filter: string) => void;
+}) {
   return (
-    <div className="flex flex-col space-y-2 rounded p-1 md:border md:border-gray-200 md:p-5 md:shadow-md lg:space-y-5">
-      <div>
-        <h2 className="text-xl font-bold lg:text-2xl">{title}</h2>
-      </div>
-      <div className="flex flex-col space-y-3">
-        <LeaderboardItem rank={1} name="satoshi nakamoto" value={1000000000} />
-        <LeaderboardItem
-          rank={2}
-          name="i have a really really long name and i don't really know why but it's an edge case"
-          value={218392}
+    <div className="flex w-full space-x-3">
+      {FILTERS.map((f, i) => (
+        <FilterButton
+          key={i}
+          name={f}
+          selected={filter}
+          onClick={() => setFilter(f)}
         />
-        <LeaderboardItem rank={3} name="Vitalik Buterin" value={199801} />
-        <LeaderboardItem rank={4} name="Richard Feynman" value={38579} />
-        <LeaderboardItem rank={5} name="Richard Feynman" value={38579} />
-        <LeaderboardItem rank={6} name="Richard Feynman" value={38579} />
-        <LeaderboardItem rank={7} name="Richard Feynman" value={38579} />
-        <LeaderboardItem rank={8} name="Richard Feynman" value={38579} />
-        <LeaderboardItem rank={9} name="Richard Feynman" value={38579} />
-        <LeaderboardItem rank={10} name="Marcus Aurelius" value={164} />
-        <LeaderboardItem rank={11} name="Marcus Aurelius" value={164} />
-        <LeaderboardItem rank={12} name="Marcus Aurelius" value={164} />
-        <LeaderboardItem rank={13} name="Marcus Aurelius" value={164} />
-        <LeaderboardItem rank={14} name="Marcus Aurelius" value={164} />
-        <LeaderboardItem rank={15} name="Marcus Aurelius" value={164} />
+      ))}
+    </div>
+  );
+}
+
+interface RowProps extends Leaderboard {
+  rank: number;
+}
+
+function UserCell({ username, image }: { username: string; image: string }) {
+  return (
+    <div className="flex items-center space-x-2">
+      <div className="relative h-[24px] w-[24px]">
+        <Image
+          src={image}
+          alt=""
+          fill={true}
+          className="rounded object-cover"
+        />
       </div>
+      <div>
+        <span>{username}</span>
+      </div>
+    </div>
+  );
+}
+
+function Row({
+  username,
+  image,
+  rank,
+  volume,
+  profits,
+  points,
+  conviction,
+}: RowProps) {
+  const profitsColor = profits >= 0 ? "text-tally-primary" : "text-tally-red";
+  return (
+    <TableRow className="border-transparent bg-zinc-900 py-0 text-white hover:bg-zinc-800">
+      <TableCell>{rank}</TableCell>
+      <TableCell>
+        <UserCell username={username} image={image} />
+      </TableCell>
+      <TableCell className="text-right">
+        {formatDollarsWithCents(volume)}
+      </TableCell>
+      <TableCell className={`text-right ${profitsColor}`}>
+        {formatDollarsWithCents(profits)}
+      </TableCell>
+      <TableCell className="text-right">
+        {formatNumberWithCommasNoDecimals(points)}
+      </TableCell>
+      <TableCell className="text-right">
+        <span className="text-lg">{"🔥 ".repeat(Math.round(conviction))}</span>
+        <span className="text-lg text-white/20">
+          {"🔥 ".repeat(5 - Math.round(conviction))}
+        </span>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function LeaderboardTable({ leaderboard }: { leaderboard: Leaderboard[] }) {
+  return (
+    <div className="w-full rounded-2xl bg-zinc-900 px-4 py-2">
+      <Table>
+        <TableHeader>
+          <TableRow className="border-transparent hover:bg-zinc-900">
+            <TableHead className="text-xs text-gray-400">Rank</TableHead>
+            <TableHead className="text-xs text-gray-400">Name</TableHead>
+            <TableHead className="text-right text-xs text-gray-400">
+              Volume
+            </TableHead>
+            <TableHead className="text-right text-xs text-gray-400">
+              Profits
+            </TableHead>
+            <TableHead className="text-right text-xs text-gray-400">
+              Points
+            </TableHead>
+            <TableHead className="text-right text-xs text-gray-400">
+              Conviction
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {leaderboard.map((row, i) => (
+            <Row key={row.id} {...row} rank={i + 1} />
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+export default function Leaderboard({
+  _leaderboard,
+}: {
+  _leaderboard: Leaderboard[];
+}) {
+  const [leaderboard, setLeaderboard] = useState<Leaderboard[]>(_leaderboard);
+  const [filter, setFilter] = useState("Day");
+  useEffect(() => {
+    async function updateLeaderboard() {
+      const leaderboard_ = await getLeaderboard(filter);
+      setLeaderboard(leaderboard_);
+    }
+    updateLeaderboard();
+  }, [filter]);
+  return (
+    <div className="w-full space-y-5">
+      <FilterByTimeInterval filter={filter} setFilter={setFilter} />
+      <LeaderboardTable leaderboard={leaderboard} />
     </div>
   );
 }

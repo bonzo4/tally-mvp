@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { FilterButton } from "@/components/FilterButton";
+import Podium from "./Podium";
 import {
   Table,
   TableBody,
@@ -13,7 +15,6 @@ import {
 } from "@/components/ui/table";
 
 import { Leaderboard } from "@/app/api/leaderboard/route";
-import { FilterButton } from "@/components/FilterButton";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
@@ -147,9 +148,12 @@ export default function Leaderboard({
     updateLeaderboard();
   }, [filter]);
   return (
-    <div className="w-full space-y-5 px-4 lg:px-16">
-      <FilterByTimeInterval filter={filter} setFilter={setFilter} />
-      <LeaderboardTable leaderboard={leaderboard} />
-    </div>
+    <>
+      <Podium leaderboard={leaderboard.slice(0, 3)} />
+      <div className="w-full space-y-5 px-4 lg:px-16">
+        <FilterByTimeInterval filter={filter} setFilter={setFilter} />
+        <LeaderboardTable leaderboard={leaderboard} />
+      </div>
+    </>
   );
 }

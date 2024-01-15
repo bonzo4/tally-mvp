@@ -3,8 +3,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { queryLeaderboard } from "@/lib/supabase/leaderboard";
 
-export type Leaderboard =
+export type LeaderboardDaily =
   Database["public"]["Tables"]["leaderboard_daily"]["Row"];
+
+export type LeaderboardWeekly =
+  Database["public"]["Tables"]["leaderboard_daily"]["Row"];
+
+export type LeaderboardMonthly =
+  Database["public"]["Tables"]["leaderboard_daily"]["Row"];
+
+export type LeaderboardAll =
+  Database["public"]["Tables"]["leaderboard_daily"]["Row"];
+
+export type Leaderboard =
+  | LeaderboardDaily
+  | LeaderboardWeekly
+  | LeaderboardMonthly
+  | LeaderboardAll;
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;

@@ -44,12 +44,23 @@ export default function Podium({
 }: {
   leaderboard: LeaderboardType[];
 }) {
+  const mapRankAbbreviation: Record<number, string> = {
+    1: "1st",
+    2: "2nd",
+    3: "3rd",
+  };
+
   return (
     <div className="flex w-full space-x-4 overflow-x-auto lg:grid lg:grid-cols-3 lg:gap-4 lg:space-x-0 lg:px-16">
       <PseudoMargin />
-      <Place place="1st" user={leaderboard[0]} />
-      <Place place="2nd" user={leaderboard[1]} />
-      <Place place="3rd" user={leaderboard[2]} />
+      {leaderboard.length > 0 &&
+        leaderboard.map((user, index) => (
+          <Place
+            key={index}
+            place={mapRankAbbreviation[index + 1]}
+            user={user}
+          />
+        ))}
       <PseudoMargin />
     </div>
   );

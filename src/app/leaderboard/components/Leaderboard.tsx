@@ -91,7 +91,7 @@ function Row({
       <TableCell className="text-right">
         {formatNumberWithCommasNoDecimals(points)}
       </TableCell>
-      <TableCell className="text-right">
+      <TableCell className="text-nowrap text-right">
         <span className="text-lg">{"🔥 ".repeat(Math.round(conviction))}</span>
         <span className="text-lg text-white/20">
           {"🔥 ".repeat(5 - Math.round(conviction))}
@@ -148,7 +148,7 @@ export default function Leaderboard({
     updateLeaderboard();
   }, [filter]);
   return (
-    <div className="w-full space-y-5">
+    <div className="w-full space-y-5 px-4 lg:px-16">
       <FilterByTimeInterval filter={filter} setFilter={setFilter} />
       <LeaderboardTable leaderboard={leaderboard} />
     </div>

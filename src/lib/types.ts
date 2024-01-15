@@ -381,7 +381,106 @@ export interface Database {
         }
         Relationships: []
       }
+      leaderboard_all: {
+        Row: {
+          conviction: number
+          created_at: string
+          id: number
+          image: string
+          points: number
+          profits: number
+          username: string
+          volume: number
+        }
+        Insert: {
+          conviction?: number
+          created_at?: string
+          id?: number
+          image?: string
+          points?: number
+          profits?: number
+          username: string
+          volume?: number
+        }
+        Update: {
+          conviction?: number
+          created_at?: string
+          id?: number
+          image?: string
+          points?: number
+          profits?: number
+          username?: string
+          volume?: number
+        }
+        Relationships: []
+      }
       leaderboard_daily: {
+        Row: {
+          conviction: number
+          created_at: string
+          id: number
+          image: string
+          points: number
+          profits: number
+          username: string
+          volume: number
+        }
+        Insert: {
+          conviction?: number
+          created_at?: string
+          id?: number
+          image?: string
+          points?: number
+          profits?: number
+          username: string
+          volume?: number
+        }
+        Update: {
+          conviction?: number
+          created_at?: string
+          id?: number
+          image?: string
+          points?: number
+          profits?: number
+          username?: string
+          volume?: number
+        }
+        Relationships: []
+      }
+      leaderboard_monthly: {
+        Row: {
+          conviction: number
+          created_at: string
+          id: number
+          image: string
+          points: number
+          profits: number
+          username: string
+          volume: number
+        }
+        Insert: {
+          conviction?: number
+          created_at?: string
+          id?: number
+          image?: string
+          points?: number
+          profits?: number
+          username: string
+          volume?: number
+        }
+        Update: {
+          conviction?: number
+          created_at?: string
+          id?: number
+          image?: string
+          points?: number
+          profits?: number
+          username?: string
+          volume?: number
+        }
+        Relationships: []
+      }
+      leaderboard_weekly: {
         Row: {
           conviction: number
           created_at: string
@@ -420,6 +519,7 @@ export interface Database {
           choice_market_id: number
           created_at: string
           id: number
+          is_fufilled: boolean
           outgoing_usdc: number
           user_id: number
         }
@@ -428,6 +528,7 @@ export interface Database {
           choice_market_id: number
           created_at?: string
           id?: number
+          is_fufilled?: boolean
           outgoing_usdc: number
           user_id: number
         }
@@ -436,6 +537,7 @@ export interface Database {
           choice_market_id?: number
           created_at?: string
           id?: number
+          is_fufilled?: boolean
           outgoing_usdc?: number
           user_id?: number
         }

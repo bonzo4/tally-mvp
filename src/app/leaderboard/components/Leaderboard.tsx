@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/table";
 
 import { Leaderboard } from "@/app/api/leaderboard/route";
-import LeaderboardItem from "./LeaderboardItem";
 import { FilterButton } from "@/components/FilterButton";
 import {
   formatDollarsWithCents,

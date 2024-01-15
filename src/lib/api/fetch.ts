@@ -103,11 +103,11 @@ export async function getTradingMarketData(slug: string) {
 // }
 
 export async function getLeaderboard(
-  table: string = "daily",
+  filter: string = "Day",
   order: string = "volume"
 ) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/leaderboard?table=${table}&order=${order}`
+    `${process.env.NEXT_PUBLIC_URL}/api/leaderboard?filter=${filter}&order=${order}`
   );
   return (await res.json()) as any;
 }

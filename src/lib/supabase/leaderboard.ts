@@ -6,6 +6,15 @@ import { fetchQuery } from "./fetch";
 export type LeaderboardDaily =
   Database["public"]["Tables"]["leaderboard_daily"]["Row"];
 
+export type LeaderboardWeekly =
+  Database["public"]["Tables"]["leaderboard_weekly"]["Row"];
+
+export type LeaderboardMonthly =
+  Database["public"]["Tables"]["leaderboard_monthly"]["Row"];
+
+export type LeaderboardAll =
+  Database["public"]["Tables"]["leaderboard_all"]["Row"];
+
 const mapParamToTable: Record<string, string> = {
   Day: "leaderboard_daily",
   Week: "leaderboard_weekly",
@@ -13,25 +22,26 @@ const mapParamToTable: Record<string, string> = {
   All: "leaderboard_all",
 };
 
-interface LeaderboardDailyOptions {
-  table?: string;
+interface LeaderboardOptions {
+  filter?: string;
   order?: string;
 }
 
-interface LeaderboardDailyQuery {
+interface LeaderboardQueryParams {
   supabase: SupabaseClient<Database>;
-  options: LeaderboardDailyOptions;
+  options: LeaderboardOptions;
 }
 
-async function leaderboardDailyQuery({
+async function leaderboardQuery({
   supabase,
   options,
-}: LeaderboardDailyQuery): Promise<PostgrestResponse<LeaderboardDaily>> {
-  let { table = "Day", order = "volume" } = options;
-  if (!mapParamToTable[table]) {
-    table = "Day";
+}: LeaderboardQueryParams): Promise<PostgrestResponse<LeaderboardDaily>> {
+  let { filter = "Day", order = "volume" } = options;
+  let table;
+  if (!mapParamToTable[filter]) {
+    table = "leaderboard_daily";
   } else {
-    table = mapParamToTable[table];
+    table = mapParamToTable[filter];
   }
   return await supabase
     .from(table)
@@ -40,13 +50,20 @@ async function leaderboardDailyQuery({
     .limit(15);
 }
 
-export async function getLeaderboardDaily(
+type LeaderboardTypeMap = {
+  Day: LeaderboardDaily;
+  Week: LeaderboardWeekly;
+  Month: LeaderboardMonthly;
+  All: LeaderboardAll;
+};
+
+export async function queryLeaderboard<K extends keyof LeaderboardTypeMap>(
   supabase: SupabaseClient<Database>,
-  options: LeaderboardDailyOptions
+  options: LeaderboardOptions
 ) {
-  return await fetchQuery<LeaderboardDaily, LeaderboardDailyOptions>({
+  return await fetchQuery<LeaderboardDaily, LeaderboardOptions>({
     supabase: supabase,
-    query: leaderboardDailyQuery,
+    query: leaderboardQuery,
     options: options,
   });
 }

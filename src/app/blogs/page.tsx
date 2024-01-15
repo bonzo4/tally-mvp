@@ -12,7 +12,7 @@ function Header() {
   );
 }
 
-export default async function Page() {
+export default async function BlogPage() {
   const blogs = await getBlogs(12, 1);
   if (!blogs) {
     return;

@@ -101,3 +101,13 @@ export async function getTradingMarketData(slug: string) {
 
 //   return (await res.json()) as Ticker[];
 // }
+
+export async function getLeaderboard(
+  filter: string = "Day",
+  order: string = "volume"
+) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/leaderboard?filter=${filter}&order=${order}`
+  );
+  return (await res.json()) as any;
+}

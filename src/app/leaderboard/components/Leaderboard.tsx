@@ -86,7 +86,7 @@ function Row({
         {formatDollarsWithCents(volume)}
       </TableCell>
       <TableCell className={`text-right ${profitsColor}`}>
-        {formatDollarsWithCents(profits)}
+        {`${profits >= 0 ? "+" : ""}${formatDollarsWithCents(profits)}`}
       </TableCell>
       <TableCell className="text-right">
         {formatNumberWithCommasNoDecimals(points)}

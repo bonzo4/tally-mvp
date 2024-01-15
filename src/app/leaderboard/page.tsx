@@ -2,7 +2,7 @@ import { getLeaderboard } from "@/lib/api/fetch";
 
 import Leaderboard from "./components/Leaderboard";
 
-export default async function Page() {
+export default async function LeaderboardPage() {
   const leaderboard = await getLeaderboard();
   return (
     <div className="lg:py-15 flex w-full flex-col items-center space-y-5 py-10">

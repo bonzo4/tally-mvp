@@ -8,9 +8,15 @@ type PriceBarProps = {
     title: string;
     price: number;
   }[];
+  isOnlySubMarket?: boolean;
 };
 
-export default function PriceBar({ icon, title, prices }: PriceBarProps) {
+export default function PriceBar({
+  icon,
+  title,
+  prices,
+  isOnlySubMarket,
+}: PriceBarProps) {
   const priceTitleColors = prices.map((price, index) => {
     if (index % 4 == 0) {
       return "text-tally-primary";
@@ -37,11 +43,19 @@ export default function PriceBar({ icon, title, prices }: PriceBarProps) {
 
   return (
     <div className="flex w-full">
-      {prices.length == 2 ? (
-        <div className="flex w-full flex-row space-x-5">
-          <div className="flex flex-row space-x-1">
-            <Image src={icon} width={20} height={20} alt="icon" />
-            <span className="whitespace-nowrap text-xs text-white">
+      {prices.length == 2 && !isOnlySubMarket ? (
+        <div className="flex w-full flex-row items-center justify-center space-x-5">
+          <div className="flex w-[28%] flex-row items-center justify-start space-x-2">
+            <div className="flex h-7 w-7 overflow-hidden rounded-md ">
+              <Image
+                src={icon}
+                alt="icon"
+                style={{ position: "relative", objectFit: "cover" }}
+                width={28}
+                height={28}
+              />
+            </div>
+            <span className="whitespace-nowrap text-xs font-normal text-white">
               {title}
             </span>
           </div>

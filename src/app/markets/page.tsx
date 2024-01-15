@@ -26,7 +26,7 @@ export default async function MarketsPage() {
   const marketsBanners = await getMarketsBanners({ supabase, options: {} });
 
   return (
-    <div className="w-full bg-black pb-4 lg:pb-16">
+    <div className="w-full  pb-4 lg:pb-16">
       <Banner banners={marketsBanners} />
       <div className="flex w-full flex-col space-y-4">
         <div className="px-4 lg:px-16">

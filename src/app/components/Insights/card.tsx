@@ -32,7 +32,7 @@ export default function InsightCard({ blog }: InsightCardProps) {
           <div className="flex w-full flex-col justify-center space-y-1 self-stretch px-3">
             <div className="flex w-full flex-row items-center justify-between">
               <h3 className="w-full text-xs font-bold text-tally-primary">
-                {blog.subtitle}
+                Finance
               </h3>
               <div className="flex w-[20%] flex-row items-center justify-end">
                 <span className="text-nowrap text-xs font-medium text-gray-400">

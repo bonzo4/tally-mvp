@@ -36,18 +36,20 @@ export async function GET(req: NextRequest) {
     const resData: PredictionMarketData[] = data
       .filter((market) => market.sub_markets.length)
       .map((market) => {
-        const subMarkets = market.sub_markets.map((subMarket) => {
-          const prices = subMarket.choice_markets.map((choiceMarket) => ({
-            title: choiceMarket.title,
-            price: choiceMarket.share_price,
-          }));
+        const subMarkets = market.sub_markets
+          .sort((a, b) => b.total_pot - a.total_pot)
+          .map((subMarket) => {
+            const prices = subMarket.choice_markets.map((choiceMarket) => ({
+              title: choiceMarket.title,
+              price: choiceMarket.share_price,
+            }));
 
-          return {
-            icon: subMarket.icon,
-            title: subMarket.card_title || subMarket.title,
-            prices,
-          };
-        });
+            return {
+              icon: subMarket.icon,
+              title: subMarket.card_title || subMarket.title,
+              prices,
+            };
+          });
 
         return {
           id: market.id,

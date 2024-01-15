@@ -2,62 +2,54 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
-import { IconContext } from "react-icons";
-import { PiLightningLight } from "react-icons/pi";
-import { FaUserFriends } from "react-icons/fa";
+import Flash from "../../../public/images/flash.svg";
+import Users from "../../../public/images/users.svg";
 
 function SignUpPromotion() {
   return (
-    <IconContext.Provider
-      value={{ className: "text-[8em] lg:text-[10em] xl:text-[14em]" }}
+    <Link
+      href="/"
+      className="relative flex w-full min-w-[80%] flex-col space-y-3 overflow-hidden rounded-2xl border border-tally-primary px-6 py-4 md:space-y-5 lg:px-8 lg:py-6"
     >
-      <Link
-        href="/"
-        className="relative flex w-full min-w-[80%] flex-col space-y-3 overflow-hidden rounded-2xl border border-tally-primary px-6 py-4 md:space-y-5 lg:px-8 lg:py-6"
-      >
-        <div className="lg:w-[80%]">
-          <h2 className="text-2xl font-medium text-white lg:text-4xl">
-            Sign up now and get a $10 trade bonus!
-          </h2>
-        </div>
-        <div>
-          <Button className="bg-tally-primary text-black hover:bg-tally-secondary">
-            Claim Bonus
-          </Button>
-        </div>
-        <div className="absolute -bottom-16 -right-3 lg:-bottom-8 lg:right-0 xl:top-0">
-          <PiLightningLight className="text-tally-primary" />
-        </div>
-      </Link>
-    </IconContext.Provider>
+      <div className="lg:w-[80%]">
+        <h2 className="text-2xl font-medium text-white lg:text-4xl">
+          Sign up now and get a $10 trade bonus!
+        </h2>
+      </div>
+      <div>
+        <Button className="bg-tally-primary px-5 py-2 text-[16px] font-medium text-black hover:bg-tally-secondary">
+          Claim Bonus
+        </Button>
+      </div>
+      <div className="absolute -bottom-16 -right-3 lg:-bottom-8 lg:right-0 xl:-top-5">
+        <Image src={Flash} alt="Flash" />
+      </div>
+    </Link>
   );
 }
 
 function ReferralPromotion() {
   return (
-    <IconContext.Provider
-      value={{ className: "text-[8em] lg:text-[10em] xl:text-[14em]" }}
+    <Link
+      href="/"
+      className="relative flex w-full min-w-[80%] flex-col space-y-3 overflow-hidden rounded-2xl border border-tally-primary px-6 py-4 md:space-y-5 lg:px-8 lg:py-6"
     >
-      <Link
-        href="/"
-        className="relative flex w-full min-w-[80%] flex-col space-y-3 overflow-hidden rounded-2xl border border-tally-primary px-6 py-4 md:space-y-5 lg:px-8 lg:py-6"
-      >
-        <div className="md:w-[70%]">
-          <h2 className="text-2xl font-medium text-white lg:text-4xl">
-            Refer a friend and win 10,000 USDC!
-          </h2>
-        </div>
-        <div>
-          <Button className="bg-tally-primary text-black hover:bg-tally-secondary">
-            Refer Now
-          </Button>
-        </div>
-        <div className="absolute -bottom-10 -right-2 xl:right-10 xl:top-0">
-          <FaUserFriends className="text-tally-primary" />
-        </div>
-      </Link>
-    </IconContext.Provider>
+      <div className="md:w-[70%]">
+        <h2 className="text-2xl font-medium text-white lg:text-4xl">
+          Refer a friend and win 10,000 USDC!
+        </h2>
+      </div>
+      <div>
+        <Button className="bg-tally-primary px-5 py-2 text-[16px] font-medium text-black hover:bg-tally-secondary">
+          Refer Now
+        </Button>
+      </div>
+      <div className="absolute -bottom-10 -right-2 xl:right-10 xl:top-0">
+        <Image src={Users} alt="Users" />
+      </div>
+    </Link>
   );
 }
 

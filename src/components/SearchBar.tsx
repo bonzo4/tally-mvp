@@ -4,7 +4,7 @@ export default function SearchBar() {
   return (
     <Input
       placeholder="Search"
-      className="border-0 bg-zinc-800 text-white placeholder:text-gray-400"
+      className="border-0 bg-[#232427] text-[16px] text-[#959997] placeholder:text-[#959997]"
     />
   );
 }

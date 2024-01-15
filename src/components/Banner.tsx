@@ -15,7 +15,7 @@ type Banner = LandingBanner | MarketsBanner;
 
 function TransparentToBlackGradientOverlay() {
   return (
-    <div className="absolute bottom-0 left-0 h-full w-full bg-gradient-to-t from-black to-transparent"></div>
+    <div className="absolute bottom-0 left-0 h-full w-full bg-gradient-to-t from-[#0C0D0C] to-transparent"></div>
   );
 }
 
@@ -37,21 +37,21 @@ function Info({ src, alt }: { src: string; alt: string }) {
           </div>
           <div className="lg:hidden">Bet: $2,544,324</div>
           <div className="lg:hidden">Expires: Nov 8th, 2024</div>
-          <div className="hidden flex-col lg:flex lg:flex-row lg:space-x-5">
-            <div>Bet: $2,544,324</div>
-            <div>Expires: Nov 8th, 2024</div>
+          <div className="hidden flex-col lg:flex lg:flex-row lg:space-x-[38px]">
+            <span>Bet: $2,544,324</span>
+            <span>Expires: Nov 8th, 2024</span>
           </div>
           <div className="hidden lg:block">
-            <h1 className="text-3xl font-bold">
+            <h2 className="text-[32px] font-bold leading-[38px]">
               Will global temperatures increase this year?
-            </h1>
+            </h2>
           </div>
         </div>
       </div>
       <div className="lg:hidden">
-        <h1 className="text-2xl font-bold">
+        <h2 className="text-2xl font-bold">
           Will global temperatures increase this year?
-        </h1>
+        </h2>
       </div>
     </div>
   );
@@ -60,7 +60,9 @@ function Info({ src, alt }: { src: string; alt: string }) {
 function ActionItem() {
   return (
     <div className="absolute bottom-2 right-0 flex w-full justify-end px-4 lg:bottom-12 lg:px-16">
-      <Button variant="secondary">Bet Now</Button>
+      <Button variant="secondary" className="px-5 py-2 text-[16px] font-medium">
+        Bet Now
+      </Button>
     </div>
   );
 }

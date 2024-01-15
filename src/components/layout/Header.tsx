@@ -12,9 +12,11 @@ import Tickers from "../Tickers";
 
 import Image from "next/image";
 import { UserDoc } from "@/lib/supabase/user";
+import { Ticker } from "@/lib/supabase/tickers";
 
 type HeaderProps = {
   user: UserDoc | null;
+  tickers: Ticker[];
 };
 
 function HeaderLink({ href, title }: { href: string; title: string }) {
@@ -25,15 +27,15 @@ function HeaderLink({ href, title }: { href: string; title: string }) {
   );
 }
 
-export default function Header({ user }: HeaderProps) {
+export default function Header({ user, tickers }: HeaderProps) {
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col bg-[#18181B]">
       <header className="flex flex-row items-center justify-between space-x-5 bg-black px-4 py-3 lg:px-16">
         <div className="flex flex-grow flex-row items-center space-x-5">
           <Link href="/" className="">
             <h1
               className={cn(
-                "whitespace-nowrap text-[25px] font-bold leading-[30px] -tracking-[0.07em] text-tally-primary"
+                "whitespace-nowrap text-[25.66px] font-bold leading-[30.8px] -tracking-[0.08em] text-tally-primary"
               )}
             >
               TALLY MARKET
@@ -43,7 +45,7 @@ export default function Header({ user }: HeaderProps) {
             <SearchBar />
           </div>
         </div>
-        <div className="hidden space-x-3 text-sm font-bold text-white lg:flex">
+        <div className="text- hidden space-x-8 font-medium text-white lg:flex">
           <HeaderLink href="/" title="Fair Launch" />
           <HeaderLink href="/markets" title="Markets" />
           <HeaderLink href="/blogs" title="Blogs" />
@@ -75,7 +77,7 @@ export default function Header({ user }: HeaderProps) {
                 method="post"
                 className="flex flex-row items-center justify-center space-x-2"
               >
-                <Button className="w-full bg-tally-primary text-black hover:bg-tally-secondary">
+                <Button className="w-full bg-tally-primary px-5 py-2 text-[16px] font-medium text-black hover:bg-tally-secondary">
                   Sign Out
                 </Button>
               </form>
@@ -86,7 +88,7 @@ export default function Header({ user }: HeaderProps) {
                 href="/login"
                 className="underline hover:cursor-pointer hover:no-underline"
               >
-                <Button className="border border-tally-primary bg-black text-tally-primary hover:bg-zinc-800">
+                <Button className="border border-tally-primary bg-black px-5 py-2 text-[16px] font-medium text-tally-primary hover:bg-zinc-800">
                   Log In
                 </Button>
               </Link>
@@ -94,7 +96,7 @@ export default function Header({ user }: HeaderProps) {
                 href="/signup"
                 className="underline hover:cursor-pointer hover:no-underline"
               >
-                <Button className="bg-tally-primary text-black hover:bg-tally-secondary">
+                <Button className="bg-tally-primary px-5 py-2 text-[16px] font-medium text-black hover:bg-tally-secondary">
                   Sign Up
                 </Button>
               </Link>
@@ -118,7 +120,7 @@ export default function Header({ user }: HeaderProps) {
           <HamburgerMenu user={user} className="" />
         </div>
       </header>
-      <Tickers />
+      <Tickers tickers={tickers} />
     </div>
   );
 }

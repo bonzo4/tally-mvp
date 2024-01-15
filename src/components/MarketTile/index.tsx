@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import PriceBar from "./priceBar";
 import MarketFooter from "./footer";
 import { useState } from "react";
-import { MdKeyboardArrowDown } from "react-icons/md";
+// import { MdKeyboardArrowDown } from "react-icons/md";
 
 export interface MarketTileProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -34,25 +34,31 @@ export default function MarketTile({
 }: MarketTileProps) {
   const [expand, setExpand] = useState(false);
 
-  const expandedSubMarkets = expand ? subMarkets : subMarkets.slice(0, 2);
+  const expandedSubMarkets = expand
+    ? subMarkets.slice(0, 5)
+    : subMarkets.slice(0, 2);
+
+  const marketStyle = expand
+    ? "relative flex h-full min-h-[250px] flex-col space-y-2 rounded-2xl shadow"
+    : "relative flex h-full min-h-[200px] flex-col space-y-2 rounded-2xl shadow";
 
   return (
     <div {...restProps}>
-      <div className="relative flex h-full min-h-[200px] flex-col space-y-2 rounded-2xl shadow">
-        <Image
-          src={image}
-          fill={true}
-          alt="test image"
-          className="rounded-2xl object-cover"
-        />
-        <div className="absolute right-0 top-0 pr-3">
-          <Badge>{category}</Badge>
-        </div>
-        <TransparentToGrayGradientOverlay />
+      <Link href="/markets/1">
+        <div className={marketStyle}>
+          <Image
+            src={image}
+            fill={true}
+            alt="test image"
+            className="rounded-2xl object-cover"
+          />
+          <div className="absolute right-0 top-0 pr-3">
+            <Badge>{category}</Badge>
+          </div>
+          <TransparentToGrayGradientOverlay />
 
-        <div className="absolute bottom-0 left-0 right-0 flex flex-col space-y-2 px-4 py-2">
-          <Link href="/markets/1">
-            <div className="flex flex-col">
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col space-y-2 px-4 py-2">
+            <div className="flex flex-col space-y-1">
               <h1 className="font-semibold text-white">{title}</h1>
               {expandedSubMarkets.map((subMarket, index) => {
                 return (
@@ -61,21 +67,24 @@ export default function MarketTile({
                       icon={subMarket.icon}
                       title={subMarket.title}
                       prices={subMarket.prices}
+                      isOnlySubMarket={expandedSubMarkets.length == 1}
                     />
                   </div>
                 );
               })}
             </div>
-          </Link>
-          <button
-            onClick={() => setExpand(!expand)}
-            className="flex w-full flex-row items-center justify-center"
-          >
-            <MdKeyboardArrowDown />
-          </button>
-          <MarketFooter totalPot={totalPot} totalComments={totalComments} />
+            {/* {subMarkets.length >= 2 && (
+              <button
+                // onClick={() => setExpand(!expand)}
+                className="z-100 flex w-full flex-row items-center justify-center"
+              >
+                <MdKeyboardArrowDown />
+              </button>
+            )} */}
+            <MarketFooter totalPot={totalPot} totalComments={totalComments} />
+          </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 }

@@ -1,16 +1,13 @@
 "use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { createBrowserClient } from "@supabase/ssr";
 
 import TickerCarousel from "./TickerCarousel";
 import { convertDollarsToCents } from "@/lib/formats";
 
 import { IconContext } from "react-icons";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BsTriangleFill } from "react-icons/bs";
-import { useTickers } from "@/hooks/useTickers";
+import { Ticker } from "@/lib/supabase/tickers";
+import { cn } from "@/lib/utils";
 
 interface TickerProps {
   choice: string;
@@ -26,49 +23,41 @@ function TickerCell({
   direction,
 }: TickerProps) {
   const href = `/markets/${choice_market_id}/`;
+  const directionColor = direction
+    ? direction === "up"
+      ? "text-[#46FF9B]"
+      : "text-[#FF6F6F]"
+    : "text-white";
   return (
-    <IconContext.Provider value={{ className: "opacity-50" }}>
+    <IconContext.Provider value={{ className: "" }}>
       <Link href={href}>
-        <div className="flex h-full min-w-[200px] items-center justify-center space-x-2">
-          <div className="whitespace-nowrap font-medium">{choice}</div>
+        <div className="flex h-full min-w-[200px] flex-row items-center justify-center space-x-[6px]">
+          <div className=" text-[16px] font-medium text-white">{choice}</div>
           {direction ? (
-            <div>
+            <div className={cn(directionColor, "mt-0.5")}>
               {direction === "up" ? (
-                <BsTriangleFill />
+                <BsTriangleFill size={12} />
               ) : (
-                <BsTriangleFill className="rotate-180" />
+                <BsTriangleFill size={12} className="rotate-180" />
               )}
             </div>
           ) : null}
-          <div>{convertDollarsToCents(share_price)}</div>
+          <span className={cn(directionColor, "text-[16px] font-normal")}>
+            {convertDollarsToCents(share_price)}
+          </span>
         </div>
       </Link>
     </IconContext.Provider>
   );
 }
 
-export default function Tickers() {
-  const [loading, setLoading] = useState(true);
+type TickersProps = {
+  tickers: Ticker[];
+};
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
-  const tickers = useTickers({ supabase, setLoading });
-
-  // framer-motion-ticker library needs tickers.length or will crash
-  if (loading || !tickers.length) {
-    return (
-      <div className="flex h-[48px] w-full items-center justify-center space-x-3 overflow-auto bg-tally-primary py-3">
-        <AiOutlineLoading3Quarters className="mx-auto animate-spin" />
-        {""}
-      </div>
-    );
-  }
-
+export default function Tickers({ tickers }: TickersProps) {
   return (
-    <div className="flex w-full items-center justify-between space-x-3 overflow-auto bg-tally-primary py-3">
+    <div className="flex w-full items-center justify-between space-x-3 overflow-auto bg-[#232427] py-3">
       <TickerCarousel duration={20}>
         {tickers.map(
           ({ choice, choice_market_id, share_price, direction }, index) => {

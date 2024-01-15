@@ -53,7 +53,9 @@ export default async function TradePage({
 }) {
   const market = await getTradingMarketData(slug);
 
-  console.log(market);
+  if (!market) {
+    return <div>404</div>;
+  }
 
   return (
     <div className="w-full">

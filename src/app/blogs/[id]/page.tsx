@@ -7,6 +7,10 @@ export default async function BlogPage({
 }) {
   const blog = await getBlog(id);
 
+  if (!blog) {
+    return <div>404</div>;
+  }
+
   return (
     <div className="flex w-full flex-row items-center justify-center bg-black py-10">
       <div className="border-3 rounded-md border-tally-primary bg-tally-primary p-1">

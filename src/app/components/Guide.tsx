@@ -12,7 +12,7 @@ function Step1() {
         <h3 className="text-2xl font-bold text-white">Step 1</h3>
       </div>
       <div className="lg:max-w-[250px]">
-        <p className="text-center text-gray-400">
+        <p className="text-center text-[#959997]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
           varius enim in eros elementum tristique.
         </p>
@@ -35,12 +35,12 @@ export default function Guide() {
   return (
     <div className="justify-content flex flex-col items-center px-4 py-16 lg:px-16">
       <div className="mb-6">
-        <h2 className="text-center text-2xl font-bold text-white lg:text-4xl">
+        <h2 className="text-center text-2xl font-bold text-white lg:text-5xl">
           How It Works
         </h2>
       </div>
       <div className="max-w-[700px]">
-        <p className="text-center text-white">
+        <p className="text-center text-[18px] text-[#959997]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
           varius enim in eros elementum tristique. Duis cursus, mi quis viverra
           ornare, eros dolor interdum nulla.

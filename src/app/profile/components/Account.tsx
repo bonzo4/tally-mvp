@@ -23,10 +23,10 @@ export default function Account() {
         </div>
       </div>
       <div className="flex justify-evenly space-x-2">
-        <Button className="hover:bg-tally-primary/10 w-full border border-tally-primary bg-transparent text-tally-primary text-tally-primary">
+        <Button className="w-full border border-tally-primary bg-transparent text-tally-primary text-tally-primary hover:bg-tally-primary/10">
           Withdraw
         </Button>
-        <Button className="hover:bg-tally-primary/90 w-full bg-tally-primary text-black">
+        <Button className="w-full bg-tally-primary text-black hover:bg-tally-primary/90">
           Deposit
         </Button>
       </div>

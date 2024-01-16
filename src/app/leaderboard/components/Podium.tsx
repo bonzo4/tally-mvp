@@ -18,7 +18,7 @@ function Place({ place, user }: { place: string; user: LeaderboardType }) {
       <div className="relative flex flex-grow items-center justify-between truncate">
         <div className="flex items-center truncate">
           <p className="ml-4 truncate text-2xl text-white">{username}</p>
-          <div className="text-tally-primary/20 absolute left-4 text-7xl font-bold">
+          <div className="absolute left-4 text-7xl font-bold text-tally-primary/20">
             {place}
           </div>
         </div>

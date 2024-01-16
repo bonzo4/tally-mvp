@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* shadcn css variables */
-    --background: 0 0% 100%;
+    --background: #010101;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -36,15 +36,21 @@
     --radius: 0.5rem;
 
     /* tally css variables */
-    --tally-primary: 147.6 100% 63.7%;
+    --tally-primary: #46ff9b;
+    --tally-primary-2: #16cb74;
     --tally-secondary: 147.5 100% 48.8%;
-    --tally-red: 0 100% 72%;
+    --tally-red: #ff6f6f;
     --tally-orange: 18 97% 54%;
-    --tally-yellow: 57 100% 72%;
+    --tally-yellow: #ffbd6f;
     --tally-green: 137 100% 52%;
-    --tally-blue: 204 97% 54%;
+    --tally-blue: #1546cb;
     --tally-purple: 284 100% 72%;
     --tally-indigo: 241 100% 72%;
+
+    --layer-1: #18181b;
+    --layer-2: #232427;
+    --layer-3: #515261;
+    --grey-1: #959997;
   }
 
   .dark {

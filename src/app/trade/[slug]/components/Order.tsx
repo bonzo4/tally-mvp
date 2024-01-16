@@ -138,7 +138,7 @@ function BuyOrderSummary() {
           </div>
           <div className="text-lg font-bold text-white">$100</div>
         </div>
-        <Button className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black">
+        <Button className="hover:bg-tally-primary/90 w-full bg-tally-primary px-5 py-2 text-black hover:text-black">
           Buy
         </Button>
       </div>
@@ -170,7 +170,7 @@ function SellOrderSummary() {
           </div>
           <div className="text-lg font-bold text-white">$100</div>
         </div>
-        <Button className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black">
+        <Button className="hover:bg-tally-red/90 w-full bg-tally-red px-5 py-2 text-black hover:text-black">
           Sell
         </Button>
       </div>

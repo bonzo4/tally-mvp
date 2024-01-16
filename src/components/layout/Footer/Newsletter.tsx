@@ -40,7 +40,7 @@ export default function Newsletter() {
         <Button
           type="submit"
           variant="outline"
-          className="w-full border border-tally-primary bg-transparent text-tally-primary hover:bg-tally-primary/10 hover:text-tally-primary md:w-min"
+          className="hover:bg-tally-primary/10 w-full border border-tally-primary bg-transparent text-tally-primary hover:text-tally-primary md:w-min"
         >
           Subscribe
         </Button>

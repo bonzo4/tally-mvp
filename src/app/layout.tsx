@@ -8,7 +8,14 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { UserDoc, getUser } from "@/lib/supabase/user";
 // import { getTickers } from "@/lib/api/fetch";
 
-const gotham = localFont({ src: "../../public/gotham.otf" });
+export const gotham = localFont({
+  src: "../../public/gotham.otf",
+  variable: "--font-gotham",
+});
+export const gothamBold = localFont({
+  src: "../../public/gotham-bold.otf",
+  variable: "--font-gotham-bold",
+});
 
 export const metadata: Metadata = {
   title: "Tally MVP",
@@ -49,8 +56,7 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          "flex min-h-screen flex-col bg-[#0C0D0C] font-mono tracking-wide antialiased",
-          gotham.className
+          "flex min-h-screen flex-col bg-background font-gotham tracking-wide antialiased"
         )}
       >
         <Header user={user} tickers={[]} />

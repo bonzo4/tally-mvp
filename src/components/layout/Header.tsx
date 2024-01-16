@@ -35,7 +35,7 @@ export default function Header({ user, tickers }: HeaderProps) {
           <Link href="/" className="">
             <h1
               className={cn(
-                "whitespace-nowrap text-[25.66px] font-bold leading-[30.8px] -tracking-[0.08em] text-tally-primary"
+                "whitespace-nowrap font-gotham-bold text-[25.66px] font-bold leading-[30.8px] -tracking-[0.09em] text-tally-primary"
               )}
             >
               TALLY MARKET

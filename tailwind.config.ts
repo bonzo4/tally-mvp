@@ -19,11 +19,12 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        mono: ["var(--font-roboto)", ...fontFamily.mono],
-        sans: ["MontSerrat", ...fontFamily.sans],
+        gotham: ["var(--font-gotham)"],
+        "gotham-bold": ["var(--font-gotham-bold)"],
       },
       colors: {
         "tally-primary": "hsl(var(--tally-primary))",
+        "tally-primary-2": "hsl(var(--tally-primary-2))",
         "tally-secondary": "hsl(var(--tally-secondary))",
         "tally-red": "hsl(var(--tally-red))",
         "tally-orange": "hsl(var(--tally-orange))",
@@ -32,6 +33,7 @@ module.exports = {
         "tally-blue": "hsl(var(--tally-blue))",
         "tally-purple": "hsl(var(--tally-purple))",
         "tally-indigo": "hsl(var(--tally-indigo))",
+        "tally-grey": "hsl(var(--tally-grey))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

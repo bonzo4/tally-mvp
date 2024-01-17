@@ -26,7 +26,7 @@ function Question() {
 export default function Faq() {
   return (
     <div className="flex flex-col gap-10 px-4 py-10 lg:flex-row lg:gap-20 lg:px-16 lg:py-28">
-      <div className="flex flex-col space-y-8 lg:max-w-[500px]">
+      <div className="flex flex-col space-y-8 lg:max-w-[350px] xl:max-w-[500px]">
         <div className="text-5xl font-bold text-white">FAQs</div>
         <div className="text-lg text-tally-gray">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse

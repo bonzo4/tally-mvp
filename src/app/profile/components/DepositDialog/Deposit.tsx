@@ -1,6 +1,6 @@
 "use client";
 import { HelioCheckout } from "@heliofi/checkout-react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -22,9 +22,11 @@ export default function Deposit() {
         Link
       </Label>
       <Input
-        id="link"
-        defaultValue="https://ui.shadcn.com/docs/installation"
-        readOnly
+        defaultValue={"5"}
+        value={amount}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setAmount(e.target.value)
+        }
       />
       <HelioCheckout
         config={{

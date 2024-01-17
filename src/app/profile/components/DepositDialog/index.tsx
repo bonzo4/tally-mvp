@@ -1,5 +1,3 @@
-import { Copy } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,14 +9,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import Deposit from "./Deposit";
 
 export default function DepositDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Deposit</Button>
+        <Button className="w-full bg-tally-primary text-black hover:bg-tally-primary/90">
+          Deposit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -28,20 +27,7 @@ export default function DepositDialog() {
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Link
-            </Label>
-            <Input
-              id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
-              readOnly
-            />
-          </div>
-          <Button type="submit" size="sm" className="px-3">
-            <span className="sr-only">Copy</span>
-            <Copy className="h-4 w-4" />
-          </Button>
+          <Deposit />
         </div>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>

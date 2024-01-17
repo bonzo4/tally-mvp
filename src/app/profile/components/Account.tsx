@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { formatDollarsWithCents } from "@/lib/formats";
+import DepositDialog from "./DepositDialog";
 
 export default function Account() {
   const portfolio = 500;
@@ -26,9 +27,7 @@ export default function Account() {
         <Button className="w-full border border-tally-primary bg-transparent text-tally-primary hover:bg-tally-primary/10">
           Withdraw
         </Button>
-        <Button className="w-full bg-tally-primary text-black hover:bg-tally-primary/90">
-          Deposit
-        </Button>
+        <DepositDialog />
       </div>
     </div>
   );

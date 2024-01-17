@@ -2,12 +2,13 @@
 import { HelioCheckout } from "@heliofi/checkout-react";
 import { useState } from "react";
 import { Input } from "../../../../components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type PaymentProps = {
   amount: string;
 };
 
-export default function Payment() {
+export default function Deposit() {
   const [amount, setAmount] = useState("5");
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,8 +17,15 @@ export default function Payment() {
   };
 
   return (
-    <>
-      <Input value={amount} onChange={onAmountChange} type="number" />
+    <div className="flex flex-col">
+      <Label htmlFor="link" className="sr-only">
+        Link
+      </Label>
+      <Input
+        id="link"
+        defaultValue="https://ui.shadcn.com/docs/installation"
+        readOnly
+      />
       <HelioCheckout
         config={{
           paylinkId: process.env.NEXT_PUBLIC_HELIO_PAYLINK_ID!,
@@ -45,6 +53,6 @@ export default function Payment() {
           onStartPayment: () => console.log("Starting payment"),
         }}
       />
-    </>
+    </div>
   );
 }

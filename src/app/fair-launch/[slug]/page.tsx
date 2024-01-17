@@ -1,9 +1,12 @@
 import Image from "next/image";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getFairLaunch } from "@/lib/api/fetch";
 import { cn } from "@/lib/utils";
+
+import Faq from "./components/Faq";
 
 function TransparentToBlackGradientOverlay() {
   return (
@@ -150,12 +153,6 @@ function OrderButton({ choice, color }: { choice: string; color?: string }) {
   );
 }
 
-function Faq() {
-  return (
-
-      )
-}
-
 export default async function FairLaunchPage({
   params,
 }: {
@@ -164,7 +161,7 @@ export default async function FairLaunchPage({
   const market = await getFairLaunch(params.slug);
   if (!market) return;
   return (
-    <div className="w-full bg-background">
+    <div className="w-full">
       <div className="relative flex h-[738px] w-full items-end justify-center py-10">
         <Banner src={market.banner} />
         <div className="z-50 flex flex-col items-center space-y-4">
@@ -176,6 +173,7 @@ export default async function FairLaunchPage({
           </div>
         </div>
       </div>
+      <Faq />
     </div>
   );
 }

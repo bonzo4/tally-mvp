@@ -56,7 +56,7 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          "flex min-h-screen flex-col bg-background font-gotham tracking-wide antialiased"
+          "flex min-h-screen flex-col bg-tally-background font-gotham tracking-wide antialiased"
         )}
       >
         <Header user={user} tickers={[]} />

@@ -3,7 +3,6 @@ import Overview from "./components/Overview";
 import Account from "./components/Account";
 import Rankings from "./components/Ranking";
 import Tables from "./components/Activities";
-import Payment from "@/components/Payment";
 
 export default function Profile() {
   return (
@@ -20,7 +19,6 @@ export default function Profile() {
         <div className="w-full px-4 lg:px-16">
           <Tables />
         </div>
-        <Payment />
       </div>
     </div>
   );

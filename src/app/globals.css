@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* shadcn css variables */
-    --background: 120, 4%, 4.9%;
+    --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -14,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 240, 5.88%, 10%;
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 225, 5.41%, 14.51%;
+    --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 236.25, 8.99%, 34.9%;
+    --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -37,8 +37,7 @@
 
     /* tally css variables */
     --tally-primary: 147.6 100% 63.7%;
-    --tally-primary-2: 151.16, 80.44% 44.12%,
-      --tally-secondary: 147.5 100% 48.8%;
+    --tally-secondary: 151.16 80.44% 44.12%;
     --tally-red: 0 100% 72%;
     --tally-orange: 18 97% 54%;
     --tally-yellow: 57 100% 72%;
@@ -46,7 +45,11 @@
     --tally-blue: 204 97% 54%;
     --tally-purple: 284 100% 72%;
     --tally-indigo: 241 100% 72%;
-    --tally-grey: 150, 1.92%, 59.22%;
+    --tally-background: 120 4% 5%;
+    --tally-layer-1: 240 5.88% 10%;
+    --tally-layer-2: 225 5.41% 14.51%;
+    --tally-layer-3: 236 9% 35%;
+    --tally-gray: 150 1.92% 59.22%;
   }
 
   .dark {

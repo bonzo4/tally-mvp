@@ -72,13 +72,13 @@ function OrderCardGrid({ choice }: { choice: ChoiceMarket }) {
   return (
     <div
       className={cn(
-        "flex justify-between space-x-8 rounded-2xl border border-tally-layer-2  bg-tally-background/90 p-4"
+        "flex flex-col justify-between space-x-0 space-y-2 rounded-2xl border border-tally-layer-2 bg-tally-background/90 p-4 lg:flex-row lg:space-x-8 lg:space-y-0"
       )}
     >
-      <div className="flex flex-shrink-0 flex-col">
-        <div className="flex items-center space-x-2">
+      <div className="flex flex-shrink flex-col truncate">
+        <div className="flex items-center space-x-2 truncate">
           {choice.icon ? (
-            <div className="relative h-[55px] w-[55px]">
+            <div className="relative h-[55px] w-[55px] flex-shrink-0">
               <Image
                 src={choice.icon}
                 alt="something"
@@ -87,19 +87,26 @@ function OrderCardGrid({ choice }: { choice: ChoiceMarket }) {
               />
             </div>
           ) : null}
-          <div className="flex flex-col justify-between">
-            <div className="text-3xl font-bold text-white">{choice.title}</div>
-            <div className={cn(textCss, "text-lg")}>$.50</div>
+          <div className="flex flex-col">
+            <div className="flex-row items-end justify-between space-x-2 truncate md:flex-col md:items-start md:space-x-0">
+              <div className="truncate text-3xl font-bold text-white">
+                {choice.title}
+              </div>
+              <div className={cn(textCss, "text-lg")}>$.50</div>
+            </div>
+            <div className="mt-2 text-sm text-tally-gray md:hidden">{`Total Pot: ${formatDollarsWithoutCents(
+              choice.total_pot
+            )}`}</div>
           </div>
         </div>
-        <div className="mt-2 text-sm text-tally-gray">{`Total Pot: ${formatDollarsWithoutCents(
+        <div className="mt-2 hidden text-sm text-tally-gray md:flex">{`Total Pot: ${formatDollarsWithoutCents(
           choice.total_pot
         )}`}</div>
       </div>
-      <div className="flex flex-col justify-between">
+      <div className="flex flex-shrink-0 flex-col justify-between">
         <div className="flex space-x-2">
           <Input
-            className="w-[251px] border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray"
+            className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray xl:w-[251px]"
             placeholder="$0"
           />
           <Button className={cn(buttonCss, "text-black hover:text-black")}>
@@ -182,31 +189,41 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
 
 export function OrderCardsMobile({ choices }: { choices: ChoiceMarket[] }) {
   const [selected, setSelected] = useState<string>("Yes");
-  return (
-    <div className="space-y-6 px-4 py-10 md:hidden">
-      <div className="flex w-full space-x-2">
-        <FilterButton
-          className="flex-grow"
-          selectedCss="bg-tally-primary hover:bg-tally-primary text-black"
-          name="Yes"
-          selected={selected}
-          onClick={() => setSelected("Yes")}
-        />
-        <FilterButton
-          className="flex-grow"
-          selectedCss="bg-tally-red hover:bg-tally-red text-black"
-          name="No"
-          selected={selected}
-          onClick={() => setSelected("No")}
-        />
+  if (choices.length < 4) {
+    return (
+      <div className="space-y-6 px-4 py-10 md:hidden">
+        <div className="flex w-full space-x-2">
+          <FilterButton
+            className="flex-grow"
+            selectedCss="bg-tally-primary hover:bg-tally-primary text-black"
+            name="Yes"
+            selected={selected}
+            onClick={() => setSelected("Yes")}
+          />
+          <FilterButton
+            className="flex-grow"
+            selectedCss="bg-tally-red hover:bg-tally-red text-black"
+            name="No"
+            selected={selected}
+            onClick={() => setSelected("No")}
+          />
+        </div>
+        {selected === "Yes" ? (
+          <OrderCard choice="Yes" />
+        ) : (
+          <OrderCard choice="No" />
+        )}
       </div>
-      {selected === "Yes" ? (
-        <OrderCard choice="Yes" />
-      ) : (
-        <OrderCard choice="No" />
-      )}
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="space-y-4 px-4 md:hidden">
+        {choices.map((choice, index) => (
+          <OrderCardGrid choice={choice} />
+        ))}
+      </div>
+    );
+  }
 }
 
 export function OrderCardsDesktop({ choices }: { choices: ChoiceMarket[] }) {

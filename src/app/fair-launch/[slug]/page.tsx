@@ -15,7 +15,7 @@ function TransparentToBlackGradientOverlay() {
 
 function Banner({ src }: { src: string }) {
   return (
-    <div className="absolute left-0 top-0 h-[372px] w-full md:h-[738px]">
+    <div className="absolute left-0 top-0 h-[372px] w-full lg:h-[738px]">
       <Image src={src} alt="" fill={true} className="object-cover" />
       <TransparentToBlackGradientOverlay />
     </div>
@@ -24,7 +24,7 @@ function Banner({ src }: { src: string }) {
 
 function Unit({ unit, amount }: { unit: string; amount: number }) {
   return (
-    <div className="flex max-w-[70px] flex-col items-center justify-center rounded-lg bg-neutral-800/80 px-2 py-2 md:px-4">
+    <div className="flex max-w-[70px] flex-col items-center justify-center rounded-lg bg-neutral-800/80 px-2 py-2 lg:px-4">
       <div>
         <div className="-mb-1 -mt-1 text-center text-xl font-bold text-white lg:text-3xl">
           {amount}
@@ -86,7 +86,7 @@ export default async function FairLaunchPage({
   if (!market) return;
   return (
     <div className="w-full">
-      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 md:h-[738px]">
+      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[738px]">
         <Banner src={market.banner} />
         <div className="z-50 flex flex-col items-center space-y-4">
           <Countdown />

@@ -10,9 +10,12 @@ import { cn } from "@/lib/utils";
 
 import { FilterButton } from "@/components/FilterButton";
 import { ChoiceMarket } from "@/lib/supabase/markets/subMarkets";
+import { Database } from "@/lib/types";
 
-const borderCssMap = {
-  main: "border-tally-primary hover:border-tally-primary/90",
+type Color = Database["public"]["Enums"]["colors_enum"];
+
+const borderCssMap: Record<Color, string> = {
+  primary: "border-tally-primary hover:border-tally-primary/90",
   red: "border-tally-red hover:border-tally-red/90",
   orange: "border-tally-orange hover:border-tally-orange/90",
   yellow: "border-tally-yellow hover:border-tally-yellow/90",
@@ -21,9 +24,10 @@ const borderCssMap = {
   purple: "border-tally-purple hover:border-tally-purple/90",
   indigo: "border-tally-indigo hover:border-tally-indigo/90",
   gray: "border-tally-gray hover:border-tally-gray/90",
+  white: "border-tally-white hover:border-tally-white/90",
 };
 
-const buttonCssMap = {
+const buttonCssMap: Record<Color, string> = {
   primary: "bg-tally-primary hover:bg-tally-primary/90",
   red: "bg-tally-red hover:bg-tally-red/90",
   orange: "bg-tally-orange hover:bg-tally-orange/90",
@@ -33,9 +37,10 @@ const buttonCssMap = {
   purple: "bg-tally-purple hover:bg-tally-purple/90",
   indigo: "bg-tally-indigo hover:bg-tally-indigo/90",
   gray: "bg-tally-gray hover:bg-tally-gray/90",
+  white: "bg-tally-white hover:bg-tally-white/90",
 };
 
-const textCssMap = {
+const textCssMap: Record<Color, string> = {
   primary: "text-tally-primary",
   red: "text-tally-red",
   orange: "text-tally-orange",
@@ -45,6 +50,7 @@ const textCssMap = {
   purple: "text-tally-purple",
   indigo: "text-tally-indigo",
   gray: "text-tally-gray",
+  white: "text-tally-white",
 };
 
 function OrderCardGrid({ choice }: { choice: ChoiceMarket }) {
@@ -88,18 +94,18 @@ function OrderCardGrid({ choice }: { choice: ChoiceMarket }) {
             </div>
           ) : null}
           <div className="flex flex-col">
-            <div className="flex-row items-end justify-between space-x-2 truncate md:flex-col md:items-start md:space-x-0">
+            <div className="flex-row items-end justify-between space-x-2 truncate lg:flex-col lg:items-start lg:space-x-0">
               <div className="truncate text-3xl font-bold text-white">
                 {choice.title}
               </div>
               <div className={cn(textCss, "text-lg")}>$.50</div>
             </div>
-            <div className="mt-2 text-sm text-tally-gray md:hidden">{`Total Pot: ${formatDollarsWithoutCents(
+            <div className="mt-2 text-sm text-tally-gray lg:hidden">{`Total Pot: ${formatDollarsWithoutCents(
               choice.total_pot
             )}`}</div>
           </div>
         </div>
-        <div className="mt-2 hidden text-sm text-tally-gray md:flex">{`Total Pot: ${formatDollarsWithoutCents(
+        <div className="mt-2 hidden text-sm text-tally-gray lg:flex">{`Total Pot: ${formatDollarsWithoutCents(
           choice.total_pot
         )}`}</div>
       </div>
@@ -188,36 +194,33 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
 }
 
 export function OrderCardsMobile({ choices }: { choices: ChoiceMarket[] }) {
-  const [selected, setSelected] = useState<string>("Yes");
+  const [selected, setSelected] = useState<string>(choices[0].title);
   if (choices.length < 4) {
     return (
-      <div className="space-y-6 px-4 py-10 md:hidden">
+      <div className="space-y-6 px-4 py-10 lg:hidden">
         <div className="flex w-full space-x-2">
-          <FilterButton
-            className="flex-grow"
-            selectedCss="bg-tally-primary hover:bg-tally-primary text-black"
-            name="Yes"
-            selected={selected}
-            onClick={() => setSelected("Yes")}
-          />
-          <FilterButton
-            className="flex-grow"
-            selectedCss="bg-tally-red hover:bg-tally-red text-black"
-            name="No"
-            selected={selected}
-            onClick={() => setSelected("No")}
-          />
+          {choices.map((choice, index) => (
+            <FilterButton
+              key={index}
+              className="flex-grow"
+              selectedCss={cn(
+                buttonCssMap[choice.color || "primary"],
+                "text-black"
+              )}
+              name={choice.title}
+              selected={selected}
+              onClick={() => setSelected(choice.title)}
+            />
+          ))}
         </div>
-        {selected === "Yes" ? (
-          <OrderCard choice="Yes" />
-        ) : (
-          <OrderCard choice="No" />
-        )}
+        {choices
+          .map((choice, index) => <OrderCard key={index} choice={choice} />)
+          .filter((choice) => choice.props.choice.title === selected)}
       </div>
     );
   } else {
     return (
-      <div className="space-y-4 px-4 md:hidden">
+      <div className="space-y-4 px-4 lg:hidden">
         {choices.map((choice, index) => (
           <OrderCardGrid choice={choice} />
         ))}
@@ -231,7 +234,7 @@ export function OrderCardsDesktop({ choices }: { choices: ChoiceMarket[] }) {
   console.log(choices);
   if (choices.length < 4) {
     return (
-      <div className="hidden space-x-6 md:flex">
+      <div className="hidden space-x-6 lg:flex">
         {choices.map((choice, index) => (
           <OrderCard key={index} choice={choice} />
         ))}
@@ -239,7 +242,7 @@ export function OrderCardsDesktop({ choices }: { choices: ChoiceMarket[] }) {
     );
   } else {
     return (
-      <div className="hidden md:grid md:grid-cols-2 md:gap-4">
+      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4">
         {choices.map((choice, index) => (
           <OrderCardGrid key={index} choice={choice} />
         ))}

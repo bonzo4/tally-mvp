@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
+import { ClaimCards } from "./components/ClaimCards";
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
 import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
@@ -89,7 +90,7 @@ function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   // } else {
   //   return "closed";
   // }
-  return "trade";
+  return "claim";
 }
 
 export default async function FairLaunchPage({
@@ -102,7 +103,7 @@ export default async function FairLaunchPage({
   const phase = calculatePeriod(market);
   return (
     <div className="w-full">
-      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[738px]">
+      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[650px]">
         <Banner src={market.banner} />
         <div className="z-50 flex flex-col items-center space-y-4">
           {phase === "trade" ? (
@@ -116,6 +117,9 @@ export default async function FairLaunchPage({
           <Info {...market} />
           {phase === "fair-launch" ? (
             <OrderCardsDesktop choices={market.choice_markets} />
+          ) : null}
+          {phase === "claim" ? (
+            <ClaimCards choices={market.choice_markets} />
           ) : null}
         </div>
       </div>

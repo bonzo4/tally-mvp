@@ -71,7 +71,7 @@ function ClaimCard({ choice, winner, ...rest }: ClaimCardProps) {
       className={cn(
         bgCss,
         borderCss,
-        "relative flex w-[351px] flex-col rounded-2xl border p-4"
+        "relative flex flex-col rounded-2xl border p-4 lg:w-[351px]"
       )}
     >
       {isWinner ? (
@@ -92,12 +92,22 @@ function ClaimCard({ choice, winner, ...rest }: ClaimCardProps) {
   );
 }
 
-export function ClaimCards({ choices }: { choices: ChoiceMarket[] }) {
+interface ClaimCardsProps extends React.HTMLAttributes<HTMLDivElement> {
+  choices: ChoiceMarket[];
+  winner: number;
+}
+
+export function ClaimCardsDesktop({
+  choices,
+  winner,
+  className,
+  ...rest
+}: ClaimCardsProps) {
   if (!choices) return;
-  const winner = choices[0].id;
+  winner = choices[0].id;
   if (choices.length < 4) {
     return (
-      <div className="hidden space-x-6 lg:flex">
+      <div className={cn(className, "hidden lg:flex lg:space-x-6")}>
         {choices.map((choice, index) => (
           <ClaimCard key={index} choice={choice} winner={winner} />
         ))}
@@ -105,11 +115,48 @@ export function ClaimCards({ choices }: { choices: ChoiceMarket[] }) {
     );
   } else {
     return (
-      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4">
+      <div className={cn(className, "hidden lg:grid lg:grid-cols-2 lg:gap-4")}>
         {choices.map((choice, index) => (
           <ClaimCard key={index} choice={choice} winner={winner} />
         ))}
       </div>
     );
   }
+}
+
+export function ClaimCardsMobile({
+  choices,
+  winner,
+  className,
+  ...rest
+}: ClaimCardsProps) {
+  if (!choices) return;
+  winner = choices[0].id;
+  if (choices.length < 4) {
+    return (
+      <div className={cn(className, "space-y-4 px-4")}>
+        {choices.map((choice, index) => (
+          <ClaimCard key={index} choice={choice} winner={winner} />
+        ))}
+      </div>
+    );
+  } else {
+    return (
+      <div className={cn(className, "space-y-4 px-4")}>
+        {choices.map((choice, index) => (
+          <ClaimCard key={index} choice={choice} winner={winner} />
+        ))}
+      </div>
+    );
+  }
+}
+
+export function ClaimButton() {
+  return (
+    <div>
+      <Button className="bg-tally-primary text-black hover:bg-tally-secondary">
+        Claim Winnings
+      </Button>
+    </div>
+  );
 }

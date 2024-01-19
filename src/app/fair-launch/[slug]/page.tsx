@@ -1,7 +1,11 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
-import { ClaimCards } from "./components/ClaimCards";
+import {
+  ClaimCardsDesktop,
+  ClaimCardsMobile,
+  ClaimButton,
+} from "./components/ClaimCards";
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
 import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
@@ -61,7 +65,7 @@ function Info(market: SubMarketWithChoiceMarkets) {
   const phase = calculatePeriod(market);
 
   return (
-    <div className="mt-4 flex flex-col items-center space-y-3">
+    <div className="mb-6 mt-4 flex flex-col items-center space-y-3">
       <Badge className="bg-white text-xs text-black hover:bg-white hover:text-black">
         Politics
       </Badge>
@@ -105,7 +109,7 @@ export default async function FairLaunchPage({
     <div className="w-full">
       <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[650px]">
         <Banner src={market.banner} />
-        <div className="z-50 flex flex-col items-center space-y-4">
+        <div className="z-50 flex flex-col items-center">
           {phase === "trade" ? (
             <TradePhase className="hidden lg:flex" />
           ) : phase === "freeze" ? (
@@ -119,7 +123,14 @@ export default async function FairLaunchPage({
             <OrderCardsDesktop choices={market.choice_markets} />
           ) : null}
           {phase === "claim" ? (
-            <ClaimCards choices={market.choice_markets} />
+            <div className="flex w-full flex-col items-center space-y-4">
+              <ClaimCardsDesktop
+                className="hidden"
+                choices={market.choice_markets}
+                winner={market.choice_markets[0].id}
+              />
+              <ClaimButton />
+            </div>
           ) : null}
         </div>
       </div>
@@ -128,6 +139,13 @@ export default async function FairLaunchPage({
       ) : null}
       {phase === "fair-launch" ? (
         <OrderCardsMobile choices={market.choice_markets} />
+      ) : null}
+      {phase === "claim" ? (
+        <ClaimCardsMobile
+          className="flex w-full flex-col lg:hidden"
+          winner={market.choice_markets[0].id}
+          choices={market.choice_markets}
+        />
       ) : null}
       <Faq />
     </div>

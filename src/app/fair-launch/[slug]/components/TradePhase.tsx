@@ -9,7 +9,7 @@ export default function TradePhase({ className }: TradePhaseProps) {
     <div
       className={cn(
         className,
-        "flex-col items-center justify-center space-y-4 lg:mb-20"
+        "flex-col items-center justify-center space-y-4 rounded-xl p-4 lg:mb-20 lg:space-y-8 lg:bg-tally-layer-1/80 lg:p-8"
       )}
     >
       <h3 className="text-2xl font-bold text-white lg:text-6xl">

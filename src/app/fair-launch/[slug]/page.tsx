@@ -89,7 +89,7 @@ function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   // } else {
   //   return "closed";
   // }
-  return "resolution";
+  return "trade";
 }
 
 export default async function FairLaunchPage({
@@ -117,11 +117,11 @@ export default async function FairLaunchPage({
           {phase === "fair-launch" ? (
             <OrderCardsDesktop choices={market.choice_markets} />
           ) : null}
-          {phase === "trade" ? (
-            <TradePhase className="flex lg:hidden" />
-          ) : phase === "freeze" ? null : null}
         </div>
       </div>
+      {phase === "trade" ? (
+        <TradePhase className="flex bg-transparent lg:hidden" />
+      ) : null}
       {phase === "fair-launch" ? (
         <OrderCardsMobile choices={market.choice_markets} />
       ) : null}

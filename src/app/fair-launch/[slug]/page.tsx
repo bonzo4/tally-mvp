@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
 import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
-import TradeNow from "./components/TradeNow";
+import TradePhase from "./components/TradePhase";
+import FreezePhase from "./components/FreezePhase";
+import ResolutionPhase from "./components/ResolutionPhase";
 import { getFairLaunch } from "@/lib/api/fetch";
 import { formatDollarsWithoutCents } from "@/lib/formats";
 
@@ -87,7 +89,7 @@ function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   // } else {
   //   return "closed";
   // }
-  return "fair-launch";
+  return "resolution";
 }
 
 export default async function FairLaunchPage({
@@ -103,13 +105,21 @@ export default async function FairLaunchPage({
       <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[738px]">
         <Banner src={market.banner} />
         <div className="z-50 flex flex-col items-center space-y-4">
-          {phase === "trade" ? <TradeNow className="hidden lg:flex" /> : null}
+          {phase === "trade" ? (
+            <TradePhase className="hidden lg:flex" />
+          ) : phase === "freeze" ? (
+            <FreezePhase />
+          ) : phase === "resolution" ? (
+            <ResolutionPhase />
+          ) : null}
           <Countdown />
           <Info {...market} />
           {phase === "fair-launch" ? (
             <OrderCardsDesktop choices={market.choice_markets} />
           ) : null}
-          {phase === "trade" ? <TradeNow className="flex lg:hidden" /> : null}
+          {phase === "trade" ? (
+            <TradePhase className="flex lg:hidden" />
+          ) : phase === "freeze" ? null : null}
         </div>
       </div>
       {phase === "fair-launch" ? (

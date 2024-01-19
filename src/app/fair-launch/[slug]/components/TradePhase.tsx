@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-interface TradeNowProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface TradePhaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export default function TradeNow({ className }: TradeNowProps) {
+export default function TradePhase({ className }: TradePhaseProps) {
   return (
     <div
       className={cn(

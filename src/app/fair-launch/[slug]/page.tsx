@@ -1,11 +1,12 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
-import { getFairLaunch } from "@/lib/api/fetch";
-
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
 import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
+import TradeNow from "./components/TradeNow";
+import { getFairLaunch } from "@/lib/api/fetch";
+import { formatDollarsWithoutCents } from "@/lib/formats";
 
 function TransparentToBlackGradientOverlay() {
   return (
@@ -48,33 +49,45 @@ function Countdown() {
   );
 }
 
-function Info({ title }: { title: string }) {
+function Info(market: SubMarketWithChoiceMarkets) {
+  const title = market.title;
+  const total_pot = market.choice_markets.reduce(
+    (acc, choice) => acc + choice.total_pot,
+    0
+  );
+  const phase = calculatePeriod(market);
+
   return (
     <div className="mt-4 flex flex-col items-center space-y-3">
       <Badge className="bg-white text-xs text-black hover:bg-white hover:text-black">
         Politics
       </Badge>
-      <div className="text-xs text-white lg:text-sm">Total Pot: $2,432,543</div>
+      <div className="text-xs text-white lg:text-sm">{`Total Pot: ${formatDollarsWithoutCents(
+        total_pot
+      )}`}</div>
       <div className="text-center text-2xl font-bold text-white lg:text-3xl">
-        {title}
+        {market.title}
       </div>
     </div>
   );
 }
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
-  const now = new Date().toISOString();
-  if (now < market.fair_launch_end) {
-    return "fair-launch";
-  } else if (now < market.trading_start) {
-    return "freeze";
-  } else if (now < market.trading_end) {
-    return "trade";
-  } else if (now < market.resolution_start) {
-    return "resolution";
-  } else if (now < market.resolution_end) {
-    return "result";
-  }
+  // const now = new Date().toISOString();
+  // if (now < market.fair_launch_end) {
+  //   return "fair-launch";
+  // } else if (now < market.trading_start) {
+  //   return "freeze";
+  // } else if (now < market.trading_end) {
+  //   return "trade";
+  // } else if (now < market.claim_start) {
+  //   return "resolution";
+  // } else if (now < market.claim_end) {
+  //   return "claim";
+  // } else {
+  //   return "closed";
+  // }
+  return "fair-launch";
 }
 
 export default async function FairLaunchPage({
@@ -84,17 +97,24 @@ export default async function FairLaunchPage({
 }) {
   const market = await getFairLaunch(params.slug);
   if (!market) return;
+  const phase = calculatePeriod(market);
   return (
     <div className="w-full">
       <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[738px]">
         <Banner src={market.banner} />
         <div className="z-50 flex flex-col items-center space-y-4">
+          {phase === "trade" ? <TradeNow className="hidden lg:flex" /> : null}
           <Countdown />
-          <Info title={market.title} />
-          <OrderCardsDesktop choices={market.choice_markets} />
+          <Info {...market} />
+          {phase === "fair-launch" ? (
+            <OrderCardsDesktop choices={market.choice_markets} />
+          ) : null}
+          {phase === "trade" ? <TradeNow className="flex lg:hidden" /> : null}
         </div>
       </div>
-      <OrderCardsMobile choices={market.choice_markets} />
+      {phase === "fair-launch" ? (
+        <OrderCardsMobile choices={market.choice_markets} />
+      ) : null}
       <Faq />
     </div>
   );

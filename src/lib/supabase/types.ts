@@ -973,14 +973,14 @@ export interface Database {
         Row: {
           banner: string
           card_title: string | null
+          claim_end: string
+          claim_start: string
           created_at: string
           fair_launch_end: string
           fair_launch_start: string
           icon: string
           id: number
           prediction_market_id: number
-          resolution_end: string
-          resolution_start: string
           slug: string
           start_time: string
           thumbnail: string
@@ -993,14 +993,14 @@ export interface Database {
         Insert: {
           banner: string
           card_title?: string | null
+          claim_end: string
+          claim_start: string
           created_at?: string
           fair_launch_end: string
           fair_launch_start: string
           icon: string
           id?: number
           prediction_market_id: number
-          resolution_end: string
-          resolution_start: string
           slug: string
           start_time?: string
           thumbnail: string
@@ -1013,14 +1013,14 @@ export interface Database {
         Update: {
           banner?: string
           card_title?: string | null
+          claim_end?: string
+          claim_start?: string
           created_at?: string
           fair_launch_end?: string
           fair_launch_start?: string
           icon?: string
           id?: number
           prediction_market_id?: number
-          resolution_end?: string
-          resolution_start?: string
           slug?: string
           start_time?: string
           thumbnail?: string

@@ -14,12 +14,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Leaderboard } from "@/app/api/leaderboard/route";
+import { LeaderboardDoc } from "@/app/api/leaderboard/route";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
-import { getLeaderboard } from "@/lib/api/fetch";
+import { getLeaderboardData } from "@/lib/api/data/leaderboard";
 
 const FILTERS = ["Day", "Week", "Month", "All"];
 
@@ -44,7 +44,7 @@ function FilterByTimeInterval({
   );
 }
 
-interface RowProps extends Leaderboard {
+interface RowProps extends LeaderboardDoc {
   rank: number;
 }
 
@@ -101,7 +101,7 @@ function Row({
   );
 }
 
-function LeaderboardTable({ leaderboard }: { leaderboard: Leaderboard[] }) {
+function LeaderboardTable({ leaderboard }: { leaderboard: LeaderboardDoc[] }) {
   return (
     <div className="w-full rounded-2xl bg-zinc-900 px-4 py-2">
       <Table>
@@ -136,13 +136,14 @@ function LeaderboardTable({ leaderboard }: { leaderboard: Leaderboard[] }) {
 export default function Leaderboard({
   _leaderboard,
 }: {
-  _leaderboard: Leaderboard[];
+  _leaderboard: LeaderboardDoc[];
 }) {
-  const [leaderboard, setLeaderboard] = useState<Leaderboard[]>(_leaderboard);
+  const [leaderboard, setLeaderboard] =
+    useState<LeaderboardDoc[]>(_leaderboard);
   const [filter, setFilter] = useState("Day");
   useEffect(() => {
     async function updateLeaderboard() {
-      const leaderboard_ = await getLeaderboard(filter);
+      const leaderboard_ = await getLeaderboardData(filter);
       setLeaderboard(leaderboard_);
     }
     updateLeaderboard();

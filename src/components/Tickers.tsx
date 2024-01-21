@@ -6,8 +6,11 @@ import { convertDollarsToCents } from "@/lib/formats";
 
 import { IconContext } from "react-icons";
 import { BsTriangleFill } from "react-icons/bs";
-import { Ticker } from "@/lib/supabase/tickers";
+import { Ticker } from "@/lib/supabase/queries/tickers";
 import { cn } from "@/lib/utils";
+import { createClientSupabaseClient } from "@/lib/supabase/client";
+import { useState } from "react";
+import { useTickers } from "@/hooks/useTickers";
 
 interface TickerProps {
   choice: string;
@@ -55,26 +58,31 @@ type TickersProps = {
   tickers: Ticker[];
 };
 
-export default function Tickers({ tickers }: TickersProps) {
+export default function Tickers() {
+  const [loading, setLoading] = useState(true);
+  const supabase = createClientSupabaseClient();
+  const tickers = useTickers({ supabase, setLoading });
   return (
     <div className="flex w-full items-center justify-between space-x-3 overflow-auto bg-[#232427] py-3">
-      <TickerCarousel duration={20}>
-        {tickers.map(
-          ({ choice, choice_market_id, share_price, direction }, index) => {
-            if (choice && choice_market_id && share_price) {
-              return (
-                <TickerCell
-                  key={index}
-                  choice={choice}
-                  choice_market_id={choice_market_id}
-                  share_price={share_price}
-                  direction={direction}
-                />
-              );
+      {!loading && tickers ? (
+        <TickerCarousel duration={20}>
+          {tickers.map(
+            ({ choice, choice_market_id, share_price, direction }, index) => {
+              if (choice && choice_market_id && share_price) {
+                return (
+                  <TickerCell
+                    key={index}
+                    choice={choice}
+                    choice_market_id={choice_market_id}
+                    share_price={share_price}
+                    direction={direction}
+                  />
+                );
+              }
             }
-          }
-        )}
-      </TickerCarousel>
+          )}
+        </TickerCarousel>
+      ) : null}
     </div>
   );
 }

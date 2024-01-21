@@ -4,7 +4,7 @@ import { createBrowserClient } from "@supabase/ssr";
 import { useState } from "react";
 
 import { useCalendar } from "@/hooks/useCalendar";
-import { Calendar as CalendarType } from "@/lib/supabase/calendar";
+import { Calendar as CalendarType } from "@/lib/supabase/queries/calendar";
 
 import Overview from "./components/Overview";
 import Filters from "./components/Filters";

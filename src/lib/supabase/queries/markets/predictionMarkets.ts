@@ -1,6 +1,6 @@
 import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../../types";
-import { fetchQuery } from "../fetch";
+import { fetchQuery } from "../../fetch";
 import { SubMarket } from "./subMarkets";
 import { ChoiceMarket } from "./choiceMarkets";
 

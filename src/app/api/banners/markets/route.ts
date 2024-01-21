@@ -1,7 +1,7 @@
 import {
   MarketsBanner,
   getMarketsBanners,
-} from "@/lib/supabase/banners/marketsBanners";
+} from "@/lib/supabase/queries/banners/marketsBanners";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -17,7 +17,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 
 import SearchBar from "@/components/SearchBar";
 import Image from "next/image";
-import { UserDoc } from "@/lib/supabase/user";
+import { UserDoc } from "@/lib/supabase/queries/user";
 
 function SheetLink({ href, title }: { href: string; title: string }) {
   return (

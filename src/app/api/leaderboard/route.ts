@@ -1,7 +1,7 @@
-import { Database } from "@/lib/types";
+import { Database } from "@/lib/supabase/types";
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { queryLeaderboard } from "@/lib/supabase/leaderboard";
+import { queryLeaderboard } from "@/lib/supabase/queries/leaderboard";
 
 export type LeaderboardDaily =
   Database["public"]["Tables"]["leaderboard_daily"]["Row"];
@@ -15,7 +15,7 @@ export type LeaderboardMonthly =
 export type LeaderboardAll =
   Database["public"]["Tables"]["leaderboard_daily"]["Row"];
 
-export type Leaderboard =
+export type LeaderboardDoc =
   | LeaderboardDaily
   | LeaderboardWeekly
   | LeaderboardMonthly

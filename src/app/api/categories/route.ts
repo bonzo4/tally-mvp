@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/supabase/categories";
+import { getCategories } from "@/lib/supabase/queries/categories";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,6 +1,6 @@
-import { Database } from "@/lib/types";
+import { Database } from "../../types";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { fetchQuery } from "../fetch";
+import { fetchQuery } from "../../fetch";
 import { PredictionMarketsWithSubMarkets } from "./predictionMarkets";
 
 type GetTradeMarketsQueryOptions = {

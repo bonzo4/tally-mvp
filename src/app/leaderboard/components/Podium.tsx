@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-import { Leaderboard as LeaderboardType } from "@/app/api/leaderboard/route";
+import { LeaderboardDoc } from "@/app/api/leaderboard/route";
 import { formatDollarsWithoutCents } from "@/lib/formats";
 
-function Place({ place, user }: { place: string; user: LeaderboardType }) {
+function Place({ place, user }: { place: string; user: LeaderboardDoc }) {
   const { username, image, volume } = user;
   return (
     <div className="flex w-[80vw] rounded-2xl border-2 border-tally-primary px-2 py-4 md:w-[40vw] lg:w-full lg:px-6">
@@ -42,7 +42,7 @@ function PseudoMargin() {
 export default function Podium({
   leaderboard,
 }: {
-  leaderboard: LeaderboardType[];
+  leaderboard: LeaderboardDoc[];
 }) {
   const mapRankAbbreviation: Record<number, string> = {
     1: "1st",

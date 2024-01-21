@@ -1,7 +1,7 @@
 import {
   LandingBanner,
   getLandingBanners,
-} from "@/lib/supabase/banners/landingBanners";
+} from "@/lib/supabase/queries/banners/landingBanners";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 

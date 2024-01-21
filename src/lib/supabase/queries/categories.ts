@@ -1,10 +1,10 @@
 import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../types";
-import { fetchQuery } from "./fetch";
+import { fetchQuery } from "../fetch";
 
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
 
-type GetCategoriesQueryOptions = {};
+export type GetCategoriesQueryOptions = {};
 
 type GetCategoriesOptions = {
   supabase: SupabaseClient<Database>;

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import BlogTile from "./BlogTile";
 import Filter from "./Filter";
 import { Newsletter } from "@/app/api/blogs/route";
-import { getBlogs } from "@/lib/api/fetch";
+import { getBlogs } from "@/lib/api/data/blogs";
 import { throttle } from "@/lib/utils";
 
 export default function Blogs({ blogs }: { blogs: Newsletter[] }) {
@@ -27,8 +27,8 @@ export default function Blogs({ blogs }: { blogs: Newsletter[] }) {
   // Wrap in useCallback so we can use it in useEffect
   // without triggering useEffect on every render.
   const fetchMoreBlogs = useCallback(async () => {
-    const blogs = await getBlogs(12, page + 1);
-    setBlogsFetched((prev) => [...prev, ...blogs]);
+    const blogs = await getBlogs({ limit: 12, page: page + 1 });
+    setBlogsFetched((prev) => [...prev, ...(blogs || [])]);
     setPage((prev) => prev + 1);
   }, [page]);
 

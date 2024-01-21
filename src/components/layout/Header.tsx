@@ -11,12 +11,10 @@ import { cn } from "@/lib/utils";
 import Tickers from "../Tickers";
 
 import Image from "next/image";
-import { UserDoc } from "@/lib/supabase/user";
-import { Ticker } from "@/lib/supabase/tickers";
+import { UserDoc } from "@/lib/supabase/queries/user";
 
 type HeaderProps = {
   user: UserDoc | null;
-  tickers: Ticker[];
 };
 
 function HeaderLink({ href, title }: { href: string; title: string }) {
@@ -27,7 +25,7 @@ function HeaderLink({ href, title }: { href: string; title: string }) {
   );
 }
 
-export default function Header({ user, tickers }: HeaderProps) {
+export default function Header({ user }: HeaderProps) {
   return (
     <div className="flex w-full flex-col bg-[#18181B]">
       <header className="flex flex-row items-center justify-between space-x-5 bg-black px-4 py-3 lg:px-16">
@@ -120,7 +118,7 @@ export default function Header({ user, tickers }: HeaderProps) {
           <HamburgerMenu user={user} className="" />
         </div>
       </header>
-      <Tickers tickers={tickers} />
+      <Tickers />
     </div>
   );
 }

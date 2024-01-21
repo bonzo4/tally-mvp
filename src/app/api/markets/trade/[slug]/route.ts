@@ -1,5 +1,5 @@
-import { PredictionMarketsWithSubMarkets } from "@/lib/supabase/markets/predictionMarkets";
-import { getTradeMarkets } from "@/lib/supabase/markets/tradeMarket";
+import { PredictionMarketsWithSubMarkets } from "@/lib/supabase/queries/markets/predictionMarkets";
+import { getTradeMarkets } from "@/lib/supabase/queries/markets/tradeMarket";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 

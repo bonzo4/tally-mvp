@@ -1,5 +1,5 @@
 import Blogs from "./components/Blogs";
-import { getBlogs } from "@/lib/api/fetch";
+import { getBlogs } from "@/lib/api/data/blogs";
 
 function Header() {
   return (
@@ -13,7 +13,7 @@ function Header() {
 }
 
 export default async function BlogPage() {
-  const blogs = await getBlogs(12, 1);
+  const blogs = await getBlogs({ page: 1 });
   if (!blogs) {
     return;
   }

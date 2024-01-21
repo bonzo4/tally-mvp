@@ -67,7 +67,7 @@ function Info(market: SubMarketWithChoiceMarkets) {
   return (
     <div className="mb-6 mt-4 flex flex-col items-center space-y-3">
       <Badge className="bg-white text-xs text-black hover:bg-white hover:text-black">
-        Politics
+        {market.prediction_markets.category}
       </Badge>
       <div className="text-xs text-white lg:text-sm">{`Total Pot: ${formatDollarsWithoutCents(
         total_pot

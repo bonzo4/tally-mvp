@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
-import { ClaimCardsDesktop, ClaimCardsMobile } from "./components/ClaimCards";
+import { ResultsDesktop, ResultsMobile } from "./components/ResultsCards";
 import Countdown from "./components/Countdown";
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
@@ -52,7 +52,7 @@ function Info(market: SubMarketWithChoiceMarkets) {
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   const now = new Date().toISOString();
-  return ["resolved", market.trading_end];
+  return ["results", market.trading_end];
   //if (now < market.fair_launch_end) {
   //  return ["fair-launch", market.fair_launch_end];
   //} else if (now < market.trading_start) {
@@ -63,7 +63,7 @@ function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   //if (!market.has_resolved) {
   //  return ["resolution", market.trading_end];
   //} else {
-  //  return ["resolved", market.trading_end];
+  //  return ["results", market.trading_end];
   //}
 }
 
@@ -93,9 +93,9 @@ export default async function FairLaunchPage({
           {phase === "fair-launch" ? (
             <OrderCardsDesktop choices={market.choice_markets} />
           ) : null}
-          {phase === "resolved" ? (
+          {phase === "results" ? (
             <div className="flex w-full flex-col items-center space-y-4">
-              <ClaimCardsDesktop
+              <ResultsDesktop
                 className="hidden"
                 choices={market.choice_markets}
                 winner={market.choice_markets[0].id}
@@ -110,8 +110,8 @@ export default async function FairLaunchPage({
       {phase === "fair-launch" ? (
         <OrderCardsMobile choices={market.choice_markets} />
       ) : null}
-      {phase === "resolved" ? (
-        <ClaimCardsMobile
+      {phase === "results" ? (
+        <ResultsMobile
           className="flex w-full flex-col lg:hidden"
           winner={market.choice_markets[0].id}
           choices={market.choice_markets}

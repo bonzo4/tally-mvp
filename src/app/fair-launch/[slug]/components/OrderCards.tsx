@@ -53,27 +53,56 @@ const textCssMap: Record<Color, string> = {
   white: "text-tally-white",
 };
 
-function OrderCardGrid({ choice }: { choice: ChoiceMarket }) {
-  let borderCss = "border-tally-primary hover:border-tally-primary/90";
-  if (choice.title === "No") {
-    borderCss = "border-tally-red hover:border-tally-red/90";
-  } else if (borderCssMap[choice.color as keyof typeof borderCssMap]) {
-    borderCss = borderCssMap[choice.color as keyof typeof borderCssMap];
-  }
+function OrderCard({ choice }: { choice: ChoiceMarket }) {
+  const color = choice.color || "primary";
+  const borderCss = borderCssMap[color as keyof typeof borderCssMap];
+  const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
+  const textCss = textCssMap[color as keyof typeof textCssMap];
 
-  let buttonCss = "bg-tally-primary hover:bg-tally-primary/90";
-  if (choice.title === "No") {
-    buttonCss = "bg-tally-red hover:bg-tally-red/90";
-  } else if (buttonCssMap[choice.color as keyof typeof buttonCssMap]) {
-    buttonCss = buttonCssMap[choice.color as keyof typeof buttonCssMap];
-  }
+  return (
+    <div
+      className={cn(
+        borderCss,
+        "flex flex-col space-y-4 rounded-2xl border-2 bg-black p-4"
+      )}
+    >
+      <div className="flex flex-col items-center">
+        <div className="flex items-end space-x-2">
+          <div className="text-4xl font-bold text-white">{choice.title}</div>
+          <div className={cn(textCss, "text-2xl")}>$.50</div>
+        </div>
+        <div className="text-sm text-tally-gray">{`Total Pot: ${formatDollarsWithoutCents(
+          choice.total_pot
+        )}`}</div>
+      </div>
+      <div className="flex space-x-2">
+        <Input
+          className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
+          placeholder="$0"
+        />
+        <Button className={cn(buttonCss, "text-black hover:text-black")}>
+          Buy
+        </Button>
+      </div>
+      <div className="flex flex-col space-y-1">
+        <div className="flex justify-between">
+          <div className="text-sm text-tally-gray">Shares</div>
+          <div className="text-white">0</div>
+        </div>
+        <div className="flex justify-between">
+          <div className="text-sm text-tally-gray">Potential Return</div>
+          <div className="text-white">$0 (0%)</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  let textCss = "text-tally-primary";
-  if (choice.title === "No") {
-    textCss = "text-tally-red";
-  } else if (textCssMap[choice.color as keyof typeof textCssMap]) {
-    textCss = textCssMap[choice.color as keyof typeof textCssMap];
-  }
+function OrderCardMulti({ choice }: { choice: ChoiceMarket }) {
+  const color = choice.color || "primary";
+  const borderCss = borderCssMap[color as keyof typeof borderCssMap];
+  const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
+  const textCss = textCssMap[color as keyof typeof textCssMap];
 
   return (
     <div
@@ -132,68 +161,7 @@ function OrderCardGrid({ choice }: { choice: ChoiceMarket }) {
   );
 }
 
-function OrderCard({ choice }: { choice: ChoiceMarket }) {
-  let borderCss = "border-tally-primary hover:border-tally-primary/90";
-  if (choice.title === "No") {
-    borderCss = "border-tally-red hover:border-tally-red/90";
-  } else if (borderCssMap[choice.color as keyof typeof borderCssMap]) {
-    borderCss = borderCssMap[choice.color as keyof typeof borderCssMap];
-  }
-
-  let buttonCss = "bg-tally-primary hover:bg-tally-primary/90";
-  if (choice.title === "No") {
-    buttonCss = "bg-tally-red hover:bg-tally-red/90";
-  } else if (buttonCssMap[choice.color as keyof typeof buttonCssMap]) {
-    buttonCss = buttonCssMap[choice.color as keyof typeof buttonCssMap];
-  }
-
-  let textCss = "text-tally-primary";
-  if (choice.title === "No") {
-    textCss = "text-tally-red";
-  } else if (textCssMap[choice.color as keyof typeof textCssMap]) {
-    textCss = textCssMap[choice.color as keyof typeof textCssMap];
-  }
-
-  return (
-    <div
-      className={cn(
-        borderCss,
-        "flex flex-col space-y-4 rounded-2xl border-2 bg-black p-4"
-      )}
-    >
-      <div className="flex flex-col items-center">
-        <div className="flex items-end space-x-2">
-          <div className="text-4xl font-bold text-white">{choice.title}</div>
-          <div className={cn(textCss, "text-2xl")}>$.50</div>
-        </div>
-        <div className="text-sm text-tally-gray">{`Total Pot: ${formatDollarsWithoutCents(
-          choice.total_pot
-        )}`}</div>
-      </div>
-      <div className="flex space-x-2">
-        <Input
-          className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
-          placeholder="$0"
-        />
-        <Button className={cn(buttonCss, "text-black hover:text-black")}>
-          Buy
-        </Button>
-      </div>
-      <div className="flex flex-col space-y-1">
-        <div className="flex justify-between">
-          <div className="text-sm text-tally-gray">Shares</div>
-          <div className="text-white">0</div>
-        </div>
-        <div className="flex justify-between">
-          <div className="text-sm text-tally-gray">Potential Return</div>
-          <div className="text-white">$0 (0%)</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function OrderCardsMobile({ choices }: { choices: ChoiceMarket[] }) {
+export function OrderMobile({ choices }: { choices: ChoiceMarket[] }) {
   const [selected, setSelected] = useState<string>(choices[0].title);
   if (choices.length < 4) {
     return (
@@ -222,16 +190,15 @@ export function OrderCardsMobile({ choices }: { choices: ChoiceMarket[] }) {
     return (
       <div className="space-y-4 px-4 lg:hidden">
         {choices.map((choice, index) => (
-          <OrderCardGrid choice={choice} />
+          <OrderCardMulti choice={choice} />
         ))}
       </div>
     );
   }
 }
 
-export function OrderCardsDesktop({ choices }: { choices: ChoiceMarket[] }) {
+export function OrderDesktop({ choices }: { choices: ChoiceMarket[] }) {
   if (!choices) return;
-  console.log(choices);
   if (choices.length < 4) {
     return (
       <div className="hidden space-x-6 lg:flex">
@@ -244,7 +211,7 @@ export function OrderCardsDesktop({ choices }: { choices: ChoiceMarket[] }) {
     return (
       <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4">
         {choices.map((choice, index) => (
-          <OrderCardGrid key={index} choice={choice} />
+          <OrderCardMulti key={index} choice={choice} />
         ))}
       </div>
     );

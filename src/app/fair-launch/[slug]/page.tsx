@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ResultsDesktop, ResultsMobile } from "./components/ResultsCards";
 import Countdown from "./components/Countdown";
 import Faq from "./components/Faq";
-import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
+import { OrderDesktop, OrderMobile } from "./components/OrderCards";
 import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
 import TradePhase from "./components/TradePhase";
 import FreezePhase from "./components/FreezePhase";
@@ -52,7 +52,7 @@ function Info(market: SubMarketWithChoiceMarkets) {
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   const now = new Date().toISOString();
-  return ["results", market.trading_end];
+  return ["fair-launch", market.fair_launch_end];
   //if (now < market.fair_launch_end) {
   //  return ["fair-launch", market.fair_launch_end];
   //} else if (now < market.trading_start) {
@@ -91,7 +91,7 @@ export default async function FairLaunchPage({
           <Countdown end={new Date(end)} />
           <Info {...market} />
           {phase === "fair-launch" ? (
-            <OrderCardsDesktop choices={market.choice_markets} />
+            <OrderDesktop choices={market.choice_markets} />
           ) : null}
           {phase === "results" ? (
             <div className="flex w-full flex-col items-center space-y-4">
@@ -108,7 +108,7 @@ export default async function FairLaunchPage({
         <TradePhase className="flex bg-transparent lg:hidden" />
       ) : null}
       {phase === "fair-launch" ? (
-        <OrderCardsMobile choices={market.choice_markets} />
+        <OrderMobile choices={market.choice_markets} />
       ) : null}
       {phase === "results" ? (
         <ResultsMobile

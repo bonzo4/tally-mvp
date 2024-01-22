@@ -6,6 +6,7 @@ import {
   ClaimCardsMobile,
   ClaimButton,
 } from "./components/ClaimCards";
+import Countdown from "./components/Countdown";
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
 import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
@@ -26,32 +27,6 @@ function Banner({ src }: { src: string }) {
     <div className="absolute left-0 top-0 h-[372px] w-full lg:h-[738px]">
       <Image src={src} alt="" fill={true} className="object-cover" />
       <TransparentToBlackGradientOverlay />
-    </div>
-  );
-}
-
-function Unit({ unit, amount }: { unit: string; amount: number }) {
-  return (
-    <div className="flex max-w-[70px] flex-col items-center justify-center rounded-lg bg-neutral-800/80 px-2 py-2 lg:px-4">
-      <div>
-        <div className="-mb-1 -mt-1 text-center text-xl font-bold text-white lg:text-3xl">
-          {amount}
-        </div>
-        <div className="-mb-1 text-center text-xs font-bold text-tally-gray lg:text-base">
-          {unit}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Countdown() {
-  return (
-    <div className="flex space-x-2">
-      <Unit unit="Days" amount={10} />
-      <Unit unit="Hours" amount={4} />
-      <Unit unit="Mins" amount={32} />
-      <Unit unit="Secs" amount={12} />
     </div>
   );
 }
@@ -80,21 +55,20 @@ function Info(market: SubMarketWithChoiceMarkets) {
 }
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
-  // const now = new Date().toISOString();
-  // if (now < market.fair_launch_end) {
-  //   return "fair-launch";
-  // } else if (now < market.trading_start) {
-  //   return "freeze";
-  // } else if (now < market.trading_end) {
-  //   return "trade";
-  // } else if (now < market.claim_start) {
-  //   return "resolution";
-  // } else if (now < market.claim_end) {
-  //   return "claim";
-  // } else {
-  //   return "closed";
-  // }
-  return "claim";
+  const now = new Date().toISOString();
+  if (now < market.fair_launch_end) {
+    return ["fair-launch", market.fair_launch_end];
+  } else if (now < market.trading_start) {
+    return ["freeze", market.trading_start];
+  } else if (now < market.trading_end) {
+    return ["trade", market.trading_end];
+  } else if (now < market.claim_start) {
+    return ["resolution", market.claim_start];
+  } else if (now < market.claim_end) {
+    return ["claim", market.claim_end];
+  } else {
+    return ["closed", market.claim_end];
+  }
 }
 
 export default async function FairLaunchPage({
@@ -104,10 +78,11 @@ export default async function FairLaunchPage({
 }) {
   const market = await getFairLaunch(params.slug);
   if (!market) return;
-  const phase = calculatePeriod(market);
+  const [phase, end] = calculatePeriod(market);
+
   return (
     <div className="w-full">
-      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[650px]">
+      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[750px]">
         <Banner src={market.banner} />
         <div className="z-50 flex flex-col items-center">
           {phase === "trade" ? (
@@ -117,7 +92,7 @@ export default async function FairLaunchPage({
           ) : phase === "resolution" ? (
             <ResolutionPhase />
           ) : null}
-          <Countdown />
+          <Countdown end={new Date(end)} />
           <Info {...market} />
           {phase === "fair-launch" ? (
             <OrderCardsDesktop choices={market.choice_markets} />

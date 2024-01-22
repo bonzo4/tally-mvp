@@ -1,11 +1,7 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
-import {
-  ClaimCardsDesktop,
-  ClaimCardsMobile,
-  ClaimButton,
-} from "./components/ClaimCards";
+import { ClaimCardsDesktop, ClaimCardsMobile } from "./components/ClaimCards";
 import Countdown from "./components/Countdown";
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
@@ -56,19 +52,19 @@ function Info(market: SubMarketWithChoiceMarkets) {
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   const now = new Date().toISOString();
-  if (now < market.fair_launch_end) {
-    return ["fair-launch", market.fair_launch_end];
-  } else if (now < market.trading_start) {
-    return ["freeze", market.trading_start];
-  } else if (now < market.trading_end) {
-    return ["trade", market.trading_end];
-  } else if (now < market.claim_start) {
-    return ["resolution", market.claim_start];
-  } else if (now < market.claim_end) {
-    return ["claim", market.claim_end];
-  } else {
-    return ["closed", market.claim_end];
-  }
+  return ["resolved", market.trading_end];
+  //if (now < market.fair_launch_end) {
+  //  return ["fair-launch", market.fair_launch_end];
+  //} else if (now < market.trading_start) {
+  //  return ["freeze", market.trading_start];
+  //} else if (now < market.trading_end) {
+  //  return ["trade", market.trading_end];
+  //}
+  //if (!market.has_resolved) {
+  //  return ["resolution", market.trading_end];
+  //} else {
+  //  return ["resolved", market.trading_end];
+  //}
 }
 
 export default async function FairLaunchPage({
@@ -97,14 +93,13 @@ export default async function FairLaunchPage({
           {phase === "fair-launch" ? (
             <OrderCardsDesktop choices={market.choice_markets} />
           ) : null}
-          {phase === "claim" ? (
+          {phase === "resolved" ? (
             <div className="flex w-full flex-col items-center space-y-4">
               <ClaimCardsDesktop
                 className="hidden"
                 choices={market.choice_markets}
                 winner={market.choice_markets[0].id}
               />
-              <ClaimButton />
             </div>
           ) : null}
         </div>
@@ -115,7 +110,7 @@ export default async function FairLaunchPage({
       {phase === "fair-launch" ? (
         <OrderCardsMobile choices={market.choice_markets} />
       ) : null}
-      {phase === "claim" ? (
+      {phase === "resolved" ? (
         <ClaimCardsMobile
           className="flex w-full flex-col lg:hidden"
           winner={market.choice_markets[0].id}

@@ -30,9 +30,7 @@ const getSubMarketsQuery = async ({
   const slug = options.slug;
   return await supabase
     .from("sub_markets")
-    .select(
-      `*, choice_markets!choice_markets_sub_market_id_fkey(*), prediction_markets(category)`
-    )
+    .select(`*, choice_markets(*), prediction_markets(category)`)
     .eq("slug", slug)
     .order("order", { foreignTable: "choice_markets", ascending: true })
     .order("total_pot", { foreignTable: "choice_markets", ascending: false });

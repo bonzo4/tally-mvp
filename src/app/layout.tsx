@@ -7,11 +7,11 @@ import localFont from "next/font/local";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { UserDoc, getUser } from "@/lib/supabase/queries/user";
 
-export const gotham = localFont({
+const gotham = localFont({
   src: "../../public/gotham.otf",
   variable: "--font-gotham",
 });
-export const gothamBold = localFont({
+const gothamBold = localFont({
   src: "../../public/gotham-bold.otf",
   variable: "--font-gotham-bold",
 });

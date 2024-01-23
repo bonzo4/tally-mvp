@@ -8,7 +8,7 @@ export type ChoiceMarket =
 export type SubMarket = Database["public"]["Tables"]["sub_markets"]["Row"];
 export type SubMarketWithChoiceMarkets = SubMarket & {
   choice_markets: ChoiceMarket[];
-  prediction_markets: { category: string | null };
+  prediction_markets: { category: string | null } | null;
 };
 
 type GetSubMarketsQueryOptions = { slug: string };

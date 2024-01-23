@@ -9,8 +9,8 @@ import { formatDollarsWithoutCents } from "@/lib/formats";
 import { cn } from "@/lib/utils";
 
 import { FilterButton } from "@/components/FilterButton";
-import { ChoiceMarket } from "@/lib/supabase/markets/subMarkets";
-import { Database } from "@/lib/types";
+import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
+import { Database } from "@/lib/supabase/types";
 
 type Color = Database["public"]["Enums"]["colors_enum"];
 
@@ -172,7 +172,9 @@ export function OrderMobile({ choices }: { choices: ChoiceMarket[] }) {
               key={index}
               className="flex-grow"
               selectedCss={cn(
-                buttonCssMap[choice.color || "primary"],
+                buttonCssMap[
+                  (choice.color || "primary") as keyof typeof buttonCssMap
+                ],
                 "text-black"
               )}
               name={choice.title}
@@ -190,7 +192,7 @@ export function OrderMobile({ choices }: { choices: ChoiceMarket[] }) {
     return (
       <div className="space-y-4 px-4 lg:hidden">
         {choices.map((choice, index) => (
-          <OrderCardMulti choice={choice} />
+          <OrderCardMulti key={index} choice={choice} />
         ))}
       </div>
     );

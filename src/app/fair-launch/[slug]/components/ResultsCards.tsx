@@ -1,9 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ChoiceMarket } from "@/lib/supabase/markets/subMarkets";
-import { Database } from "@/lib/types";
+import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
+import { Database } from "@/lib/supabase/types";
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { formatDollarsWithoutCents } from "@/lib/formats";
 

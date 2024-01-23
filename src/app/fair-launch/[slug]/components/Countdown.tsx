@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
-
 function getTimeRemaining(now: number, end: number) {
   if (now > end) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   let distance = (end - now) / 1000;

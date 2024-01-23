@@ -12,6 +12,22 @@ import ResolutionPhase from "./components/ResolutionPhase";
 import { getFairLaunch } from "@/lib/api/data/markets/fairLaunch";
 import { formatDollarsWithoutCents } from "@/lib/formats";
 
+function calculatePeriod(market: SubMarketWithChoiceMarkets) {
+  const now = new Date().toISOString();
+  if (now < market.fair_launch_end) {
+    return ["fair-launch", market.fair_launch_end];
+  } else if (now < market.trading_start) {
+    return ["freeze", market.trading_start];
+  } else if (now < market.trading_end) {
+    return ["trade", market.trading_end];
+  }
+  if (!market.has_resolved) {
+    return ["resolution", market.trading_end];
+  } else {
+    return ["results", market.trading_end];
+  }
+}
+
 function TransparentToBlackGradientOverlay() {
   return (
     <div className="absolute bottom-0 left-0 h-full w-full bg-gradient-to-t from-tally-background to-transparent"></div>
@@ -38,7 +54,7 @@ function Info(market: SubMarketWithChoiceMarkets) {
   return (
     <div className="mb-6 mt-4 flex flex-col items-center space-y-3">
       <Badge className="bg-white text-xs text-black hover:bg-white hover:text-black">
-        {market.prediction_markets.category}
+        {market.prediction_markets?.category}
       </Badge>
       <div className="text-xs text-white lg:text-sm">{`Total Pot: ${formatDollarsWithoutCents(
         total_pot
@@ -48,22 +64,6 @@ function Info(market: SubMarketWithChoiceMarkets) {
       </div>
     </div>
   );
-}
-
-function calculatePeriod(market: SubMarketWithChoiceMarkets) {
-  const now = new Date().toISOString();
-  if (now < market.fair_launch_end) {
-    return ["fair-launch", market.fair_launch_end];
-  } else if (now < market.trading_start) {
-    return ["freeze", market.trading_start];
-  } else if (now < market.trading_end) {
-    return ["trade", market.trading_end];
-  }
-  if (!market.has_resolved) {
-    return ["resolution", market.trading_end];
-  } else {
-    return ["results", market.trading_end];
-  }
 }
 
 function PseudoTopMargin() {

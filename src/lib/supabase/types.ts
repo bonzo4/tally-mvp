@@ -208,6 +208,7 @@ export interface Database {
           created_at: string
           icon: string | null
           id: number
+          is_winner: boolean | null
           order: number | null
           share_price: number
           sub_market_id: number
@@ -219,6 +220,7 @@ export interface Database {
           created_at?: string
           icon?: string | null
           id?: number
+          is_winner?: boolean | null
           order?: number | null
           share_price: number
           sub_market_id: number
@@ -230,6 +232,7 @@ export interface Database {
           created_at?: string
           icon?: string | null
           id?: number
+          is_winner?: boolean | null
           order?: number | null
           share_price?: number
           sub_market_id?: number
@@ -987,7 +990,6 @@ export interface Database {
           total_pot: number
           trading_end: string
           trading_start: string
-          winning_choice_id: number | null
         }
         Insert: {
           banner: string
@@ -1006,7 +1008,6 @@ export interface Database {
           total_pot?: number
           trading_end: string
           trading_start: string
-          winning_choice_id?: number | null
         }
         Update: {
           banner?: string
@@ -1025,7 +1026,6 @@ export interface Database {
           total_pot?: number
           trading_end?: string
           trading_start?: string
-          winning_choice_id?: number | null
         }
         Relationships: [
           {
@@ -1033,13 +1033,6 @@ export interface Database {
             columns: ["prediction_market_id"]
             isOneToOne: false
             referencedRelation: "prediction_markets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sub_markets_winning_choice_id_fkey"
-            columns: ["winning_choice_id"]
-            isOneToOne: false
-            referencedRelation: "choice_markets"
             referencedColumns: ["id"]
           }
         ]

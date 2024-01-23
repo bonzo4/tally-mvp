@@ -45,10 +45,9 @@ function Banner({ src }: { src: string }) {
 
 function Info(market: SubMarketWithChoiceMarkets) {
   const title = market.title;
-  const total_pot = market.choice_markets.reduce(
-    (acc, choice) => acc + choice.total_pot,
-    0
-  );
+  const total_pot =
+    market.choice_markets.reduce((acc, choice) => acc + choice.total_pot, 0) ||
+    0;
   const phase = calculatePeriod(market);
 
   return (

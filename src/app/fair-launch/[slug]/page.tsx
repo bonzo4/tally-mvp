@@ -20,7 +20,7 @@ function TransparentToBlackGradientOverlay() {
 
 function Banner({ src }: { src: string }) {
   return (
-    <div className="absolute left-0 top-0 h-[372px] w-full lg:h-[738px]">
+    <div className="absolute left-0 top-0 -z-50 h-[372px] w-full lg:h-[738px]">
       <Image src={src} alt="" fill={true} className="object-cover" />
       <TransparentToBlackGradientOverlay />
     </div>
@@ -67,6 +67,11 @@ function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   //}
 }
 
+function PseudoTopMargin() {
+  /* This component is to create space so that the info starts midway down banner. */
+  return <div className="min-h-[150px] w-full lg:min-h-[200px]"></div>;
+}
+
 export default async function FairLaunchPage({
   params,
 }: {
@@ -78,9 +83,10 @@ export default async function FairLaunchPage({
 
   return (
     <div className="w-full">
-      <div className="relative flex h-[372px] w-full items-end justify-center px-4 py-10 lg:h-[750px]">
+      <div className="relative flex w-full flex-col items-center px-4 py-10">
         <Banner src={market.banner} />
-        <div className="z-50 flex flex-col items-center">
+        <PseudoTopMargin />
+        <div className="flex flex-col items-center">
           {phase === "trade" ? (
             <TradePhase className="hidden lg:flex" />
           ) : phase === "freeze" ? (

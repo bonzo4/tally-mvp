@@ -4,12 +4,15 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formatDollarsWithoutCents } from "@/lib/formats";
 import { cn } from "@/lib/utils";
 
 import { FilterButton } from "@/components/FilterButton";
+import { ChoiceMarket } from "@/lib/supabase/markets/subMarkets";
 
-function OrderButton({ choice, color }: { choice: string; color?: string }) {
+function OrderButton({ choice }: { choice: ChoiceMarket }) {
   const borderCssMap = {
+    main: "border-tally-primary hover:border-tally-primary/90",
     red: "border-tally-red hover:border-tally-red/90",
     orange: "border-tally-orange hover:border-tally-orange/90",
     yellow: "border-tally-yellow hover:border-tally-yellow/90",
@@ -21,13 +24,14 @@ function OrderButton({ choice, color }: { choice: string; color?: string }) {
   };
 
   let borderCss = "border-tally-primary hover:border-tally-primary/90";
-  if (choice === "No") {
+  if (choice.title === "No") {
     borderCss = "border-tally-red hover:border-tally-red/90";
-  } else if (borderCssMap[color as keyof typeof borderCssMap]) {
-    borderCss = borderCssMap[color as keyof typeof borderCssMap];
+  } else if (borderCssMap[choice.color as keyof typeof borderCssMap]) {
+    borderCss = borderCssMap[choice.color as keyof typeof borderCssMap];
   }
 
   const buttonCssMap = {
+    primary: "bg-tally-primary hover:bg-tally-primary/90",
     red: "bg-tally-red hover:bg-tally-red/90",
     orange: "bg-tally-orange hover:bg-tally-orange/90",
     yellow: "bg-tally-yellow hover:bg-tally-yellow/90",
@@ -39,13 +43,14 @@ function OrderButton({ choice, color }: { choice: string; color?: string }) {
   };
 
   let buttonCss = "bg-tally-primary hover:bg-tally-primary/90";
-  if (choice === "No") {
+  if (choice.title === "No") {
     buttonCss = "bg-tally-red hover:bg-tally-red/90";
-  } else if (buttonCssMap[color as keyof typeof buttonCssMap]) {
-    buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
+  } else if (buttonCssMap[choice.color as keyof typeof buttonCssMap]) {
+    buttonCss = buttonCssMap[choice.color as keyof typeof buttonCssMap];
   }
 
   const textCssMap = {
+    primary: "text-tally-primary",
     red: "text-tally-red",
     orange: "text-tally-orange",
     yellow: "text-tally-yellow",
@@ -57,10 +62,10 @@ function OrderButton({ choice, color }: { choice: string; color?: string }) {
   };
 
   let textCss = "text-tally-primary";
-  if (choice === "No") {
+  if (choice.title === "No") {
     textCss = "text-tally-red";
-  } else if (textCssMap[color as keyof typeof textCssMap]) {
-    textCss = textCssMap[color as keyof typeof textCssMap];
+  } else if (textCssMap[choice.color as keyof typeof textCssMap]) {
+    textCss = textCssMap[choice.color as keyof typeof textCssMap];
   }
 
   return (
@@ -72,10 +77,12 @@ function OrderButton({ choice, color }: { choice: string; color?: string }) {
     >
       <div className="flex flex-col items-center">
         <div className="flex items-end space-x-2">
-          <div className="text-4xl font-bold text-white">{choice}</div>
+          <div className="text-4xl font-bold text-white">{choice.title}</div>
           <div className={cn(textCss, "text-2xl")}>$.50</div>
         </div>
-        <div className="text-sm text-tally-gray">Total Pot: $1,432,543</div>
+        <div className="text-sm text-tally-gray">{`Total Pot: ${formatDollarsWithoutCents(
+          choice.total_pot
+        )}`}</div>
       </div>
       <div className="flex space-x-2">
         <Input
@@ -100,7 +107,7 @@ function OrderButton({ choice, color }: { choice: string; color?: string }) {
   );
 }
 
-export function OrderCardsMobile() {
+export function OrderCardsMobile({ choices }: { choices: ChoiceMarket[] }) {
   const [selected, setSelected] = useState<string>("Yes");
   return (
     <div className="space-y-6 px-4 py-10 md:hidden">
@@ -129,11 +136,13 @@ export function OrderCardsMobile() {
   );
 }
 
-export function OrderCardsDesktop() {
+export function OrderCardsDesktop({ choices }: { choices: ChoiceMarket[] }) {
+  if (!choices) return;
   return (
     <div className="hidden space-x-6 md:flex">
-      <OrderButton choice="Yes" />
-      <OrderButton choice="No" />
+      {choices.map((choice, index) => (
+        <OrderButton choice={choice} />
+      ))}
     </div>
   );
 }

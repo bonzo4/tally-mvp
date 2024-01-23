@@ -5,6 +5,7 @@ import { getFairLaunch } from "@/lib/api/fetch";
 
 import Faq from "./components/Faq";
 import { OrderCardsDesktop, OrderCardsMobile } from "./components/OrderCards";
+import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
 
 function TransparentToBlackGradientOverlay() {
   return (
@@ -15,7 +16,7 @@ function TransparentToBlackGradientOverlay() {
 function Banner({ src }: { src: string }) {
   return (
     <div className="absolute left-0 top-0 h-[372px] w-full md:h-[738px]">
-      <Image src={src} alt="" layout="fill" className="object-cover" />
+      <Image src={src} alt="" fill={true} className="object-cover" />
       <TransparentToBlackGradientOverlay />
     </div>
   );
@@ -61,6 +62,21 @@ function Info({ title }: { title: string }) {
   );
 }
 
+function calculatePeriod(market: SubMarketWithChoiceMarkets) {
+  const now = new Date().toISOString();
+  if (now < market.fair_launch_end) {
+    return "fair-launch";
+  } else if (now < market.trading_start) {
+    return "freeze";
+  } else if (now < market.trading_end) {
+    return "trade";
+  } else if (now < market.resolution_start) {
+    return "resolution";
+  } else if (now < market.resolution_end) {
+    return "result";
+  }
+}
+
 export default async function FairLaunchPage({
   params,
 }: {
@@ -75,10 +91,10 @@ export default async function FairLaunchPage({
         <div className="z-50 flex flex-col items-center space-y-4">
           <Countdown />
           <Info title={market.title} />
-          <OrderCardsDesktop />
+          <OrderCardsDesktop choices={market.choice_markets} />
         </div>
       </div>
-      <OrderCardsMobile />
+      <OrderCardsMobile choices={market.choice_markets} />
       <Faq />
     </div>
   );

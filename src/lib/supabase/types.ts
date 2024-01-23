@@ -1078,6 +1078,7 @@ export interface Database {
       }
       users: {
         Row: {
+          conviction: number
           created_at: string
           icon: string | null
           id: number
@@ -1086,6 +1087,7 @@ export interface Database {
           user_id: string
         }
         Insert: {
+          conviction?: number
           created_at?: string
           icon?: string | null
           id?: number
@@ -1094,6 +1096,7 @@ export interface Database {
           user_id: string
         }
         Update: {
+          conviction?: number
           created_at?: string
           icon?: string | null
           id?: number

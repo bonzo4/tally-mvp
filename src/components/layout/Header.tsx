@@ -54,7 +54,7 @@ export default function Header({ user }: HeaderProps) {
           {user ? (
             <>
               <Link
-                href="/"
+                href="/profile"
                 className="flex flex-row items-center justify-center space-x-3 text-white underline hover:cursor-pointer hover:no-underline"
               >
                 {user.icon && (

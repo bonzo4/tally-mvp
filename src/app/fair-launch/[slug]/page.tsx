@@ -9,7 +9,7 @@ import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
 import TradePhase from "./components/TradePhase";
 import FreezePhase from "./components/FreezePhase";
 import ResolutionPhase from "./components/ResolutionPhase";
-import { getFairLaunch } from "@/lib/api/fetch";
+import { getFairLaunch } from "@/lib/api/data/markets/fairLaunch";
 import { formatDollarsWithoutCents } from "@/lib/formats";
 
 function TransparentToBlackGradientOverlay() {

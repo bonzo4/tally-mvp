@@ -3,7 +3,7 @@ import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import {
   getSubMarkets,
   SubMarketWithChoiceMarkets,
-} from "@/lib/supabase/markets/subMarkets";
+} from "@/lib/supabase/queries/markets/subMarkets";
 
 export type { SubMarketWithChoiceMarkets };
 

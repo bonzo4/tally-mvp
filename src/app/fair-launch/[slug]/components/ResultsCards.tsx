@@ -47,13 +47,12 @@ const textCssMap: Record<Color, string> = {
 
 interface ResultsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   choice: ChoiceMarket;
-  winner: number;
 }
 
-function ResultsCard({ choice, winner, ...rest }: ResultsCardProps) {
+function ResultsCard({ choice, ...rest }: ResultsCardProps) {
   const { className } = rest;
   const color = choice.color || "primary";
-  const isWinner = winner === choice.id;
+  const isWinner = choice.is_winner;
   const borderCss = isWinner
     ? ""
     : borderCssMap[color as keyof typeof borderCssMap];
@@ -92,10 +91,10 @@ function ResultsCard({ choice, winner, ...rest }: ResultsCardProps) {
   );
 }
 
-function ResultsCardMulti({ choice, winner, ...rest }: ResultsCardProps) {
+function ResultsCardMulti({ choice, ...rest }: ResultsCardProps) {
   const { className } = rest;
   const color = choice.color || "primary";
-  const isWinner = winner === choice.id;
+  const isWinner = choice.is_winner;
   const borderCss = isWinner
     ? ""
     : borderCssMap[color as keyof typeof borderCssMap];
@@ -155,22 +154,15 @@ function ResultsCardMulti({ choice, winner, ...rest }: ResultsCardProps) {
 
 interface ResultsProps extends React.HTMLAttributes<HTMLDivElement> {
   choices: ChoiceMarket[];
-  winner: number;
 }
 
-export function ResultsDesktop({
-  choices,
-  winner,
-  className,
-  ...rest
-}: ResultsProps) {
+export function ResultsDesktop({ choices, className, ...rest }: ResultsProps) {
   if (!choices) return;
-  winner = choices[0].id;
   if (choices.length < 4) {
     return (
       <div className={cn(className, "hidden lg:flex lg:space-x-6")}>
         {choices.map((choice, index) => (
-          <ResultsCard key={index} choice={choice} winner={winner} />
+          <ResultsCard key={index} choice={choice} />
         ))}
       </div>
     );
@@ -178,26 +170,20 @@ export function ResultsDesktop({
     return (
       <div className={cn(className, "hidden lg:grid lg:grid-cols-2 lg:gap-4")}>
         {choices.map((choice, index) => (
-          <ResultsCardMulti key={index} choice={choice} winner={winner} />
+          <ResultsCardMulti key={index} choice={choice} />
         ))}
       </div>
     );
   }
 }
 
-export function ResultsMobile({
-  choices,
-  winner,
-  className,
-  ...rest
-}: ResultsProps) {
+export function ResultsMobile({ choices, className, ...rest }: ResultsProps) {
   if (!choices) return;
-  winner = choices[0].id;
   if (choices.length < 4) {
     return (
       <div className={cn(className, "space-y-4 px-4")}>
         {choices.map((choice, index) => (
-          <ResultsCard key={index} choice={choice} winner={winner} />
+          <ResultsCard key={index} choice={choice} />
         ))}
       </div>
     );
@@ -205,7 +191,7 @@ export function ResultsMobile({
     return (
       <div className={cn(className, "space-y-4 px-4")}>
         {choices.map((choice, index) => (
-          <ResultsCardMulti key={index} choice={choice} winner={winner} />
+          <ResultsCardMulti key={index} choice={choice} />
         ))}
       </div>
     );

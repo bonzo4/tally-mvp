@@ -103,7 +103,6 @@ export default async function FairLaunchPage({
               <ResultsDesktop
                 className="hidden"
                 choices={market.choice_markets}
-                winner={market.choice_markets[0].id}
               />
             </div>
           ) : null}
@@ -118,7 +117,6 @@ export default async function FairLaunchPage({
       {phase === "results" ? (
         <ResultsMobile
           className="flex w-full flex-col lg:hidden"
-          winner={market.choice_markets[0].id}
           choices={market.choice_markets}
         />
       ) : null}

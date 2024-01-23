@@ -52,19 +52,18 @@ function Info(market: SubMarketWithChoiceMarkets) {
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   const now = new Date().toISOString();
-  return ["fair-launch", market.fair_launch_end];
-  //if (now < market.fair_launch_end) {
-  //  return ["fair-launch", market.fair_launch_end];
-  //} else if (now < market.trading_start) {
-  //  return ["freeze", market.trading_start];
-  //} else if (now < market.trading_end) {
-  //  return ["trade", market.trading_end];
-  //}
-  //if (!market.has_resolved) {
-  //  return ["resolution", market.trading_end];
-  //} else {
-  //  return ["results", market.trading_end];
-  //}
+  if (now < market.fair_launch_end) {
+    return ["fair-launch", market.fair_launch_end];
+  } else if (now < market.trading_start) {
+    return ["freeze", market.trading_start];
+  } else if (now < market.trading_end) {
+    return ["trade", market.trading_end];
+  }
+  if (!market.has_resolved) {
+    return ["resolution", market.trading_end];
+  } else {
+    return ["results", market.trading_end];
+  }
 }
 
 function PseudoTopMargin() {

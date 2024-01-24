@@ -13,70 +13,64 @@ import {
 } from "@/components/ui/table";
 
 import { FilterButtonPrimitive } from "@/components/FilterButton";
-import { formatDollarsWithCents } from "@/lib/formats";
-
-interface FairLaunchRowProps {
-  date: string;
-  market: string;
-  choice: string;
-  order: string;
-  pnl: number;
-  value: number;
-}
-
-const FAIR_LAUNCH_ROW_DATA = {
-  date: "12th Jan 2024 12:34PM",
-  market: "Will Trump Win the 2024 Election",
-  choice: "Trump - Yes",
-  order: "Buy",
-  pnl: 0.1,
-  value: 250,
-};
+import {
+  formatDollarsWithCents,
+  formatIsoAsDateWithTime,
+  formatNumberWithCommasNoDecimals,
+} from "@/lib/formats";
+import { FairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 
 function FairLaunchRow({
-  date,
-  market,
-  choice,
-  order,
-  pnl,
-  value,
-}: TradeRowProps) {
+  fairLaunchTxn,
+}: {
+  fairLaunchTxn: FairLaunchHistory;
+}) {
+  const { created_at, choice_markets, shares, avg_share_price } = fairLaunchTxn;
+
   return (
     <TableRow className="border-0">
-      <TableCell className="text-gray-400">{date}</TableCell>
-      <TableCell className="text-white">{market}</TableCell>
-      <TableCell className="text-white">{choice}</TableCell>
-      <TableCell className="text-white">{order}</TableCell>
-      <TableCell className="text-tally-primary">
-        {Math.round(pnl * 100)}%
+      <TableCell className="text-gray-400">
+        {formatIsoAsDateWithTime(created_at)}
+      </TableCell>
+      <TableCell className="text-white">
+        {choice_markets?.sub_markets?.title || ""}
+      </TableCell>
+      <TableCell className="text-white">{choice_markets?.title}</TableCell>
+      <TableCell className="text-right text-white">
+        {formatNumberWithCommasNoDecimals(shares)}
       </TableCell>
       <TableCell className="text-right text-white">
-        {formatDollarsWithCents(value)}
+        {formatDollarsWithCents(shares * avg_share_price)}
       </TableCell>
     </TableRow>
   );
 }
 
-const FAIR_LAUNCH_TABLE_DATA = Array(4).fill(FAIR_LAUNCH_ROW_DATA);
-
-function FairLaunchTable() {
+function FairLaunchTable({
+  fairLaunchHistory,
+}: {
+  fairLaunchHistory: FairLaunchHistory[];
+}) {
   return (
-    <div className="rounded-2xl bg-zinc-900 px-4 py-2">
+    <div className="rounded-2xl bg-tally-layer-1 px-4 py-2">
       <Table>
         <TableHeader>
-          <TableRow className="hover:bg-zinc-900">
-            <TableHead className="text-gray-400">Date</TableHead>
-            <TableHead className="text-gray-400">Market</TableHead>
-            <TableHead className="text-gray-400">Choice</TableHead>
-            <TableHead className="text-gray-400">Order</TableHead>
-            <TableHead className="text-gray-400">PNL</TableHead>
-            <TableHead className="text-right text-gray-400">Value</TableHead>
+          <TableRow className="hover:bg-tally-layer-1">
+            <TableHead className="text-tally-gray">Date</TableHead>
+            <TableHead className="text-tally-gray">Market</TableHead>
+            <TableHead className="text-tally-gray">Choice</TableHead>
+            <TableHead className="text-right text-tally-gray">Shares</TableHead>
+            <TableHead className="text-right text-tally-gray">Value</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {FAIR_LAUNCH_TABLE_DATA.map((trade, index) => (
-            <FairLaunchRow key={index} {...trade} />
-          ))}
+          {fairLaunchHistory ? (
+            fairLaunchHistory.map((fairLaunchTxn, index) => (
+              <FairLaunchRow key={index} fairLaunchTxn={fairLaunchTxn} />
+            ))
+          ) : (
+            <></>
+          )}
         </TableBody>
       </Table>
     </div>
@@ -161,7 +155,11 @@ function FilterButtonTable(props: FilterButtonProps) {
   );
 }
 
-export default function Tables() {
+export default function Tables({
+  fairLaunchHistory,
+}: {
+  fairLaunchHistory: FairLaunchHistory[];
+}) {
   return (
     <Tabs.Root defaultValue="Trades" className="w-full">
       <Tabs.List className="mb-4 w-full space-x-2">
@@ -176,7 +174,7 @@ export default function Tables() {
         <TradesTable />
       </Tabs.Content>
       <Tabs.Content value="Fair Launches">
-        <FairLaunchTable />
+        <FairLaunchTable fairLaunchHistory={fairLaunchHistory} />
       </Tabs.Content>
     </Tabs.Root>
   );

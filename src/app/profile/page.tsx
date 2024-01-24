@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getFairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 import { getHoldings, Holdings } from "@/lib/supabase/queries/holdings";
 import { getProxyWallet } from "@/lib/supabase/queries/proxyWallet";
 import { getUser } from "@/lib/supabase/queries/user";
@@ -14,6 +15,7 @@ function countUniqueSubMarkets(arr: Holdings[]) {
   let mapObj = new Map();
 
   arr.forEach((holding) => {
+    if (!holding.choice_markets) return;
     let alreadyExists = mapObj.get(holding.choice_markets.sub_market_id);
     if (!alreadyExists) {
       mapObj.set(holding.choice_markets.sub_market_id, holding);
@@ -28,6 +30,7 @@ function countUniqueFairLaunches(arr: Holdings[]) {
   let mapObj = new Map();
 
   arr.forEach((holding) => {
+    if (!holding.choice_markets) return;
     let alreadyExists = mapObj.get(holding.choice_markets.sub_market_id);
     if (!alreadyExists) {
       mapObj.set(holding.choice_markets.sub_market_id, holding);
@@ -78,10 +81,16 @@ export default async function Profile() {
     options: { userId: user.id },
   });
 
+  const fairLaunchHistory = await getFairLaunchHistory({
+    supabase: supabase,
+    options: { userId: user.id },
+  });
+
   console.log("authUser", authUser);
   console.log("user", user);
   console.log("proxyWallet", proxyWallet);
   console.log("holdings", holdings);
+  console.log("fair launch history", fairLaunchHistory);
 
   const balance = proxyWallet.unredeemable_balance + proxyWallet.usdc_balance;
   const volume = holdings.reduce((acc, holding) => {
@@ -110,7 +119,7 @@ export default async function Profile() {
           volume={volume}
         />
         <div className="w-full px-4 lg:px-16">
-          <Tables />
+          <Tables fairLaunchHistory={fairLaunchHistory} />
         </div>
       </div>
     </div>

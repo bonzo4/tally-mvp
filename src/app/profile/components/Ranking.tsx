@@ -1,3 +1,4 @@
+import { RankByVolume } from "@/lib/supabase/queries/rank/volume";
 import {
   formatDollarsWithoutCents,
   formatNumberWithCommasNoDecimals,
@@ -80,20 +81,23 @@ export default function Rankings({
   markets,
   portfolio,
   pnl,
-  volume,
+  volumeAndRank,
 }: {
   fairLaunches: number;
   markets: number;
   portfolio: number;
   pnl: number;
-  volume: number;
+  volumeAndRank: RankByVolume;
 }) {
   return (
     <div className="flex w-full items-center space-x-4 overflow-x-auto lg:space-x-6">
       <PseudoMargin />
       <RankPortfolio value={portfolio} rank={32} />
       <RankPNL value={pnl} rank={1324} />
-      <RankVolume value={volume} rank={334242} />
+      <RankVolume
+        value={volumeAndRank.total_volume}
+        rank={volumeAndRank.rank}
+      />
       <RankMarkets value={markets} rank={1} />
       <RankFairLaunches value={fairLaunches} rank={344} />
       <PseudoMargin />

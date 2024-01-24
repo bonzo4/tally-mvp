@@ -1,7 +1,6 @@
 "use client";
 
 import * as Tabs from "@radix-ui/react-tabs";
-
 import { ButtonProps } from "@/components/ui/button";
 import {
   Table,
@@ -12,13 +11,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { FairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 import { FilterButtonPrimitive } from "@/components/FilterButton";
 import {
   formatDollarsWithCents,
   formatIsoAsDateWithTime,
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
-import { FairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 
 function FairLaunchRow({
   fairLaunchTxn,

@@ -1240,6 +1240,13 @@ export interface Database {
         }
         Returns: boolean
       }
+      rank_users_by_volume: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total_volume: number
+          rank: number
+        }[]
+      }
     }
     Enums: {
       colors_enum:

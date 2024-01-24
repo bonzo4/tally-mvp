@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { formatDollarsWithCents } from "@/lib/formats";
 
-export default function Account() {
+export default function Account({ balance }: { balance: number }) {
   const portfolio = 500;
-  const balance = 1000;
 
   return (
     <div className="flex h-full w-full flex-col justify-between space-y-4 rounded-2xl bg-zinc-900 p-6 lg:w-[420px]">

@@ -154,7 +154,7 @@ function FilterButtonTable(props: FilterButtonProps) {
   return (
     <FilterButtonPrimitive
       {...rest}
-      className="text-black text-gray-400 hover:bg-neutral-200 hover:bg-zinc-800 hover:bg-zinc-900 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:hover:bg-neutral-200"
+      className="bg-tally-layer-1 text-tally-gray data-[state=active]:bg-white data-[state=active]:text-tally-background"
     >
       {name}
     </FilterButtonPrimitive>

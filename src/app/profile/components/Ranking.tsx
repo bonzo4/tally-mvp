@@ -78,18 +78,20 @@ function RankFairLaunches({ value, rank }: { value: number; rank: number }) {
 export default function Rankings({
   fairLaunches,
   markets,
+  portfolio,
   pnl,
   volume,
 }: {
   fairLaunches: number;
   markets: number;
+  portfolio: number;
   pnl: number;
   volume: number;
 }) {
   return (
     <div className="flex w-full items-center space-x-4 overflow-x-auto lg:space-x-6">
       <PseudoMargin />
-      <RankPortfolio value={1000} rank={32} />
+      <RankPortfolio value={portfolio} rank={32} />
       <RankPNL value={pnl} rank={1324} />
       <RankVolume value={volume} rank={334242} />
       <RankMarkets value={markets} rank={1} />

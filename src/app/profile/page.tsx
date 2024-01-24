@@ -46,6 +46,13 @@ function calculatePNL(holdings: Holdings[]) {
   }, 0);
 }
 
+function calculatePortfolio(holdings: Holdings[]) {
+  return holdings.reduce((acc, holding) => {
+    if (!holding.choice_markets) return acc;
+    return acc + holding.shares * holding.choice_markets.share_price;
+  }, 0);
+}
+
 export default async function Profile() {
   const supabase = createServerSupabaseClient();
   const {
@@ -83,6 +90,7 @@ export default async function Profile() {
   const markets = countUniqueSubMarkets(holdings);
   const fairLaunches = countUniqueFairLaunches(holdings);
   const pnl = calculatePNL(holdings);
+  const portfolio = calculatePortfolio(holdings);
 
   return (
     <div className="w-full">
@@ -92,9 +100,10 @@ export default async function Profile() {
             <DisplayPicture image={user.icon} />
             <Overview user={user} />
           </div>
-          <Account balance={balance} holdings={holdings} />
+          <Account balance={balance} portfolio={portfolio} />
         </div>
         <Rankings
+          portfolio={portfolio}
           fairLaunches={fairLaunches}
           markets={markets}
           pnl={pnl}

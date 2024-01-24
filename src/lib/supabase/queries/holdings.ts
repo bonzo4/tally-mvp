@@ -3,7 +3,7 @@ import { Database } from "../types";
 import { fetchQuery } from "../fetch";
 
 export type Holdings = Database["public"]["Tables"]["holdings"]["Row"] & {
-  choice_markets: { sub_market_id: number };
+  choice_markets: { share_price: number; sub_market_id: number } | null;
 };
 
 type GetHoldingsQueryOptions = {
@@ -21,7 +21,7 @@ async function getHoldingsQuery({
 }: GetHoldingsOptions): Promise<PostgrestResponse<Holdings>> {
   return await supabase
     .from("holdings")
-    .select("*, choice_markets(sub_market_id)")
+    .select("*, choice_markets(share_price, sub_market_id)")
     .eq("user_id", userId);
 }
 

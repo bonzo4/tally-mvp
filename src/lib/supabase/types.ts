@@ -741,6 +741,54 @@ export interface Database {
           }
         ]
       }
+      orders: {
+        Row: {
+          avg_share_price: number
+          choice_market_id: number
+          created_at: string
+          id: number
+          shares: number
+          total_amount: number
+          trade_side: Database["public"]["Enums"]["trade_side"]
+          user_id: number
+        }
+        Insert: {
+          avg_share_price: number
+          choice_market_id: number
+          created_at?: string
+          id?: number
+          shares: number
+          total_amount: number
+          trade_side: Database["public"]["Enums"]["trade_side"]
+          user_id: number
+        }
+        Update: {
+          avg_share_price?: number
+          choice_market_id?: number
+          created_at?: string
+          id?: number
+          shares?: number
+          total_amount?: number
+          trade_side?: Database["public"]["Enums"]["trade_side"]
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_choice_market_id_fkey"
+            columns: ["choice_market_id"]
+            isOneToOne: false
+            referencedRelation: "choice_markets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       owned_shares: {
         Row: {
           avg_share_price: number
@@ -1243,6 +1291,7 @@ export interface Database {
       rank_users_by_volume: {
         Args: Record<PropertyKey, never>
         Returns: {
+          user_id: number
           total_volume: number
           rank: number
         }[]

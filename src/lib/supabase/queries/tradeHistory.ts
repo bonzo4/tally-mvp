@@ -1,3 +1,4 @@
+import { Color } from "@/lib/cssMaps";
 import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../types";
 import { fetchQuery } from "../fetch";
@@ -5,6 +6,7 @@ import { fetchQuery } from "../fetch";
 export type TradeHistory = Database["public"]["Tables"]["orders"]["Row"] & {
   choice_markets: {
     title: string;
+    color: Color | null;
     sub_markets: { title: string } | null;
   } | null;
 };
@@ -24,7 +26,7 @@ async function getTradeHistoryQuery({
 }: GetTradeHistoryOptions): Promise<PostgrestResponse<TradeHistory>> {
   return await supabase
     .from("orders")
-    .select("*, choice_markets(title, sub_markets(title))")
+    .select("*, choice_markets(title, color, sub_markets(title))")
     .eq("user_id", userId);
 }
 

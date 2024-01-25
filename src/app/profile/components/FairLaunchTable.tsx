@@ -12,12 +12,15 @@ import {
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
 import { FairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
+import { textCssMap } from "@/lib/cssMaps";
 
 function FairLaunchRow({
   fairLaunchTxn,
 }: {
   fairLaunchTxn: FairLaunchHistory;
 }) {
+  const color = fairLaunchTxn.choice_markets?.color || "primary";
+  const textCss = textCssMap[color as keyof typeof textCssMap];
   const { created_at, choice_markets, shares, avg_share_price } = fairLaunchTxn;
 
   return (
@@ -28,7 +31,7 @@ function FairLaunchRow({
       <TableCell className="text-white">
         {choice_markets?.sub_markets?.title || ""}
       </TableCell>
-      <TableCell className="text-white">{choice_markets?.title}</TableCell>
+      <TableCell className={textCss}>{choice_markets?.title}</TableCell>
       <TableCell className="text-right text-white">
         {formatNumberWithCommasNoDecimals(shares)}
       </TableCell>

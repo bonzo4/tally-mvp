@@ -6,15 +6,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { TradeHistory } from "@/lib/supabase/queries/tradeHistory";
 import {
   formatDollarsWithCents,
   formatIsoAsDateWithTime,
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
-import { TradeHistory } from "@/lib/supabase/queries/tradeHistory";
+import { textCssMap } from "@/lib/cssMaps";
 
 function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
+  const color = tradeTxn.choice_markets?.color || "primary";
+  const textCss = textCssMap[color as keyof typeof textCssMap];
   const {
     created_at,
     choice_markets,
@@ -31,9 +33,7 @@ function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
       <TableCell className="text-white">
         {choice_markets?.sub_markets?.title || ""}
       </TableCell>
-      <TableCell className="text-white">
-        {choice_markets?.title || ""}
-      </TableCell>
+      <TableCell className={textCss}>{choice_markets?.title || ""}</TableCell>
       <TableCell className="text-center text-white">{trade_side}</TableCell>
       <TableCell className="text-right text-white">
         {formatDollarsWithCents(avg_share_price)}

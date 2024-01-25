@@ -29,6 +29,10 @@ function FilterButtonTable(props: FilterButtonProps) {
   );
 }
 
+function PseudoMargin() {
+  return <div className="min-w-[8px] lg:hidden"></div>;
+}
+
 export default function Tables({
   fairLaunchHistory,
   portfolio,
@@ -40,7 +44,8 @@ export default function Tables({
 }) {
   return (
     <Tabs.Root defaultValue="Trades" className="w-full">
-      <Tabs.List className="mb-4 w-full space-x-2">
+      <Tabs.List className="mb-4 flex w-full space-x-2 overflow-x-auto whitespace-nowrap lg:px-16">
+        <PseudoMargin />
         <Tabs.Trigger value="Trades" className="w-full" asChild>
           <FilterButtonTable name="Trade History" />
         </Tabs.Trigger>
@@ -50,14 +55,15 @@ export default function Tables({
         <Tabs.Trigger value="Portfolio" className="w-full" asChild>
           <FilterButtonTable name="Portfolio" />
         </Tabs.Trigger>
+        <PseudoMargin />
       </Tabs.List>
-      <Tabs.Content value="Trades">
+      <Tabs.Content className="px-4 lg:px-16" value="Trades">
         <TradesTable tradeHistory={tradeHistory} />
       </Tabs.Content>
-      <Tabs.Content value="Fair Launches">
+      <Tabs.Content className="px-4 lg:px-16" value="Fair Launches">
         <FairLaunchTable fairLaunchHistory={fairLaunchHistory} />
       </Tabs.Content>
-      <Tabs.Content value="Portfolio">
+      <Tabs.Content className="px-4 lg:px-16" value="Portfolio">
         <PortfolioTable portfolio={portfolio} />
       </Tabs.Content>
     </Tabs.Root>

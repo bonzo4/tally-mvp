@@ -124,7 +124,7 @@ export default async function Profile() {
           pnl={pnl}
           volumeAndRank={volumeAndRank}
         />
-        <div className="w-full px-4 lg:px-16">
+        <div className="w-full ">
           <Tables
             tradeHistory={tradeHistory}
             fairLaunchHistory={fairLaunchHistory}

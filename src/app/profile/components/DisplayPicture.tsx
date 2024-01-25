@@ -4,16 +4,20 @@ export default function DisplayPicture({
   image,
   alt,
 }: {
-  image: string;
+  image?: string;
   alt?: string;
 }) {
   return (
-    <div className="relative mr-4 h-[100px] w-[100px] lg:mr-12 lg:h-[200px] lg:w-[200px]">
+    <div className="mr-4 flex h-[100px] w-[100px] items-center justify-center rounded-full bg-tally-layer-1 lg:mr-12 lg:h-[200px] lg:w-[200px]">
       <Image
-        src={image}
-        fill={true}
+        src={
+          image ||
+          "https://bxjsuelhllhggaosiovg.supabase.co/storage/v1/object/public/user_icons/logomark-2.png"
+        }
+        width={150}
+        height={150}
         alt={alt || "Display picture"}
-        className="rounded-full object-cover"
+        className="object-scale-down"
       />
     </div>
   );

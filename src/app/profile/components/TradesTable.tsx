@@ -19,7 +19,7 @@ function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
     tradeTxn;
   return (
     <TableRow className="border-0">
-      <TableCell className="text-gray-400">
+      <TableCell className="text-tally-gray">
         {formatIsoAsDateWithTime(created_at)}
       </TableCell>
       <TableCell className="text-white">
@@ -45,18 +45,18 @@ export default function TradesTable({
   tradeHistory: TradeHistory[];
 }) {
   return (
-    <div className="rounded-2xl bg-zinc-900 px-4 py-2">
+    <div className="rounded-2xl bg-tally-layer-1 px-4 py-2">
       <Table>
         <TableHeader>
-          <TableRow className="hover:bg-zinc-900">
-            <TableHead className="text-gray-400">Date</TableHead>
-            <TableHead className="text-gray-400">Market</TableHead>
-            <TableHead className="text-gray-400">Choice</TableHead>
-            <TableHead className="text-right text-gray-400">
+          <TableRow className="hover:bg-tally-layer-1">
+            <TableHead className="text-tally-gray">Date</TableHead>
+            <TableHead className="text-tally-gray">Market</TableHead>
+            <TableHead className="text-tally-gray">Choice</TableHead>
+            <TableHead className="text-right text-tally-gray">
               Share Price
             </TableHead>
-            <TableHead className="text-right text-gray-400">Shares</TableHead>
-            <TableHead className="text-right text-gray-400">
+            <TableHead className="text-right text-tally-gray">Shares</TableHead>
+            <TableHead className="text-right text-tally-gray">
               Total Amount
             </TableHead>
           </TableRow>

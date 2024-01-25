@@ -11,7 +11,7 @@ import DisplayPicture from "./components/DisplayPicture";
 import Overview from "./components/Overview";
 import Account from "./components/Account";
 import Rankings from "./components/Ranking";
-import Tables from "./components/Activities";
+import Tables from "./components/Tables";
 
 function countUniqueSubMarkets(arr: Holdings[]) {
   let mapObj = new Map();
@@ -97,14 +97,6 @@ export default async function Profile() {
     supabase: supabase,
     options: { userId: user.id },
   });
-
-  // console.log("authUser", authUser);
-  // console.log("user", user);
-  // console.log("proxyWallet", proxyWallet);
-  // console.log("holdings", holdings);
-  // console.log("fair launch history", fairLaunchHistory);
-  // console.log("volume and rank", volumeAndRank);
-  console.log("trade history", tradeHistory);
 
   const balance = proxyWallet.unredeemable_balance + proxyWallet.usdc_balance;
   const volume = holdings.reduce((acc, holding) => {

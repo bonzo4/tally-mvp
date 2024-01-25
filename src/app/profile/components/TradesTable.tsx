@@ -15,8 +15,14 @@ import {
 import { TradeHistory } from "@/lib/supabase/queries/tradeHistory";
 
 function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
-  const { created_at, choice_markets, shares, avg_share_price, total_amount } =
-    tradeTxn;
+  const {
+    created_at,
+    choice_markets,
+    shares,
+    avg_share_price,
+    total_amount,
+    trade_side,
+  } = tradeTxn;
   return (
     <TableRow className="border-0">
       <TableCell className="text-tally-gray">
@@ -28,6 +34,7 @@ function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
       <TableCell className="text-white">
         {choice_markets?.title || ""}
       </TableCell>
+      <TableCell className="text-center text-white">{trade_side}</TableCell>
       <TableCell className="text-right text-white">
         {formatDollarsWithCents(avg_share_price)}
       </TableCell>
@@ -52,6 +59,9 @@ export default function TradesTable({
             <TableHead className="text-tally-gray">Date</TableHead>
             <TableHead className="text-tally-gray">Market</TableHead>
             <TableHead className="text-tally-gray">Choice</TableHead>
+            <TableHead className="text-center text-tally-gray">
+              Buy / Sell
+            </TableHead>
             <TableHead className="text-right text-tally-gray">
               Share Price
             </TableHead>

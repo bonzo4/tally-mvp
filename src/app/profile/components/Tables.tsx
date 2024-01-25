@@ -5,8 +5,10 @@ import { ButtonProps } from "@/components/ui/button";
 import { FilterButtonPrimitive } from "@/components/FilterButton";
 
 import FairLaunchTable from "./FairLaunchTable";
+import PortfolioTable from "./PortfolioTable";
 import TradesTable from "./TradesTable";
 
+import { Holdings } from "@/lib/supabase/queries/holdings";
 import { FairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 import { TradeHistory } from "@/lib/supabase/queries/tradeHistory";
 
@@ -29,9 +31,11 @@ function FilterButtonTable(props: FilterButtonProps) {
 
 export default function Tables({
   fairLaunchHistory,
+  portfolio,
   tradeHistory,
 }: {
   fairLaunchHistory: FairLaunchHistory[];
+  portfolio: Holdings[];
   tradeHistory: TradeHistory[];
 }) {
   return (
@@ -43,11 +47,9 @@ export default function Tables({
         <Tabs.Trigger value="Fair Launches" className="w-full" asChild>
           <FilterButtonTable name="Fair Launches" />
         </Tabs.Trigger>
-        {/* 
-        <Tabs.Trigger value="Resolutions" className="w-full" asChild>
-          <FilterButtonTable name="Resolutions" />
+        <Tabs.Trigger value="Portfolio" className="w-full" asChild>
+          <FilterButtonTable name="Portfolio" />
         </Tabs.Trigger>
-        */}
       </Tabs.List>
       <Tabs.Content value="Trades">
         <TradesTable tradeHistory={tradeHistory} />
@@ -55,11 +57,9 @@ export default function Tables({
       <Tabs.Content value="Fair Launches">
         <FairLaunchTable fairLaunchHistory={fairLaunchHistory} />
       </Tabs.Content>
-      {/* 
-      <Tabs.Content value="Resolutions">
-        <ResolutionTable resolutionHistory={resolutionHistory} />
+      <Tabs.Content value="Portfolio">
+        <PortfolioTable portfolio={portfolio} />
       </Tabs.Content>
-        */}
     </Tabs.Root>
   );
 }

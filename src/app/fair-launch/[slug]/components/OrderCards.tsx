@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { FilterButton } from "@/components/FilterButton";
 import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
 import { Database } from "@/lib/supabase/types";
+import { textCssMap } from "@/lib/cssMaps";
 
 type Color = Database["public"]["Enums"]["colors_enum"];
 
@@ -38,19 +39,6 @@ const buttonCssMap: Record<Color, string> = {
   indigo: "bg-tally-indigo hover:bg-tally-indigo/90",
   gray: "bg-tally-gray hover:bg-tally-gray/90",
   white: "bg-tally-white hover:bg-tally-white/90",
-};
-
-const textCssMap: Record<Color, string> = {
-  primary: "text-tally-primary",
-  red: "text-tally-red",
-  orange: "text-tally-orange",
-  yellow: "text-tally-yellow",
-  green: "text-tally-green",
-  blue: "text-tally-blue",
-  purple: "text-tally-purple",
-  indigo: "text-tally-indigo",
-  gray: "text-tally-gray",
-  white: "text-tally-white",
 };
 
 function OrderCard({ choice }: { choice: ChoiceMarket }) {

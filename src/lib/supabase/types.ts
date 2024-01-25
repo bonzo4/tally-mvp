@@ -379,6 +379,7 @@ export interface Database {
           total_buy_value: number
           total_sell_value: number
           user_id: number
+          winnings: number | null
         }
         Insert: {
           choice_market_id: number
@@ -391,6 +392,7 @@ export interface Database {
           total_buy_value?: number
           total_sell_value?: number
           user_id: number
+          winnings?: number | null
         }
         Update: {
           choice_market_id?: number
@@ -403,6 +405,7 @@ export interface Database {
           total_buy_value?: number
           total_sell_value?: number
           user_id?: number
+          winnings?: number | null
         }
         Relationships: [
           {

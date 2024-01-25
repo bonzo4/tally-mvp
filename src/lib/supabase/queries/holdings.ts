@@ -1,9 +1,16 @@
 import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../types";
 import { fetchQuery } from "../fetch";
+import { Color } from "@/lib/cssMaps";
 
 export type Holdings = Database["public"]["Tables"]["holdings"]["Row"] & {
-  choice_markets: { share_price: number; sub_market_id: number } | null;
+  choice_markets: {
+    title: string;
+    color: Color | null;
+    share_price: number;
+    sub_market_id: number;
+    sub_markets: { title: string; has_resolved: boolean } | null;
+  } | null;
 };
 
 type GetHoldingsQueryOptions = {
@@ -21,8 +28,11 @@ async function getHoldingsQuery({
 }: GetHoldingsOptions): Promise<PostgrestResponse<Holdings>> {
   return await supabase
     .from("holdings")
-    .select("*, choice_markets(share_price, sub_market_id)")
-    .eq("user_id", userId);
+    .select(
+      "*, choice_markets(title, color, share_price, sub_market_id, sub_markets(title, has_resolved))"
+    )
+    .eq("user_id", userId)
+    .order("choice_markets(title)", { ascending: false });
 }
 
 export async function getHoldings({ supabase, options }: GetHoldingsOptions) {

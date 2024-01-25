@@ -128,6 +128,7 @@ export default async function Profile() {
           <Tables
             tradeHistory={tradeHistory}
             fairLaunchHistory={fairLaunchHistory}
+            portfolio={holdings.filter((holding) => holding.shares > 0)}
           />
         </div>
       </div>

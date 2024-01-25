@@ -18,6 +18,7 @@ export default function Overview({ user }: { user: UserDoc }) {
             {formatNumberWithCommasNoDecimals(user.reward_points)}
           </p>
         </div>
+        {/* // Hide conviction for MVP
         <div className="">
           <p className="text-lg text-neutral-400">Conviction</p>
         </div>
@@ -27,6 +28,8 @@ export default function Overview({ user }: { user: UserDoc }) {
             {"🔥 ".repeat(5 - user.conviction)}
           </span>
         </div>
+
+        */}
       </div>
     </div>
   );

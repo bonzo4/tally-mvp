@@ -18,6 +18,7 @@ import {
   formatIsoAsDateWithTime,
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
+import { TradeHistory } from "@/lib/supabase/queries/tradeHistory";
 
 function FairLaunchRow({
   fairLaunchTxn,
@@ -76,44 +77,32 @@ function FairLaunchTable({
   );
 }
 
-interface TradeRowProps {
-  date: string;
-  market: string;
-  choice: string;
-  order: string;
-  pnl: number;
-  value: number;
-}
-
-const TRADES_ROW_DATA = {
-  date: "12th Jan 2024 12:34PM",
-  market: "Will Trump Win the 2024 Election",
-  choice: "Trump - Yes",
-  order: "Buy",
-  pnl: 0.1,
-  value: 250,
-};
-
-const TRADES_TABLE_DATA = Array(10).fill(TRADES_ROW_DATA);
-
-function TradesRow({ date, market, choice, order, pnl, value }: TradeRowProps) {
+function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
+  const { created_at, choice_markets, shares, avg_share_price, total_amount } =
+    tradeTxn;
   return (
     <TableRow className="border-0">
-      <TableCell className="text-gray-400">{date}</TableCell>
-      <TableCell className="text-white">{market}</TableCell>
-      <TableCell className="text-white">{choice}</TableCell>
-      <TableCell className="text-white">{order}</TableCell>
-      <TableCell className="text-tally-primary">
-        {Math.round(pnl * 100)}%
+      <TableCell className="text-gray-400">
+        {formatIsoAsDateWithTime(created_at)}
+      </TableCell>
+      <TableCell className="text-white">
+        {choice_markets?.sub_markets?.title || ""}
+      </TableCell>
+      <TableCell className="text-white">
+        {choice_markets?.title || ""}
       </TableCell>
       <TableCell className="text-right text-white">
-        {formatDollarsWithCents(value)}
+        {formatDollarsWithCents(avg_share_price)}
+      </TableCell>
+      <TableCell className="text-right text-white">{shares}</TableCell>
+      <TableCell className="text-right text-white">
+        {formatDollarsWithCents(total_amount)}
       </TableCell>
     </TableRow>
   );
 }
 
-function TradesTable() {
+function TradesTable({ tradeHistory }: { tradeHistory: TradeHistory[] }) {
   return (
     <div className="rounded-2xl bg-zinc-900 px-4 py-2">
       <Table>
@@ -122,15 +111,23 @@ function TradesTable() {
             <TableHead className="text-gray-400">Date</TableHead>
             <TableHead className="text-gray-400">Market</TableHead>
             <TableHead className="text-gray-400">Choice</TableHead>
-            <TableHead className="text-gray-400">Order</TableHead>
-            <TableHead className="text-gray-400">PNL</TableHead>
-            <TableHead className="text-right text-gray-400">Value</TableHead>
+            <TableHead className="text-right text-gray-400">
+              Share Price
+            </TableHead>
+            <TableHead className="text-right text-gray-400">Shares</TableHead>
+            <TableHead className="text-right text-gray-400">
+              Total Amount
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {TRADES_TABLE_DATA.map((trade, index) => (
-            <TradesRow key={index} {...trade} />
-          ))}
+          {tradeHistory ? (
+            tradeHistory.map((trade, index) => (
+              <TradesRow key={index} tradeTxn={trade} />
+            ))
+          ) : (
+            <></>
+          )}
         </TableBody>
       </Table>
     </div>
@@ -156,8 +153,10 @@ function FilterButtonTable(props: FilterButtonProps) {
 
 export default function Tables({
   fairLaunchHistory,
+  tradeHistory,
 }: {
   fairLaunchHistory: FairLaunchHistory[];
+  tradeHistory: TradeHistory[];
 }) {
   return (
     <Tabs.Root defaultValue="Trades" className="w-full">
@@ -168,11 +167,17 @@ export default function Tables({
         <Tabs.Trigger value="Fair Launches" className="w-full" asChild>
           <FilterButtonTable name="Fair Launches" />
         </Tabs.Trigger>
+        <Tabs.Trigger value="Resolutions" className="w-full" asChild>
+          <FilterButtonTable name="Resolutions" />
+        </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content value="Trades">
-        <TradesTable />
+        <TradesTable tradeHistory={tradeHistory} />
       </Tabs.Content>
       <Tabs.Content value="Fair Launches">
+        <FairLaunchTable fairLaunchHistory={fairLaunchHistory} />
+      </Tabs.Content>
+      <Tabs.Content value="Resolutions">
         <FairLaunchTable fairLaunchHistory={fairLaunchHistory} />
       </Tabs.Content>
     </Tabs.Root>

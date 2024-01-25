@@ -4,6 +4,7 @@ import { getFairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 import { getHoldings, Holdings } from "@/lib/supabase/queries/holdings";
 import { getProxyWallet } from "@/lib/supabase/queries/proxyWallet";
 import { getRankByVolume } from "@/lib/supabase/queries/rank/volume";
+import { getTradeHistory } from "@/lib/supabase/queries/tradeHistory";
 import { getUser } from "@/lib/supabase/queries/user";
 
 import DisplayPicture from "./components/DisplayPicture";
@@ -82,6 +83,11 @@ export default async function Profile() {
     options: { userId: user.id },
   });
 
+  const tradeHistory = await getTradeHistory({
+    supabase: supabase,
+    options: { userId: user.id },
+  });
+
   const fairLaunchHistory = await getFairLaunchHistory({
     supabase: supabase,
     options: { userId: user.id },
@@ -92,12 +98,13 @@ export default async function Profile() {
     options: { userId: user.id },
   });
 
-  console.log("authUser", authUser);
-  console.log("user", user);
-  console.log("proxyWallet", proxyWallet);
-  console.log("holdings", holdings);
-  console.log("fair launch history", fairLaunchHistory);
-  console.log("volume and rank", volumeAndRank);
+  // console.log("authUser", authUser);
+  // console.log("user", user);
+  // console.log("proxyWallet", proxyWallet);
+  // console.log("holdings", holdings);
+  // console.log("fair launch history", fairLaunchHistory);
+  // console.log("volume and rank", volumeAndRank);
+  console.log("trade history", tradeHistory);
 
   const balance = proxyWallet.unredeemable_balance + proxyWallet.usdc_balance;
   const volume = holdings.reduce((acc, holding) => {
@@ -126,7 +133,10 @@ export default async function Profile() {
           volumeAndRank={volumeAndRank}
         />
         <div className="w-full px-4 lg:px-16">
-          <Tables fairLaunchHistory={fairLaunchHistory} />
+          <Tables
+            tradeHistory={tradeHistory}
+            fairLaunchHistory={fairLaunchHistory}
+          />
         </div>
       </div>
     </div>

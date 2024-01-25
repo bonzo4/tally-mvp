@@ -21,13 +21,21 @@ export function formatDollarsWithoutCents(value: number): string {
   }).format(value);
 }
 
-export function formatDollarsWithCents(value: number): string {
+export function formatDollarsWithCentsPrimitive(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
+}
+
+export function formatDollarsWithCents(value: number): string {
+  if (value === 0) return formatDollarsWithCentsPrimitive(value);
+  if (value < 0.01) {
+    return "<$0.01";
+  }
+  return formatDollarsWithCentsPrimitive(value);
 }
 
 export function formatNumberWithCommasNoDecimals(value: number): string {

@@ -4,7 +4,7 @@ export default function DisplayPicture({
   image,
   alt,
 }: {
-  image?: string;
+  image: string | null;
   alt?: string;
 }) {
   return (

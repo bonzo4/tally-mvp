@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/table";
 import {
   formatDollarsWithCents,
-  formatIsoAsDateWithTime,
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
 import { Holdings } from "@/lib/supabase/queries/holdings";

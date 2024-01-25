@@ -7,11 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TradeHistory } from "@/lib/supabase/queries/tradeHistory";
-import {
-  formatDollarsWithCents,
-  formatIsoAsDateWithTime,
-  formatNumberWithCommasNoDecimals,
-} from "@/lib/formats";
+import { formatDollarsWithCents, formatIsoAsDateWithTime } from "@/lib/formats";
 import { textCssMap } from "@/lib/cssMaps";
 
 function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {

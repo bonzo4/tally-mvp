@@ -17,15 +17,16 @@ export function FilterButtonPrimitive(props: ButtonProps) {
 export interface FilterButtonProps extends ButtonProps {
   name: string;
   selected: string;
+  selectedCss?: string;
 }
 
 export function FilterButton(props: FilterButtonProps) {
-  const { name, selected, className, ...rest } = props;
+  const { name, selected, selectedCss, className, ...rest } = props;
 
   let _className =
     name === selected
-      ? "bg-white text-black hover:bg-white/90"
-      : "bg-zinc-900 text-gray-400 hover:bg-zinc-800";
+      ? selectedCss || "bg-white text-black hover:bg-white/90"
+      : "bg-tally-layer-1 text-tally-gray hover:bg-tally-layer-1";
 
   return (
     <FilterButtonPrimitive {...rest} className={cn(className, _className)}>

@@ -1,4 +1,4 @@
-import { getBlog } from "@/lib/api/fetch";
+import { getBlog } from "@/lib/api/data/blogs";
 
 export default async function BlogPage({
   params: { id },

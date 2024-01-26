@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { getPredictionMarketCards } from "@/lib/supabase/markets/predictionMarkets";
+import { getPredictionMarketCards } from "@/lib/supabase/queries/markets/predictionMarkets";
 
 export type PredictionMarketData = {
   id: number;

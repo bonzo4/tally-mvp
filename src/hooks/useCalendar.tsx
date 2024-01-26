@@ -1,5 +1,5 @@
-import { Calendar } from "@/lib/supabase/calendar";
-import { Database } from "@/lib/types";
+import { Calendar } from "@/lib/supabase/queries/calendar";
+import { Database } from "@/lib/supabase/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 

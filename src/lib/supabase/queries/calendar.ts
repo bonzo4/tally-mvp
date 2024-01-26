@@ -1,7 +1,7 @@
 import { Database } from "../types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { PostgrestResponse } from "@supabase/postgrest-js";
-import { fetchQuery } from "./fetch";
+import { fetchQuery } from "../fetch";
 
 export type Calendar = Database["public"]["Tables"]["calendar_events"]["Row"];
 

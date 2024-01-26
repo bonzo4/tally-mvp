@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { getTickers } from "@/lib/supabase/tickers";
+import { getTickers } from "@/lib/supabase/queries/tickers";
 
 export async function GET(req: NextRequest) {
   try {

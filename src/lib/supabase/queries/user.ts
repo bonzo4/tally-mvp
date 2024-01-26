@@ -1,6 +1,6 @@
 import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../types";
-import { fetchQuery } from "./fetch";
+import { fetchQuery } from "../fetch";
 
 export type UserDoc = Database["public"]["Tables"]["users"]["Row"];
 

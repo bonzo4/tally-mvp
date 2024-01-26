@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { getCalendar, getLastUpdated } from "@/lib/supabase/calendar";
+import { getCalendar, getLastUpdated } from "@/lib/supabase/queries/calendar";
 
 export async function GET(req: NextRequest) {
   try {

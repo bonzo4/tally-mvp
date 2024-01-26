@@ -76,7 +76,6 @@ export default async function Slide({ slug }: { slug: string }) {
     return;
   }
   const market = markets[0];
-  console.log(market);
   const totalPot = market.sub_markets.reduce((acc, subMarket) => {
     return (
       acc +

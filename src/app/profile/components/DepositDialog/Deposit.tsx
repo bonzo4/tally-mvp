@@ -31,7 +31,7 @@ export default function Deposit() {
       <HelioCheckout
         config={{
           paylinkId: process.env.NEXT_PUBLIC_HELIO_PAYLINK_ID!,
-          network: "test",
+          network: "main",
           theme: {
             themeMode: "dark",
             colors: {

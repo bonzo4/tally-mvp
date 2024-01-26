@@ -72,33 +72,33 @@ export interface Database {
       buy_orders: {
         Row: {
           avg_share_price: number
-          choice_market_id: number | null
+          choice_market_id: number
           created_at: string
           id: number
           incoming_usdc: number
           new_usdc_balance: number
-          shares_gained: number
-          user_id: number | null
+          shares: number
+          user_id: number
         }
         Insert: {
           avg_share_price: number
-          choice_market_id?: number | null
+          choice_market_id: number
           created_at?: string
           id?: number
           incoming_usdc: number
           new_usdc_balance: number
-          shares_gained: number
-          user_id?: number | null
+          shares: number
+          user_id: number
         }
         Update: {
           avg_share_price?: number
-          choice_market_id?: number | null
+          choice_market_id?: number
           created_at?: string
           id?: number
           incoming_usdc?: number
           new_usdc_balance?: number
-          shares_gained?: number
-          user_id?: number | null
+          shares?: number
+          user_id?: number
         }
         Relationships: [
           {
@@ -106,6 +106,13 @@ export interface Database {
             columns: ["choice_market_id"]
             isOneToOne: false
             referencedRelation: "choice_markets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "buy_orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
@@ -314,30 +321,33 @@ export interface Database {
       }
       fair_launch_order: {
         Row: {
+          avg_share_price: number
           choice_market_id: number
           created_at: string
           id: number
           incoming_usdc: number
           new_usdc_balance: number
-          total_shares_gained: number
+          shares: number
           user_id: number
         }
         Insert: {
+          avg_share_price: number
           choice_market_id: number
           created_at?: string
           id?: number
           incoming_usdc: number
           new_usdc_balance: number
-          total_shares_gained: number
+          shares: number
           user_id: number
         }
         Update: {
+          avg_share_price?: number
           choice_market_id?: number
           created_at?: string
           id?: number
           incoming_usdc?: number
           new_usdc_balance?: number
-          total_shares_gained?: number
+          shares?: number
           user_id?: number
         }
         Relationships: [
@@ -350,6 +360,63 @@ export interface Database {
           },
           {
             foreignKeyName: "fair_launch_order_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      holdings: {
+        Row: {
+          choice_market_id: number
+          created_at: string
+          id: number
+          participated_in_fair_launch: boolean
+          shares: number
+          shares_bought: number
+          shares_sold: number
+          total_buy_value: number
+          total_sell_value: number
+          user_id: number
+          winnings: number | null
+        }
+        Insert: {
+          choice_market_id: number
+          created_at?: string
+          id?: number
+          participated_in_fair_launch?: boolean
+          shares?: number
+          shares_bought?: number
+          shares_sold?: number
+          total_buy_value?: number
+          total_sell_value?: number
+          user_id: number
+          winnings?: number | null
+        }
+        Update: {
+          choice_market_id?: number
+          created_at?: string
+          id?: number
+          participated_in_fair_launch?: boolean
+          shares?: number
+          shares_bought?: number
+          shares_sold?: number
+          total_buy_value?: number
+          total_sell_value?: number
+          user_id?: number
+          winnings?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "holdings_choice_market_id_fkey"
+            columns: ["choice_market_id"]
+            isOneToOne: false
+            referencedRelation: "choice_markets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "holdings_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -677,6 +744,54 @@ export interface Database {
           }
         ]
       }
+      orders: {
+        Row: {
+          avg_share_price: number
+          choice_market_id: number
+          created_at: string
+          id: number
+          shares: number
+          total_amount: number
+          trade_side: Database["public"]["Enums"]["trade_side"]
+          user_id: number
+        }
+        Insert: {
+          avg_share_price: number
+          choice_market_id: number
+          created_at?: string
+          id?: number
+          shares: number
+          total_amount: number
+          trade_side: Database["public"]["Enums"]["trade_side"]
+          user_id: number
+        }
+        Update: {
+          avg_share_price?: number
+          choice_market_id?: number
+          created_at?: string
+          id?: number
+          shares?: number
+          total_amount?: number
+          trade_side?: Database["public"]["Enums"]["trade_side"]
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_choice_market_id_fkey"
+            columns: ["choice_market_id"]
+            isOneToOne: false
+            referencedRelation: "choice_markets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       owned_shares: {
         Row: {
           avg_share_price: number
@@ -932,7 +1047,7 @@ export interface Database {
           id: number
           new_usdc_balance: number
           outgoing_usdc: number
-          shares_lost: number
+          shares: number
           user_id: number
         }
         Insert: {
@@ -942,7 +1057,7 @@ export interface Database {
           id?: number
           new_usdc_balance: number
           outgoing_usdc: number
-          shares_lost: number
+          shares: number
           user_id: number
         }
         Update: {
@@ -952,7 +1067,7 @@ export interface Database {
           id?: number
           new_usdc_balance?: number
           outgoing_usdc?: number
-          shares_lost?: number
+          shares?: number
           user_id?: number
         }
         Relationships: [
@@ -1078,6 +1193,7 @@ export interface Database {
       }
       users: {
         Row: {
+          conviction: number
           created_at: string
           icon: string | null
           id: number
@@ -1086,6 +1202,7 @@ export interface Database {
           user_id: string
         }
         Insert: {
+          conviction?: number
           created_at?: string
           icon?: string | null
           id?: number
@@ -1094,6 +1211,7 @@ export interface Database {
           user_id: string
         }
         Update: {
+          conviction?: number
           created_at?: string
           icon?: string | null
           id?: number
@@ -1172,6 +1290,14 @@ export interface Database {
           user_doc_id: number
         }
         Returns: boolean
+      }
+      rank_users_by_volume: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          user_id: number
+          total_volume: number
+          rank: number
+        }[]
       }
     }
     Enums: {

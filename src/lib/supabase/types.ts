@@ -69,54 +69,6 @@ export interface Database {
         }
         Relationships: []
       }
-      buy_orders: {
-        Row: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at: string
-          id: number
-          incoming_usdc: number
-          new_usdc_balance: number
-          shares: number
-          user_id: number
-        }
-        Insert: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at?: string
-          id?: number
-          incoming_usdc: number
-          new_usdc_balance: number
-          shares: number
-          user_id: number
-        }
-        Update: {
-          avg_share_price?: number
-          choice_market_id?: number
-          created_at?: string
-          id?: number
-          incoming_usdc?: number
-          new_usdc_balance?: number
-          shares?: number
-          user_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "buy_orders_choice_market_id_fkey"
-            columns: ["choice_market_id"]
-            isOneToOne: false
-            referencedRelation: "choice_markets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "buy_orders_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       calendar_events: {
         Row: {
           created_at: string
@@ -903,6 +855,7 @@ export interface Database {
           title: string
           total_comments: number
           total_pot: number
+          trading_end: string | null
         }
         Insert: {
           banner: string
@@ -917,6 +870,7 @@ export interface Database {
           title: string
           total_comments?: number
           total_pot?: number
+          trading_end?: string | null
         }
         Update: {
           banner?: string
@@ -931,6 +885,7 @@ export interface Database {
           title?: string
           total_comments?: number
           total_pot?: number
+          trading_end?: string | null
         }
         Relationships: [
           {
@@ -1035,54 +990,6 @@ export interface Database {
             columns: ["reward_id"]
             isOneToOne: false
             referencedRelation: "rewards"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      sell_orders: {
-        Row: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at: string
-          id: number
-          new_usdc_balance: number
-          outgoing_usdc: number
-          shares: number
-          user_id: number
-        }
-        Insert: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at?: string
-          id?: number
-          new_usdc_balance: number
-          outgoing_usdc: number
-          shares: number
-          user_id: number
-        }
-        Update: {
-          avg_share_price?: number
-          choice_market_id?: number
-          created_at?: string
-          id?: number
-          new_usdc_balance?: number
-          outgoing_usdc?: number
-          shares?: number
-          user_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sell_orders_choice_market_id_fkey"
-            columns: ["choice_market_id"]
-            isOneToOne: false
-            referencedRelation: "choice_markets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sell_orders_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]

@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 
 import { Button, ButtonProps } from "@/components/ui/button";
@@ -5,35 +7,13 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input, InputProps } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { textCssMap } from "@/lib/cssMaps";
+import {
+  ChoiceMarket,
+  SubMarketWithChoiceMarkets,
+} from "@/lib/supabase/queries/markets/tradeMarket";
 
 import { VscCircleFilled } from "react-icons/vsc";
-
-type ColorName =
-  | "red"
-  | "orange"
-  | "yellow"
-  | "green"
-  | "blue"
-  | "purple"
-  | "indigo";
-type ColorClass =
-  | "text-tally-red"
-  | "text-tally-orange"
-  | "text-tally-yellow"
-  | "text-tally-green"
-  | "text-tally-blue"
-  | "text-tally-purple"
-  | "text-tally-indigo";
-
-const COLOR_MAP: Record<ColorName, ColorClass> = {
-  red: "text-tally-red",
-  orange: "text-tally-orange",
-  yellow: "text-tally-yellow",
-  green: "text-tally-green",
-  blue: "text-tally-blue",
-  purple: "text-tally-purple",
-  indigo: "text-tally-indigo",
-};
 
 export interface OrderButtonProps extends ButtonProps {
   price: number;
@@ -95,6 +75,58 @@ function AmountInput(props: AmountInputProps) {
   );
 }
 
+function ChoiceMarketButton({
+  selected,
+  choiceMarket,
+}: {
+  selected: string;
+  choiceMarket: ChoiceMarket;
+}) {
+  const { share_price, title, ...rest } = choiceMarket;
+
+  let color =
+    "bg-transparent hover:bg-tally-primary/10 text-tally-primary/50 hover:text-tally-primary/60 border border-tally-primary/50";
+  if (selected === "Yes") {
+    color =
+      "bg-tally-primary/20 hover:bg-tally-primary/30 text-tally-primary hover:text-tally border border-tally-primary";
+  }
+
+  return (
+    <Button variant="outline" className={cn(color, "font-bold")}>{`${title} ${
+      share_price * 100
+    }¢`}</Button>
+  );
+}
+
+function OrderSubMarket({
+  subMarket,
+}: {
+  subMarket: SubMarketWithChoiceMarkets;
+}) {
+  const { card_title } = subMarket;
+  const color = subMarket.color || "primary";
+  const dotColor = textCssMap[color as keyof typeof textCssMap];
+
+  return (
+    <div className="flex flex-col space-y-2">
+      <div className="flex items-center space-x-1">
+        <VscCircleFilled className={cn(dotColor, "")} />
+        <h2 className="text-lg text-white">{card_title}</h2>
+      </div>
+      <div className="grid w-full grid-cols-3 gap-3">
+        {subMarket.choice_markets.map((choiceMarket, index) => (
+          <ChoiceMarketButton
+            key={index}
+            choiceMarket={choiceMarket}
+            selected={"Yes}"}
+          />
+        ))}
+        <AmountInput amount={0} />
+      </div>
+    </div>
+  );
+}
+
 function OrderItem({
   title,
   color,
@@ -109,8 +141,8 @@ function OrderItem({
   selected: string | null;
 }) {
   let dotColor = "text-black";
-  if (color in COLOR_MAP) {
-    dotColor = COLOR_MAP[color as ColorName];
+  if (color in textCssMap) {
+    dotColor = textCssMap[color as keyof typeof textCssMap];
   }
 
   return (
@@ -190,7 +222,11 @@ function SellOrderSummary() {
   );
 }
 
-export default function Order() {
+export default function Order({
+  subMarkets,
+}: {
+  subMarkets: SubMarketWithChoiceMarkets[];
+}) {
   return (
     <Tabs
       className="flex flex-col overflow-auto lg:w-[350px]"
@@ -213,48 +249,9 @@ export default function Order() {
       <TabsContent className="flex flex-col overflow-auto" value="buy">
         <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
           <CardContent className="space-y-3 overflow-auto px-2 py-4 lg:px-6">
-            <OrderItem
-              title="Donald Trump"
-              color="red"
-              yesPrice={60}
-              noPrice={40}
-              selected="No"
-            />
-            <OrderItem
-              title="Ron Desantis"
-              color="orange"
-              yesPrice={33}
-              noPrice={67}
-              selected="Yes"
-            />
-            <OrderItem
-              title="Nikki Haley"
-              color="yellow"
-              yesPrice={4}
-              noPrice={96}
-              selected={null}
-            />
-            <OrderItem
-              title="Vivek Ramaswamy"
-              color="green"
-              yesPrice={3}
-              noPrice={97}
-              selected={null}
-            />
-            <OrderItem
-              title="Joe Biden"
-              color="blue"
-              yesPrice={1}
-              noPrice={99}
-              selected="No"
-            />
-            <OrderItem
-              title="Gavin Newsom"
-              color="purple"
-              yesPrice={1}
-              noPrice={99}
-              selected="No"
-            />
+            {subMarkets.map((subMarket, index) => (
+              <OrderSubMarket key={index} subMarket={subMarket} />
+            ))}
           </CardContent>
           <CardFooter className="flex flex-col px-2 py-4 lg:px-6">
             <Separator className="bg-neutral-800" />

@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import Banner from "@/components/Banner";
 import Chart from "./components/Chart";
 import Chat from "./components/Chat";
 import Order from "./components/Order";
@@ -9,7 +8,6 @@ import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
 import Slide from "@/components/Slide";
-import Image from "next/image";
 import { getTradingMarketData } from "@/lib/api/data/markets/tradingMarket";
 
 function TradingTabs() {
@@ -66,11 +64,11 @@ export default async function TradePage({
         <div className="mb-10 flex w-full space-x-12">
           <div className="flex flex-grow flex-col space-y-8 py-5">
             <Chart />
-            <OrderDrawer />
+            <OrderDrawer subMarkets={market.sub_markets} />
             <TradingTabs />
           </div>
           <div className="hidden py-5 lg:block">
-            <Order />
+            <Order subMarkets={market.sub_markets} />
           </div>
         </div>
         <RelatedMarkets />

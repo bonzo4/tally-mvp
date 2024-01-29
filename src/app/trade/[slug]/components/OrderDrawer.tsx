@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -6,10 +7,14 @@ import {
   DrawerHeader,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-
 import Order from "./Order";
+import { SubMarketWithChoiceMarkets } from "@/lib/supabase/queries/markets/tradeMarket";
 
-export default function OrderDrawer() {
+export default function OrderDrawer({
+  subMarkets,
+}: {
+  subMarkets: SubMarketWithChoiceMarkets[];
+}) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -23,7 +28,7 @@ export default function OrderDrawer() {
         <DrawerHeader>
           {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
-        <Order />
+        <Order subMarkets={subMarkets} />
       </DrawerContent>
     </Drawer>
   );

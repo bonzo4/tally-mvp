@@ -998,6 +998,7 @@ export interface Database {
         Row: {
           banner: string
           card_title: string | null
+          color: Database["public"]["Enums"]["colors_enum"] | null
           created_at: string
           fair_launch_end: string
           fair_launch_start: string
@@ -1016,6 +1017,7 @@ export interface Database {
         Insert: {
           banner: string
           card_title?: string | null
+          color?: Database["public"]["Enums"]["colors_enum"] | null
           created_at?: string
           fair_launch_end: string
           fair_launch_start: string
@@ -1034,6 +1036,7 @@ export interface Database {
         Update: {
           banner?: string
           card_title?: string | null
+          color?: Database["public"]["Enums"]["colors_enum"] | null
           created_at?: string
           fair_launch_end?: string
           fair_launch_start?: string

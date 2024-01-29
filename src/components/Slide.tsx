@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { getTradeMarkets } from "@/lib/supabase/queries/markets/tradeMarket";
 import { createServerSupabaseClient } from "@/lib/supabase/server";

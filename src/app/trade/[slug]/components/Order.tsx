@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-import { Button, ButtonProps } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input, InputProps } from "@/components/ui/input";
 import Image from "next/image";
@@ -11,51 +11,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Color, textCssMap } from "@/lib/cssMaps";
 import {
   ChoiceMarket,
+  ChoiceMarketWithHoldings,
   SubMarketWithChoiceMarkets,
 } from "@/lib/supabase/queries/markets/tradeMarket";
+import {
+  formatNumberWithCommasNoDecimals,
+  formatDollarsWithCents,
+} from "@/lib/formats";
 
 import { VscCircleFilled } from "react-icons/vsc";
-
-export interface OrderButtonProps extends ButtonProps {
-  price: number;
-  selected: string | null;
-}
-
-function YesButton(props: OrderButtonProps) {
-  const { price, selected, ...rest } = props;
-
-  let color =
-    "bg-transparent hover:bg-tally-primary/10 text-tally-primary/50 hover:text-tally-primary/60 border border-tally-primary/50";
-  if (selected === "Yes") {
-    color =
-      "bg-tally-primary/20 hover:bg-tally-primary/30 text-tally-primary hover:text-tally border border-tally-primary";
-  }
-
-  return (
-    <Button
-      variant="outline"
-      className={cn(color, "font-bold")}
-    >{`Yes ${price}¢`}</Button>
-  );
-}
-
-function NoButton(props: OrderButtonProps) {
-  const { price, selected, ...rest } = props;
-
-  let color =
-    "bg-transparent hover:bg-tally-red/10 text-tally-red/50 hover:text-tally-red/60 border border-tally-red/50";
-  if (selected === "No") {
-    color =
-      "bg-tally-red/20 hover:bg-tally-red/30 text-tally-red border border-tally-red";
-  }
-
-  return (
-    <Button
-      variant="outline"
-      className={cn(color, "font-bold")}
-    >{`No ${price}¢`}</Button>
-  );
-}
 
 interface AmountInputProps extends InputProps {
   amount: number;
@@ -119,14 +83,18 @@ const choiceMarketButtonSelectedCssMap = {
     "bg-tally-white/20 text-tally-white border border-tally-white hover:bg-tally-white/30 hover:text-tally",
 };
 
-function ChoiceMarketButton({
-  selected,
-  choiceMarket,
-}: {
+type ChoiceMarketButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   selected: string;
   choiceMarket: ChoiceMarket;
-}) {
-  const { share_price, color, title, ...rest } = choiceMarket;
+};
+
+function ChoiceButton({
+  selected,
+  choiceMarket,
+  className,
+  ...rest
+}: ChoiceMarketButtonProps) {
+  const { share_price, color, title } = choiceMarket;
 
   let className_ =
     selected === title
@@ -136,7 +104,7 @@ function ChoiceMarketButton({
   return (
     <Button
       variant="outline"
-      className={cn(className_, "h-[40px] w-full font-bold")}
+      className={cn(className, className_, "font-bold")}
     >{`${title} ${share_price * 100}¢`}</Button>
   );
 }
@@ -149,7 +117,6 @@ function OrderSubMarket({
   const { card_title } = subMarket;
   const color = subMarket.color || "primary";
   const dotColor = textCssMap[color as keyof typeof textCssMap];
-  console.log(subMarket.icon);
 
   return (
     <div className="flex flex-col space-y-2">
@@ -167,8 +134,9 @@ function OrderSubMarket({
       </div>
       <div className="flex w-full space-x-2">
         {subMarket.choice_markets.map((choiceMarket, index) => (
-          <ChoiceMarketButton
+          <ChoiceButton
             key={index}
+            className="h-[40px] w-full"
             choiceMarket={choiceMarket}
             selected={"Yes"}
           />
@@ -179,98 +147,162 @@ function OrderSubMarket({
   );
 }
 
-function OrderItem({
-  title,
-  color,
-  yesPrice,
-  noPrice,
-  selected,
+function SellChoiceMarket({
+  choiceMarket,
 }: {
-  title: string;
-  color: string;
-  yesPrice: number;
-  noPrice: number;
-  selected: string | null;
+  choiceMarket: ChoiceMarketWithHoldings;
 }) {
-  let dotColor = "text-black";
-  if (color in textCssMap) {
-    dotColor = textCssMap[color as keyof typeof textCssMap];
-  }
+  const shares = choiceMarket.holdings[0].shares;
+  const value = formatDollarsWithCents(shares * choiceMarket.share_price);
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-between space-x-2">
+        <ChoiceButton
+          className="h-[40px]"
+          selected={""}
+          choiceMarket={choiceMarket}
+        />
+        <div className="flex flex-col">
+          <div className="text-right text-white">{`${formatNumberWithCommasNoDecimals(
+            shares
+          )} shares `}</div>
+          <div className="text-right text-white">{`(${value})`}</div>
+        </div>
+      </div>
+      <AmountInput amount={0} className="" />
+    </div>
+  );
+}
+
+type SellSubMarketProps = React.HTMLAttributes<HTMLDivElement> & {
+  subMarket: SubMarketWithChoiceMarkets;
+};
+
+function SellSubMarket({ children, subMarket }: SellSubMarketProps) {
+  const { card_title } = subMarket;
+  const color = subMarket.color || "primary";
+  const dotColor = textCssMap[color as keyof typeof textCssMap];
+
+  return (
+    <div className="flex flex-col space-y-2">
+      <div className="flex items-center">
+        <div className="relative mr-2 h-[32px] w-[32px]">
+          <Image
+            src={subMarket.icon}
+            fill={true}
+            alt=""
+            className="rounded object-cover"
+          />
+        </div>
+        <h2 className="mr-1 text-lg text-white">{card_title}</h2>
         <VscCircleFilled className={cn(dotColor, "")} />
-        <h2 className="text-lg text-white">{title}</h2>
       </div>
-      <div className="grid w-full grid-cols-3 gap-3">
-        <YesButton name="Yes" price={yesPrice} selected={selected} />
-        <NoButton name="No" price={noPrice} selected={selected} />
-        <AmountInput amount={0} />
+      <div className="flex flex-col space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function LineItem({
+  title,
+  shares,
+  value,
+}: {
+  title: string;
+  shares: number;
+  value: number;
+}) {
+  return (
+    <div className="flex w-full justify-between">
+      <div className="text-sm text-gray-400">{title}</div>
+      <div className="flex">
+        <span>{formatNumberWithCommasNoDecimals(shares)}</span>
+        <span>&nbsp;{`(${formatDollarsWithCents(value)})`}</span>
       </div>
     </div>
   );
 }
 
-function BuyOrderSummary() {
+function OrderSummary({ isBuy }: { isBuy: boolean }) {
   return (
     <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
       <div className="space-y-2">
-        <div className="flex w-full items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-white">Order Amount</h2>
-          </div>
-          <div className="text-lg font-bold text-white">$100</div>
-        </div>
-        <Button className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black">
-          Buy
-        </Button>
+        <div className="text-tally-gray">Total Cost</div>
+        <Input
+          className="border border-tally-layer-2 bg-transparent text-tally-gray"
+          value="$200"
+        />
+        {isBuy ? (
+          <Button className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black">
+            Buy
+          </Button>
+        ) : (
+          <Button className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black">
+            Sell
+          </Button>
+        )}
       </div>
       <div className="space-y-1 text-sm text-white">
-        <div className="flex w-full justify-between">
-          <div className="text-sm text-gray-400">Average Price:</div>
-          <div>$.50</div>
-        </div>
-        <div className="flex w-full justify-between">
-          <div className="text-sm text-gray-400">Shares:</div>
-          <div>45000</div>
-        </div>
-        <div className="flex w-full justify-between">
-          <div className="text-sm text-gray-400">Potential Return:</div>
-          <div>$1000 (50%)</div>
-        </div>
+        <LineItem title="Shares" shares={100} value={100} />
+        <LineItem title="Shares" shares={100} value={100} />
       </div>
     </div>
   );
 }
 
-function SellOrderSummary() {
+function SellContent({
+  subMarketsWithHoldings,
+}: {
+  subMarketsWithHoldings: SubMarketWithChoiceMarkets[];
+}) {
+  if (!subMarketsWithHoldings?.length)
+    return (
+      <div className="text-white">You don&apos;t own any shares to sell</div>
+    );
   return (
-    <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
-      <div className="space-y-2">
-        <div className="flex w-full items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-white">Shares</h2>
-          </div>
-          <div className="text-lg font-bold text-white">$100</div>
-        </div>
-        <Button className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black">
-          Sell
-        </Button>
-      </div>
-      <div className="space-y-1 text-sm text-white">
-        <div className="flex w-full justify-between">
-          <div className="text-sm text-gray-400">Shares</div>
-          <div>100</div>
-        </div>
-        <div className="flex w-full justify-between">
-          <div className="text-sm text-gray-400">
-            Estimated Amount Received:
-          </div>
-          <div>$74.15</div>
-        </div>
-      </div>
-    </div>
+    <>
+      {subMarketsWithHoldings.map((subMarketWithHoldings, index) => {
+        return (
+          <SellSubMarket key={index} subMarket={subMarketWithHoldings}>
+            {subMarketWithHoldings.choice_markets.map(
+              (choice_market, index) => {
+                if (!choice_market.holdings.length) return;
+                console.log(choice_market);
+                return (
+                  <SellChoiceMarket key={index} choiceMarket={choice_market} />
+                );
+              }
+            )}
+          </SellSubMarket>
+        );
+      })}
+    </>
+  );
+}
+
+function SellCard({
+  subMarkets,
+}: {
+  subMarkets: SubMarketWithChoiceMarkets[];
+}) {
+  const subMarketsWithHoldings = subMarkets.filter((subMarket) => {
+    return subMarket.choice_markets.filter(
+      (choiceMarket) => choiceMarket.holdings.length
+    ).length;
+  });
+
+  return (
+    <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
+      <CardContent className="space-y-3 overflow-auto px-0 py-4">
+        <SellContent subMarketsWithHoldings={subMarketsWithHoldings} />
+      </CardContent>
+      {subMarketsWithHoldings.length ? (
+        <CardFooter className="flex flex-col px-0 py-4">
+          <Separator className="bg-neutral-800" />
+          <OrderSummary isBuy={false} />
+        </CardFooter>
+      ) : null}
+    </Card>
   );
 }
 
@@ -307,7 +339,7 @@ export default function Order({
           </CardContent>
           <CardFooter className="flex flex-col px-0 py-4">
             <Separator className="bg-neutral-800" />
-            <BuyOrderSummary />
+            <OrderSummary isBuy={true} />
           </CardFooter>
         </Card>
       </TabsContent>
@@ -315,36 +347,86 @@ export default function Order({
         className="flex flex-col overflow-auto bg-transparent"
         value="sell"
       >
-        <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
-          <CardContent className="space-y-3 overflow-auto px-2 py-4 lg:px-6">
-            <OrderItem
-              title="Donald Trump"
-              color="red"
-              yesPrice={60}
-              noPrice={40}
-              selected={"No"}
-            />
-            <OrderItem
-              title="Ron Desantis"
-              color="orange"
-              yesPrice={33}
-              noPrice={67}
-              selected={"Yes"}
-            />
-            <OrderItem
-              title="Nikki Haley"
-              color="yellow"
-              yesPrice={4}
-              noPrice={96}
-              selected={null}
-            />
-          </CardContent>
-          <CardFooter className="flex flex-col px-2 py-4 lg:px-6">
-            <Separator className="bg-neutral-800" />
-            <SellOrderSummary />
-          </CardFooter>
-        </Card>
+        <SellCard subMarkets={subMarkets} />
       </TabsContent>
     </Tabs>
   );
 }
+
+/*
+function OrderItem({
+  title,
+  color,
+  yesPrice,
+  noPrice,
+  selected,
+}: {
+  title: string;
+  color: string;
+  yesPrice: number;
+  noPrice: number;
+  selected: string | null;
+}) {
+  let dotColor = "text-black";
+  if (color in textCssMap) {
+    dotColor = textCssMap[color as keyof typeof textCssMap];
+  }
+
+  return (
+    <div className="flex flex-col space-y-2">
+      <div className="flex items-center space-x-1">
+        <VscCircleFilled className={cn(dotColor, "")} />
+        <h2 className="text-lg text-white">{title}</h2>
+      </div>
+      <div className="grid w-full grid-cols-3 gap-3">
+        <YesButton name="Yes" price={yesPrice} selected={selected} />
+        <NoButton name="No" price={noPrice} selected={selected} />
+        <AmountInput amount={0} />
+      </div>
+    </div>
+  );
+}
+
+export interface OrderButtonProps extends ButtonProps {
+  price: number;
+  selected: string | null;
+}
+
+
+function YesButton(props: OrderButtonProps) {
+  const { price, selected, ...rest } = props;
+
+  let color =
+    "bg-transparent hover:bg-tally-primary/10 text-tally-primary/50 hover:text-tally-primary/60 border border-tally-primary/50";
+  if (selected === "Yes") {
+    color =
+      "bg-tally-primary/20 hover:bg-tally-primary/30 text-tally-primary hover:text-tally border border-tally-primary";
+  }
+
+  return (
+    <Button
+      variant="outline"
+      className={cn(color, "font-bold")}
+    >{`Yes ${price}¢`}</Button>
+  );
+}
+
+function NoButton(props: OrderButtonProps) {
+  const { price, selected, ...rest } = props;
+
+  let color =
+    "bg-transparent hover:bg-tally-red/10 text-tally-red/50 hover:text-tally-red/60 border border-tally-red/50";
+  if (selected === "No") {
+    color =
+      "bg-tally-red/20 hover:bg-tally-red/30 text-tally-red border border-tally-red";
+  }
+
+  return (
+    <Button
+      variant="outline"
+      className={cn(color, "font-bold")}
+    >{`No ${price}¢`}</Button>
+  );
+}
+
+*/

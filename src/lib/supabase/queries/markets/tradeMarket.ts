@@ -2,23 +2,22 @@ import { Database } from "../../types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { fetchQuery } from "../../fetch";
 
-export type PredictionMarket =
+type PredictionMarket =
   Database["public"]["Tables"]["prediction_markets"]["Row"];
-export type SubMarket = Database["public"]["Tables"]["sub_markets"]["Row"];
-export type ChoiceMarket =
-  Database["public"]["Tables"]["choice_markets"]["Row"];
-export type Holding = Database["public"]["Tables"]["holdings"]["Row"];
+type SubMarket = Database["public"]["Tables"]["sub_markets"]["Row"];
+type ChoiceMarket = Database["public"]["Tables"]["choice_markets"]["Row"];
+type Holding = Database["public"]["Tables"]["holdings"]["Row"];
 
 export type ChoiceMarketWithHoldings = ChoiceMarket & {
   holdings: Holding[];
 };
 
-export type SubMarketWithChoiceMarkets = SubMarket & {
+export type SubMarketWithHoldings = SubMarket & {
   choice_markets: ChoiceMarketWithHoldings[];
 };
 
 export type PredictionMarketWithHoldings = PredictionMarket & {
-  sub_markets: SubMarketWithChoiceMarkets[];
+  sub_markets: SubMarketWithHoldings[];
 };
 
 type GetTradeMarketsQueryOptions = {

@@ -30,11 +30,11 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
         <h2 className="mr-1 text-lg text-white">{card_title}</h2>
         <VscCircleFilled className={cn(dotColor, "")} />
       </div>
-      <div className="flex w-full space-x-2">
+      <fieldset className="flex w-full space-x-2">
         {subMarket.choice_markets.map((choiceMarket, index) => (
           <ChoiceButton
             id={choiceMarket.id.toString()}
-            name={subMarket.title + " - " + choiceMarket.title}
+            name={subMarket.id.toString()}
             value={choiceMarket.id.toString()}
             key={index}
             className="h-[40px] w-full"
@@ -42,7 +42,7 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
             selected={"Yes"}
           />
         ))}
-      </div>
+      </fieldset>
       <AmountInput amount={0} />
     </div>
   );

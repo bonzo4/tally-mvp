@@ -1,5 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import BuyCard from "./components/BuyCard";
+import SellCard from "./components/SellCard";
 import Chart from "./components/Chart";
 import Chat from "./components/Chat";
 import Order from "./components/Order";
@@ -86,11 +88,17 @@ export default async function TradePage({
         <div className="mb-10 flex w-full space-x-12">
           <div className="flex flex-grow flex-col space-y-8 py-5">
             <Chart />
-            <OrderDrawer subMarkets={market.sub_markets} />
+            <OrderDrawer
+              buyCard={<BuyCard subMarkets={market.sub_markets} />}
+              sellCard={<SellCard subMarkets={market.sub_markets} />}
+            />
             <TradingTabs />
           </div>
           <div className="hidden py-5 lg:block">
-            <Order subMarkets={market.sub_markets} />
+            <Order
+              buyCard={<BuyCard subMarkets={market.sub_markets} />}
+              sellCard={<SellCard subMarkets={market.sub_markets} />}
+            />
           </div>
         </div>
         <RelatedMarkets />

@@ -11,9 +11,11 @@ import Order from "./Order";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
 
 export default function OrderDrawer({
-  subMarkets,
+  buyCard,
+  sellCard,
 }: {
-  subMarkets: SubMarketWithHoldings[];
+  buyCard: React.ReactNode;
+  sellCard: React.ReactNode;
 }) {
   return (
     <Drawer>
@@ -28,7 +30,7 @@ export default function OrderDrawer({
         <DrawerHeader>
           {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
-        <Order subMarkets={subMarkets} />
+        <Order buyCard={buyCard} sellCard={sellCard} />
       </DrawerContent>
     </Drawer>
   );

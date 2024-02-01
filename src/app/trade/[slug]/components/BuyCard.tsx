@@ -33,6 +33,9 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
       <div className="flex w-full space-x-2">
         {subMarket.choice_markets.map((choiceMarket, index) => (
           <ChoiceButton
+            id={choiceMarket.id.toString()}
+            name={subMarket.title + " - " + choiceMarket.title}
+            value={choiceMarket.id.toString()}
             key={index}
             className="h-[40px] w-full"
             choiceMarket={choiceMarket}
@@ -50,8 +53,12 @@ export default function BuyCard({
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
+  async function submitBuy(formData: FormData) {
+    "use server";
+    console.log(formData);
+  }
   return (
-    <form>
+    <form action={submitBuy}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (

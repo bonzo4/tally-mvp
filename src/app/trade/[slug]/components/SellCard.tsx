@@ -92,7 +92,6 @@ function SellContent({
             {subMarketWithHoldings.choice_markets.map(
               (choice_market, index) => {
                 if (!choice_market.holdings.length) return;
-                console.log(choice_market);
                 return (
                   <SellChoiceMarket key={index} choiceMarket={choice_market} />
                 );

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useFormState } from "react-dom";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { textCssMap } from "@/lib/cssMaps";
@@ -10,6 +13,7 @@ import { VscCircleFilled } from "react-icons/vsc";
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import Summary from "./Summary";
+import submitTrade from "@/lib/api/actions/submitTrade";
 
 function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
   const { card_title } = subMarket;
@@ -30,20 +34,24 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
         <h2 className="mr-1 text-lg text-white">{card_title}</h2>
         <VscCircleFilled className={cn(dotColor, "")} />
       </div>
-      <fieldset className="flex w-full space-x-2">
-        {subMarket.choice_markets.map((choiceMarket, index) => (
-          <ChoiceButton
-            id={choiceMarket.id.toString()}
-            name={subMarket.id.toString()}
-            value={choiceMarket.id.toString()}
-            key={index}
-            className="h-[40px] w-full"
-            choiceMarket={choiceMarket}
-            selected={"Yes"}
-          />
-        ))}
+      <fieldset className="space-y-2">
+        <div className="flex w-full space-x-2">
+          {subMarket.choice_markets.map((choiceMarket, index) => (
+            <ChoiceButton
+              id={choiceMarket.id.toString()}
+              name={subMarket.id.toString()}
+              value={choiceMarket.id.toString()}
+              key={index}
+              className="h-[40px] w-full"
+              choiceMarket={choiceMarket}
+            />
+          ))}
+        </div>
+        <AmountInput
+          id={subMarket.id.toString() + " amount"}
+          name={subMarket.id.toString() + " amount"}
+        />
       </fieldset>
-      <AmountInput amount={0} />
     </div>
   );
 }
@@ -53,12 +61,9 @@ export default function BuyCard({
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
-  async function submitBuy(formData: FormData) {
-    "use server";
-    console.log(formData);
-  }
+  const [state, formAction] = useFormState(submitTrade, null);
   return (
-    <form action={submitBuy}>
+    <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (

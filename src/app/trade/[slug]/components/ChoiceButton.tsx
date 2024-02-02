@@ -153,12 +153,10 @@ type ChoiceButtonProps = React.HTMLAttributes<HTMLInputElement> & {
   id: string;
   name: string;
   value: string;
-  selected: string;
   choiceMarket: ChoiceMarketWithHoldings;
 };
 
 export default function ChoiceButton({
-  selected,
   choiceMarket,
   className,
   ...rest

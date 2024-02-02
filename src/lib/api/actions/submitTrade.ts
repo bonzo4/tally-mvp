@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
+import { estimateSpend } from "@/lib/estimateSpend";
 
 // state.errors[21][25];
 export type SubscribeState =
@@ -113,10 +114,18 @@ export default async function submitTrade(prevState: any, formData: FormData) {
   const txns = [];
   for (const txn of formData_) {
     // validate that amount is a number and not negative
+    const { avgPrice, cumulative, shareCount } = await estimateSpend(
+      supabase,
+      Number(txn.sub_market_id),
+      Number(txn.choice_market_id),
+      Number(txn.amount)
+    );
     txns.push({
       user_id: user.id,
       choice_market_id: txn.choice_market_id,
-      total_amount: txn.amount,
+      total_amount: cumulative,
+      shares: shareCount,
+      avg_share_price: avgPrice,
       trade_side: "BUY",
       status: "PENDING",
     });

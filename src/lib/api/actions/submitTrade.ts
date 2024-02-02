@@ -2,6 +2,32 @@
 
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/queries/user";
+
+// state.errors[21][25];
+export type SubscribeState =
+  | {
+      status: "success";
+      message: string;
+    }
+  | {
+      status: "error";
+      message: string;
+      /*
+         {
+            21: {
+              25: "Invalid email address."
+            }
+         }
+      */
+      errors?: {
+        [key: number]: {
+          [nestedKey: number]: string;
+        };
+      };
+    }
+  | null;
 
 // Schema for a single field
 const fieldSchema = z.object({
@@ -12,14 +38,6 @@ const fieldSchema = z.object({
 
 // Schema for the entire form (an array of fields)
 const formSchema = z.array(fieldSchema);
-//const formSchema = zfd.formData({
-//  "21 amount": z.string(),
-//  "22 amount": z.string(),
-//  "23 amount": z.string(),
-//  "24 amount": z.string(),
-//  "25 amount": z.string(),
-//});
-//
 
 // Data received from form has radio buttons input (e.g. "Yes" or "No") separate
 // from amount input (e.g. "$100"). They are associated by the name of the input.
@@ -62,12 +80,48 @@ function formatFormData(formData_: FormData) {
 }
 
 export default async function submitTrade(prevState: any, formData: FormData) {
-  console.log("formData", formData);
-  console.log("21 amount", formData.get("21 amount"));
-  const formData_ = formatFormData(formData);
-  console.log(formData_);
-  const parse = formSchema.safeParse(formData_);
-  console.log("parse", parse);
+  const supabase = createServerSupabaseClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    console.log("User not authenticated");
+    return;
+  }
+  const user = authUser
+    ? await getUser({
+        supabase: supabase,
+        options: { userId: authUser.id },
+      })
+    : null;
+
+  if (!user) {
+    console.log("User not found");
+    return;
+  }
+
+  // convert FormData to cleaner object
+  let formData_ = formatFormData(formData);
+
+  // remove unfilled fields
+  formData_ = formData_.filter(
+    (data) => data.amount !== "" && data.choice_market_id !== ""
+  );
+
+  // group transactions together before POSTING
+  const txns = [];
+  for (const txn of formData_) {
+    // validate that amount is a number and not negative
+    txns.push({
+      user_id: user.id,
+      choice_market_id: txn.choice_market_id,
+      total_amount: txn.amount,
+      trade_side: "BUY",
+      status: "PENDING",
+    });
+  }
+  const { data, error } = await supabase.from("orders").insert(txns).select();
 
   return prevState;
 }

@@ -698,32 +698,35 @@ export interface Database {
       }
       orders: {
         Row: {
-          avg_share_price: number
+          avg_share_price: number | null
           choice_market_id: number
           created_at: string
           id: number
-          shares: number
-          total_amount: number
+          shares: number | null
+          status: Database["public"]["Enums"]["trade_status"]
+          total_amount: number | null
           trade_side: Database["public"]["Enums"]["trade_side"]
           user_id: number
         }
         Insert: {
-          avg_share_price: number
+          avg_share_price?: number | null
           choice_market_id: number
           created_at?: string
           id?: number
-          shares: number
-          total_amount: number
+          shares?: number | null
+          status?: Database["public"]["Enums"]["trade_status"]
+          total_amount?: number | null
           trade_side: Database["public"]["Enums"]["trade_side"]
           user_id: number
         }
         Update: {
-          avg_share_price?: number
+          avg_share_price?: number | null
           choice_market_id?: number
           created_at?: string
           id?: number
-          shares?: number
-          total_amount?: number
+          shares?: number | null
+          status?: Database["public"]["Enums"]["trade_status"]
+          total_amount?: number | null
           trade_side?: Database["public"]["Enums"]["trade_side"]
           user_id?: number
         }
@@ -1005,6 +1008,7 @@ export interface Database {
           has_resolved: boolean
           icon: string
           id: number
+          order: number | null
           prediction_market_id: number
           slug: string
           start_time: string
@@ -1024,6 +1028,7 @@ export interface Database {
           has_resolved?: boolean
           icon: string
           id?: number
+          order?: number | null
           prediction_market_id: number
           slug: string
           start_time?: string
@@ -1043,6 +1048,7 @@ export interface Database {
           has_resolved?: boolean
           icon?: string
           id?: number
+          order?: number | null
           prediction_market_id?: number
           slug?: string
           start_time?: string
@@ -1226,7 +1232,13 @@ export interface Database {
       order_status: "PENDING" | "APPROVED" | "CONFIRMED"
       order_type: "FOK" | "GTC" | "GTD"
       trade_side: "BUY" | "SELL"
-      trade_status: "MATCHED" | "MINED" | "CONFIRMED" | "RETRYING" | "FAILED"
+      trade_status:
+        | "MATCHED"
+        | "MINED"
+        | "CONFIRMED"
+        | "RETRYING"
+        | "FAILED"
+        | "PENDING"
     }
     CompositeTypes: {
       [_ in never]: never

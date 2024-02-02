@@ -5,8 +5,9 @@ import { zfd } from "zod-form-data";
 
 // Schema for a single field
 const fieldSchema = z.object({
-  name: z.any(),
-  value: z.any(),
+  sub_market_id: z.number(),
+  choice_market_id: z.number(),
+  value: z.number(),
 });
 
 // Schema for the entire form (an array of fields)
@@ -19,51 +20,54 @@ const formSchema = z.array(fieldSchema);
 //  "25 amount": z.string(),
 //});
 //
-//
 
 // Data received from form has radio buttons input (e.g. "Yes" or "No") separate
 // from amount input (e.g. "$100"). They are associated by the name of the input.
 // The former has a name "[id]" while the latter has a name "[id] amount".
 // Thus we want to group them together.
-function formatFormData(formData: FormData) {
-  const formDataFormatted: Record<
+function formatFormData(formData_: FormData) {
+  const formData: Record<
     number,
-    { choice_market_id: number; amount?: number }
+    { choice_market_id?: string; amount?: string }
   > = {};
-  for (const [key, value] of formData.entries()) {
-    const keySplit = key.split(" ");
-    if (
-      keySplit.length === 2 &&
-      !isNaN(keySplit[0]) &&
-      keySplit[1] === "amount"
-    ) {
-      formDataFormatted[keySplit[0]]["amount"] = value;
-    } else if (keySplit.length === 1 && !isNaN(keySplit[0])) {
-      formDataFormatted[key] = { choice_market_id: value };
+  for (const [_key, value] of formData_.entries()) {
+    const keySplit = _key.split(" ");
+    const key = keySplit[0];
+    const isAmount = keySplit[1] === "amount";
+
+    if (isAmount) {
+      if (key in formData) {
+        formData[key].amount = value;
+      } else {
+        formData[key] = { choice_market_id: "", amount: value };
+      }
+    } else {
+      if (key in formData) {
+        formData[key].choice_market_id = value;
+      } else {
+        formData[key] = { choice_market_id: value, amount: "" };
+      }
     }
   }
 
-  const formDataArray = [];
-  for (const key in formDataFormatted) {
-    if (!formDataFormatted[key].amount) {
-      continue;
-    }
-    formDataArray.push({
+  const formDataArr = [];
+  for (const key in formData) {
+    formDataArr.push({
       sub_market_id: key,
-      choice_market_id: formDataFormatted[key].choice_market_id,
-      amount: formDataFormatted[key].amount,
+      choice_market_id: formData[key].choice_market_id,
+      amount: formData[key].amount,
     });
   }
-  return formDataArray;
+  return formDataArr;
 }
 
 export default async function submitTrade(prevState: any, formData: FormData) {
   console.log("formData", formData);
   console.log("21 amount", formData.get("21 amount"));
-  const formDataFormatted = formatFormData(formData);
-  console.log(formDataFormatted);
-  // const parse = formSchema.parse(formData);
-  // console.log("parse", parse);
+  const formData_ = formatFormData(formData);
+  console.log(formData_);
+  const parse = formSchema.safeParse(formData_);
+  console.log("parse", parse);
 
   return prevState;
 }

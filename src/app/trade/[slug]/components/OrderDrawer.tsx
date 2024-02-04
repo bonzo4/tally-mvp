@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -6,10 +7,15 @@ import {
   DrawerHeader,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-
 import Order from "./Order";
 
-export default function OrderDrawer() {
+export default function OrderDrawer({
+  buyCard,
+  sellCard,
+}: {
+  buyCard: React.ReactNode;
+  sellCard: React.ReactNode;
+}) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -23,7 +29,7 @@ export default function OrderDrawer() {
         <DrawerHeader>
           {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
-        <Order />
+        <Order buyCard={buyCard} sellCard={sellCard} />
       </DrawerContent>
     </Drawer>
   );

@@ -69,54 +69,6 @@ export interface Database {
         }
         Relationships: []
       }
-      buy_orders: {
-        Row: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at: string
-          id: number
-          incoming_usdc: number
-          new_usdc_balance: number
-          shares: number
-          user_id: number
-        }
-        Insert: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at?: string
-          id?: number
-          incoming_usdc: number
-          new_usdc_balance: number
-          shares: number
-          user_id: number
-        }
-        Update: {
-          avg_share_price?: number
-          choice_market_id?: number
-          created_at?: string
-          id?: number
-          incoming_usdc?: number
-          new_usdc_balance?: number
-          shares?: number
-          user_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "buy_orders_choice_market_id_fkey"
-            columns: ["choice_market_id"]
-            isOneToOne: false
-            referencedRelation: "choice_markets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "buy_orders_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       calendar_events: {
         Row: {
           created_at: string
@@ -746,32 +698,35 @@ export interface Database {
       }
       orders: {
         Row: {
-          avg_share_price: number
+          avg_share_price: number | null
           choice_market_id: number
           created_at: string
           id: number
-          shares: number
-          total_amount: number
+          shares: number | null
+          status: Database["public"]["Enums"]["trade_status"]
+          total_amount: number | null
           trade_side: Database["public"]["Enums"]["trade_side"]
           user_id: number
         }
         Insert: {
-          avg_share_price: number
+          avg_share_price?: number | null
           choice_market_id: number
           created_at?: string
           id?: number
-          shares: number
-          total_amount: number
+          shares?: number | null
+          status?: Database["public"]["Enums"]["trade_status"]
+          total_amount?: number | null
           trade_side: Database["public"]["Enums"]["trade_side"]
           user_id: number
         }
         Update: {
-          avg_share_price?: number
+          avg_share_price?: number | null
           choice_market_id?: number
           created_at?: string
           id?: number
-          shares?: number
-          total_amount?: number
+          shares?: number | null
+          status?: Database["public"]["Enums"]["trade_status"]
+          total_amount?: number | null
           trade_side?: Database["public"]["Enums"]["trade_side"]
           user_id?: number
         }
@@ -903,6 +858,7 @@ export interface Database {
           title: string
           total_comments: number
           total_pot: number
+          trading_end: string | null
         }
         Insert: {
           banner: string
@@ -917,6 +873,7 @@ export interface Database {
           title: string
           total_comments?: number
           total_pot?: number
+          trading_end?: string | null
         }
         Update: {
           banner?: string
@@ -931,6 +888,7 @@ export interface Database {
           title?: string
           total_comments?: number
           total_pot?: number
+          trading_end?: string | null
         }
         Relationships: [
           {
@@ -1039,64 +997,18 @@ export interface Database {
           }
         ]
       }
-      sell_orders: {
-        Row: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at: string
-          id: number
-          new_usdc_balance: number
-          outgoing_usdc: number
-          shares: number
-          user_id: number
-        }
-        Insert: {
-          avg_share_price: number
-          choice_market_id: number
-          created_at?: string
-          id?: number
-          new_usdc_balance: number
-          outgoing_usdc: number
-          shares: number
-          user_id: number
-        }
-        Update: {
-          avg_share_price?: number
-          choice_market_id?: number
-          created_at?: string
-          id?: number
-          new_usdc_balance?: number
-          outgoing_usdc?: number
-          shares?: number
-          user_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sell_orders_choice_market_id_fkey"
-            columns: ["choice_market_id"]
-            isOneToOne: false
-            referencedRelation: "choice_markets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sell_orders_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       sub_markets: {
         Row: {
           banner: string
           card_title: string | null
+          color: Database["public"]["Enums"]["colors_enum"] | null
           created_at: string
           fair_launch_end: string
           fair_launch_start: string
           has_resolved: boolean
           icon: string
           id: number
+          order: number | null
           prediction_market_id: number
           slug: string
           start_time: string
@@ -1109,12 +1021,14 @@ export interface Database {
         Insert: {
           banner: string
           card_title?: string | null
+          color?: Database["public"]["Enums"]["colors_enum"] | null
           created_at?: string
           fair_launch_end: string
           fair_launch_start: string
           has_resolved?: boolean
           icon: string
           id?: number
+          order?: number | null
           prediction_market_id: number
           slug: string
           start_time?: string
@@ -1127,12 +1041,14 @@ export interface Database {
         Update: {
           banner?: string
           card_title?: string | null
+          color?: Database["public"]["Enums"]["colors_enum"] | null
           created_at?: string
           fair_launch_end?: string
           fair_launch_start?: string
           has_resolved?: boolean
           icon?: string
           id?: number
+          order?: number | null
           prediction_market_id?: number
           slug?: string
           start_time?: string
@@ -1316,7 +1232,13 @@ export interface Database {
       order_status: "PENDING" | "APPROVED" | "CONFIRMED"
       order_type: "FOK" | "GTC" | "GTD"
       trade_side: "BUY" | "SELL"
-      trade_status: "MATCHED" | "MINED" | "CONFIRMED" | "RETRYING" | "FAILED"
+      trade_status:
+        | "MATCHED"
+        | "MINED"
+        | "CONFIRMED"
+        | "RETRYING"
+        | "FAILED"
+        | "PENDING"
     }
     CompositeTypes: {
       [_ in never]: never

@@ -1,5 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import BuyCard from "./components/BuyCard";
+import SellCard from "./components/SellCard";
 import Chart from "./components/Chart";
 import Chat from "./components/Chat";
 import Order from "./components/Order";
@@ -7,8 +9,11 @@ import OrderDrawer from "./components/OrderDrawer";
 import OrderBook from "./components/OrderBook";
 import Polls from "./components/Polls";
 import RelatedMarkets from "./components/RelatedMarkets";
-import Image from "next/image";
-import { getTradingMarketData } from "@/lib/api/data/markets/tradingMarket";
+import Slide from "@/components/Slide";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getHoldings } from "@/lib/supabase/queries/holdings";
+import { getTradeMarkets } from "@/lib/supabase/queries/markets/tradeMarket";
+import { getUser } from "@/lib/supabase/queries/user";
 
 function TradingTabs() {
   return (
@@ -51,7 +56,26 @@ export default async function TradePage({
 }: {
   params: { slug: string };
 }) {
-  const market = await getTradingMarketData(slug);
+  const supabase = createServerSupabaseClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  const user = authUser
+    ? await getUser({
+        supabase: supabase,
+        options: { userId: authUser.id },
+      })
+    : null;
+
+  const holdings = user
+    ? await getHoldings({
+        supabase: supabase,
+        options: { userId: user.id },
+      })
+    : null;
+
+  const market = (await getTradeMarkets({ supabase, options: { slug } }))[0];
 
   if (!market) {
     return <div>404</div>;
@@ -59,28 +83,22 @@ export default async function TradePage({
 
   return (
     <div className="w-full">
-      <div className="flex min-h-[50vh] w-full flex-col bg-black">
-        <div className="flex space-x-5 text-white">
-          <div className="relative h-[80px] w-[80px] flex-shrink-0 lg:h-[120px] lg:w-[120px]">
-            <Image
-              src={market.banner}
-              alt="banner"
-              fill={true}
-              className="rounded-2xl object-cover"
-            />
-          </div>
-        </div>
-      </div>
-      {/* <Banner banners={marketsBanners} /> */}
+      <Slide slug={slug} />
       <div className="w-full px-4 pb-16 pt-4 lg:px-16">
         <div className="mb-10 flex w-full space-x-12">
           <div className="flex flex-grow flex-col space-y-8 py-5">
             <Chart />
-            <OrderDrawer />
+            <OrderDrawer
+              buyCard={<BuyCard subMarkets={market.sub_markets} />}
+              sellCard={<SellCard subMarkets={market.sub_markets} />}
+            />
             <TradingTabs />
           </div>
           <div className="hidden py-5 lg:block">
-            <Order />
+            <Order
+              buyCard={<BuyCard subMarkets={market.sub_markets} />}
+              sellCard={<SellCard subMarkets={market.sub_markets} />}
+            />
           </div>
         </div>
         <RelatedMarkets />

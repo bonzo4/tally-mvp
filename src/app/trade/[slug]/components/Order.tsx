@@ -4,8 +4,6 @@ import { ReactNode } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
-
 export default function Order({
   buyCard,
   sellCard,

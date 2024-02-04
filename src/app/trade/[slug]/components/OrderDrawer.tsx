@@ -8,7 +8,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import Order from "./Order";
-import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
 
 export default function OrderDrawer({
   buyCard,

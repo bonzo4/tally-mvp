@@ -32,11 +32,11 @@ function TradesRow({ tradeTxn }: { tradeTxn: TradeHistory }) {
       <TableCell className={textCss}>{choice_markets?.title || ""}</TableCell>
       <TableCell className="text-center text-white">{trade_side}</TableCell>
       <TableCell className="text-right text-white">
-        {formatDollarsWithCents(avg_share_price)}
+        {avg_share_price ? formatDollarsWithCents(avg_share_price) : "TBD"}
       </TableCell>
       <TableCell className="text-right text-white">{shares}</TableCell>
       <TableCell className="text-right text-white">
-        {formatDollarsWithCents(total_amount)}
+        {total_amount ? formatDollarsWithCents(total_amount) : "TBD"}
       </TableCell>
     </TableRow>
   );

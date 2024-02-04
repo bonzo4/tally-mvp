@@ -1,10 +1,12 @@
 "use server";
 
-import { z } from "zod";
-import { zfd } from "zod-form-data";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
-import { estimateBuy } from "@/lib/estimateSpend";
+import { estimateBuy } from "@/lib/estimatePrice";
+import { Database } from "@/lib/supabase/types";
+
+type trade_status = Database["public"]["Enums"]["trade_status"];
+type trade_side = Database["public"]["Enums"]["trade_side"];
 
 // state.errors[21][25];
 export type SubscribeState =
@@ -30,29 +32,20 @@ export type SubscribeState =
     }
   | null;
 
-// Schema for a single field
-const fieldSchema = z.object({
-  sub_market_id: z.number(),
-  choice_market_id: z.number(),
-  value: z.number(),
-});
-
-// Schema for the entire form (an array of fields)
-const formSchema = z.array(fieldSchema);
-
 // Data received from form has radio buttons input (e.g. "Yes" or "No") separate
 // from amount input (e.g. "$100"). They are associated by the name of the input.
 // The former has a name "[id]" while the latter has a name "[id] amount".
 // Thus we want to group them together.
 function formatFormData(formData_: FormData) {
   const formData: Record<
-    number,
+    string,
     { choice_market_id?: string; amount?: string }
   > = {};
-  for (const [_key, value] of formData_.entries()) {
+  for (const [_key, _value] of formData_.entries()) {
     const keySplit = _key.split(" ");
     const key = keySplit[0];
     const isAmount = keySplit[1] === "amount";
+    const value = String(_value);
 
     if (isAmount) {
       if (key in formData) {
@@ -121,12 +114,12 @@ export default async function submitBuy(prevState: any, formData: FormData) {
     );
     txns.push({
       user_id: user.id,
-      choice_market_id: txn.choice_market_id,
+      choice_market_id: Number(txn.choice_market_id),
       total_amount: cumulative,
       shares: shareCount,
       avg_share_price: avgPrice,
-      trade_side: "BUY",
-      status: "PENDING",
+      trade_side: "BUY" as trade_side,
+      status: "PENDING" as trade_status,
     });
   }
   const { data, error } = await supabase.from("orders").insert(txns).select();

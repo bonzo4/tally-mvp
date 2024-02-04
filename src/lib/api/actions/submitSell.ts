@@ -3,6 +3,10 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { estimateSell } from "@/lib/estimatePrice";
+import { Database } from "@/lib/supabase/types";
+
+type trade_status = Database["public"]["Enums"]["trade_status"];
+type trade_side = Database["public"]["Enums"]["trade_side"];
 
 // state.errors[21][25];
 export type SubscribeState =
@@ -83,12 +87,12 @@ export default async function submitSell(prevState: any, formData: FormData) {
     });
     txns.push({
       user_id: user.id,
-      choice_market_id: txn.choice_market_id,
+      choice_market_id: Number(txn.choice_market_id),
       total_amount: cumulative,
       shares: shareCount,
       avg_share_price: avgPrice,
-      trade_side: "BUY",
-      status: "PENDING",
+      trade_side: "BUY" as trade_side,
+      status: "PENDING" as trade_status,
     });
   }
   const { data, error } = await supabase.from("orders").insert(txns).select();

@@ -43,7 +43,10 @@ export default function Summary({ isBuy }: { isBuy: boolean }) {
             Buy
           </Button>
         ) : (
-          <Button className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black">
+          <Button
+            type="submit"
+            className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+          >
             Sell
           </Button>
         )}

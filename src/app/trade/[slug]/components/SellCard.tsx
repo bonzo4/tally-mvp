@@ -1,11 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useFormState } from "react-dom";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { textCssMap } from "@/lib/cssMaps";
 import { Separator } from "@/components/ui/separator";
 import { VscCircleFilled } from "react-icons/vsc";
-
 import {
   ChoiceMarketWithHoldings,
   SubMarketWithHoldings,
@@ -18,6 +20,7 @@ import {
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import Summary from "./Summary";
+import submitSell from "@/lib/api/actions/submitSell";
 
 function SellChoiceMarket({
   choiceMarket,
@@ -31,9 +34,12 @@ function SellChoiceMarket({
     <div className="flex flex-col space-y-2">
       <div className="flex items-center justify-between space-x-2">
         <ChoiceButton
+          id={choiceMarket.id.toString()}
+          name={choiceMarket.id.toString()}
+          value={choiceMarket.id.toString()}
           className="h-[40px]"
-          selected={""}
           choiceMarket={choiceMarket}
+          disabled={true}
         />
         <div className="flex flex-col">
           <div className="text-right text-white">{`${formatNumberWithCommasNoDecimals(
@@ -42,7 +48,10 @@ function SellChoiceMarket({
           <div className="text-right text-white">{`(${value})`}</div>
         </div>
       </div>
-      <AmountInput amount={0} className="" />
+      <AmountInput
+        id={choiceMarket.id.toString()}
+        name={choiceMarket.id.toString()}
+      />
     </div>
   );
 }
@@ -114,18 +123,21 @@ export default function SellCard({
       (choiceMarket) => choiceMarket.holdings.length
     ).length;
   });
+  const [state, formAction] = useFormState(submitSell, null);
 
   return (
-    <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
-      <CardContent className="space-y-3 overflow-auto px-0 py-4">
-        <SellContent subMarketsWithHoldings={subMarketsWithHoldings} />
-      </CardContent>
-      {subMarketsWithHoldings.length ? (
-        <CardFooter className="flex flex-col px-0 py-4">
-          <Separator className="bg-neutral-800" />
-          <Summary isBuy={false} />
-        </CardFooter>
-      ) : null}
-    </Card>
+    <form action={(payload) => formAction(payload)}>
+      <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
+        <CardContent className="space-y-3 overflow-auto px-0 py-4">
+          <SellContent subMarketsWithHoldings={subMarketsWithHoldings} />
+        </CardContent>
+        {subMarketsWithHoldings.length ? (
+          <CardFooter className="flex flex-col px-0 py-4">
+            <Separator className="bg-neutral-800" />
+            <Summary isBuy={false} />
+          </CardFooter>
+        ) : null}
+      </Card>
+    </form>
   );
 }

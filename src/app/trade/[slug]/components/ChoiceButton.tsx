@@ -153,6 +153,7 @@ type ChoiceButtonProps = React.HTMLAttributes<HTMLInputElement> & {
   id: string;
   name: string;
   value: string;
+  disabled?: boolean;
   choiceMarket: ChoiceMarketWithHoldings;
 };
 
@@ -171,22 +172,6 @@ export default function ChoiceButton({
 
   return (
     <div className="flex-grow">
-      {/*
-      <input
-        type="radio"
-        name="buddy"
-        id="uniqueBoy"
-        value="yes"
-        className="hidden"
-      />
-      <label htmlFor="uniqueBoy" className="font-bold text-white">
-        Jimmy
-      </label>
-      <Button
-        className={cn(className, "font-bold peer-checked:bg-tally-primary")}
-      >
-      </Button>
-      */}
       <input {...rest} type="radio" className="peer hidden" />
       <label
         htmlFor={rest.id}

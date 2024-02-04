@@ -13,7 +13,7 @@ import { VscCircleFilled } from "react-icons/vsc";
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import Summary from "./Summary";
-import submitTrade from "@/lib/api/actions/submitTrade";
+import submitBuy from "@/lib/api/actions/submitBuy";
 
 function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
   const { card_title } = subMarket;
@@ -61,7 +61,7 @@ export default function BuyCard({
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
-  const [state, formAction] = useFormState(submitTrade, null);
+  const [state, formAction] = useFormState(submitBuy, null);
   return (
     <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">

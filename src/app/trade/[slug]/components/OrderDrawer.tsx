@@ -8,13 +8,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import Order from "./Order";
+import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
 
 export default function OrderDrawer({
-  buyCard,
-  sellCard,
+  subMarkets,
 }: {
-  buyCard: React.ReactNode;
-  sellCard: React.ReactNode;
+  subMarkets: SubMarketWithHoldings[];
 }) {
   return (
     <Drawer>
@@ -29,7 +28,7 @@ export default function OrderDrawer({
         <DrawerHeader>
           {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
-        <Order buyCard={buyCard} sellCard={sellCard} />
+        <Order subMarkets={subMarkets} />
       </DrawerContent>
     </Drawer>
   );

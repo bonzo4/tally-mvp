@@ -1,15 +1,15 @@
 "use client";
 
-import { ReactNode } from "react";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import BuyCard from "./BuyCard";
+import SellCard from "./SellCard";
+import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
+
 export default function Order({
-  buyCard,
-  sellCard,
+  subMarkets,
 }: {
-  buyCard: ReactNode;
-  sellCard: ReactNode;
+  subMarkets: SubMarketWithHoldings[];
 }) {
   return (
     <Tabs
@@ -31,13 +31,13 @@ export default function Order({
         </TabsTrigger>
       </TabsList>
       <TabsContent className="flex flex-col overflow-auto" value="buy">
-        {buyCard}
+        <BuyCard subMarkets={subMarkets} />
       </TabsContent>
       <TabsContent
         className="flex flex-col overflow-auto bg-transparent"
         value="sell"
       >
-        {sellCard}
+        <SellCard subMarkets={subMarkets} />
       </TabsContent>
     </Tabs>
   );

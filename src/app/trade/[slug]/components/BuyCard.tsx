@@ -14,6 +14,7 @@ import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import Summary from "./Summary";
 import submitBuy from "@/lib/api/actions/submitBuy";
+import { getSharePrice } from "@/lib/estimatePrice";
 
 function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
   const { card_title } = subMarket;
@@ -36,16 +37,20 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
       </div>
       <fieldset className="space-y-2">
         <div className="flex w-full space-x-2">
-          {subMarket.choice_markets.map((choiceMarket, index) => (
-            <ChoiceButton
-              id={choiceMarket.id.toString()}
-              name={subMarket.id.toString()}
-              value={choiceMarket.id.toString()}
-              key={index}
-              className="h-[40px] w-full"
-              choiceMarket={choiceMarket}
-            />
-          ))}
+          {subMarket.choice_markets.map((choiceMarket, index) => {
+            const sharePrice = getSharePrice(subMarket, choiceMarket.id);
+            return (
+              <ChoiceButton
+                id={choiceMarket.id.toString()}
+                name={subMarket.id.toString()}
+                value={choiceMarket.id.toString()}
+                key={index}
+                className="h-[40px] w-full"
+                choiceMarket={choiceMarket}
+                sharePrice={sharePrice}
+              />
+            );
+          })}
         </div>
         <AmountInput
           id={subMarket.id.toString() + " amount"}

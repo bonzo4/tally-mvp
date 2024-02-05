@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 import TickerCarousel from "./TickerCarousel";
-import { convertDollarsToCents } from "@/lib/formats";
+import { formatCents } from "@/lib/formats";
 
 import { IconContext } from "react-icons";
 import { BsTriangleFill } from "react-icons/bs";
@@ -46,7 +46,7 @@ function TickerCell({
             </div>
           ) : null}
           <span className={cn(directionColor, "text-[16px] font-normal")}>
-            {convertDollarsToCents(share_price)}
+            {formatCents(share_price)}
           </span>
         </div>
       </Link>

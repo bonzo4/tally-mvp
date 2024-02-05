@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -16,7 +17,22 @@ import Summary from "./Summary";
 import submitBuy from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
 
-function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
+type FormState = {
+  trade_side: string;
+  amount: string;
+};
+
+function BuySubMarket({
+  subMarket,
+  formState,
+  handleRadioButtonChange,
+  handleAmountChange,
+}: {
+  subMarket: SubMarketWithHoldings;
+  formState: FormState;
+  handleRadioButtonChange: (value: string) => void;
+  handleAmountChange: (value: string) => void;
+}) {
   const { card_title } = subMarket;
   const color = subMarket.color || "primary";
   const dotColor = textCssMap[color as keyof typeof textCssMap];
@@ -48,6 +64,8 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
                 className="h-[40px] w-full"
                 choiceMarket={choiceMarket}
                 sharePrice={sharePrice}
+                checked={formState.trade_side === choiceMarket.title}
+                onChange={(e) => handleRadioButtonChange(choiceMarket.title)}
               />
             );
           })}
@@ -55,6 +73,8 @@ function BuySubMarket({ subMarket }: { subMarket: SubMarketWithHoldings }) {
         <AmountInput
           id={subMarket.id.toString() + " amount"}
           name={subMarket.id.toString() + " amount"}
+          value={formState.amount}
+          onChange={(e) => handleAmountChange(e.target.value)}
         />
       </fieldset>
     </div>
@@ -67,12 +87,38 @@ export default function BuyCard({
   subMarkets: SubMarketWithHoldings[];
 }) {
   const [state, formAction] = useFormState(submitBuy, null);
+
+  const [formState, setFormState] = useState(
+    Array(subMarkets.length).fill({ trade_side: "", amount: "" })
+  );
+
+  const handleRadioButtonChange = (index: number) => (value: string) => {
+    setFormState([
+      ...formState.slice(0, index),
+      { trade_side: value, amount: formState[index].amount },
+      ...formState.slice(index + 1),
+    ]);
+  };
+
+  const handleAmountChange = (index: number) => (value: string) => {
+    setFormState([
+      ...formState.slice(0, index),
+      { trade_side: formState[index].trade_side, amount: value },
+      ...formState.slice(index + 1),
+    ]);
+  };
   return (
     <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (
-            <BuySubMarket key={index} subMarket={subMarket} />
+            <BuySubMarket
+              key={index}
+              subMarket={subMarket}
+              formState={formState[index]}
+              handleRadioButtonChange={handleRadioButtonChange(index)}
+              handleAmountChange={handleAmountChange(index)}
+            />
           ))}
         </CardContent>
         <CardFooter className="flex flex-col px-0 py-4">

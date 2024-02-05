@@ -31,7 +31,7 @@ function SellChoiceMarket({
   sharePrice: number;
 }) {
   const shares = choiceMarket.holdings[0].shares;
-  const value = formatDollarsWithCents(shares * choiceMarket.share_price);
+  const value = formatDollarsWithCents(shares * sharePrice);
 
   return (
     <div className="flex flex-col space-y-2">

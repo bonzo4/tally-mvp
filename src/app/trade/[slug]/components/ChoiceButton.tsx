@@ -1,6 +1,7 @@
 import { Color } from "@/lib/cssMaps";
 import { ChoiceMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
 import { cn } from "@/lib/utils";
+import { formatCents } from "@/lib/formats";
 
 const choiceUncheckedCssMap: Record<Color, string> = {
   primary: `
@@ -152,6 +153,7 @@ type ChoiceButtonProps = React.HTMLAttributes<HTMLInputElement> & {
   id: string;
   name: string;
   value: string;
+  sharePrice: number;
   disabled?: boolean;
   choiceMarket: ChoiceMarketWithHoldings;
 };
@@ -159,6 +161,7 @@ type ChoiceButtonProps = React.HTMLAttributes<HTMLInputElement> & {
 export default function ChoiceButton({
   choiceMarket,
   className,
+  sharePrice,
   ...rest
 }: ChoiceButtonProps) {
   const { share_price, color, title } = choiceMarket;
@@ -180,7 +183,7 @@ export default function ChoiceButton({
           `inline-flex items-center justify-center rounded-md px-4 py-2 font-medium`
         )}
       >
-        {`${title} ${share_price * 100}¢`}
+        {`${title} ${formatCents(sharePrice)}`}
       </label>
     </div>
   );

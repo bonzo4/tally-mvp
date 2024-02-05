@@ -1,11 +1,12 @@
-"use server";
-
 import { Database } from "@/lib/supabase/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import {
   getSubMarkets,
   SubMarketWithChoiceMarkets,
 } from "@/lib/supabase/queries/markets/subMarkets";
+import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
+
+type SubMarket = SubMarketWithChoiceMarkets | SubMarketWithHoldings;
 
 async function getSlugFromChoiceMarketId(
   supabase: SupabaseClient<Database>,
@@ -24,11 +25,7 @@ async function getSlugFromChoiceMarketId(
   return data[0].sub_markets.slug;
 }
 
-function getPotSizes(
-  subMarket: SubMarketWithChoiceMarkets,
-  choiceMarketId: number
-) {
-  // get initial pot values
+export function getPotSizes(subMarket: SubMarket, choiceMarketId: number) {
   let totalPot = 0;
   let choicePot = 0;
   for (const choiceMarket of subMarket.choice_markets) {
@@ -41,6 +38,12 @@ function getPotSizes(
     totalPot: totalPot,
     choicePot: choicePot,
   };
+}
+
+export function getSharePrice(subMarket: SubMarket, choiceMarketId: number) {
+  const { choicePot, totalPot } = getPotSizes(subMarket, choiceMarketId);
+  const sharePrice = totalPot ? choicePot / totalPot : 0;
+  return sharePrice;
 }
 
 export async function estimateBuy(

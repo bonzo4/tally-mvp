@@ -21,11 +21,14 @@ import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import Summary from "./Summary";
 import submitSell from "@/lib/api/actions/submitSell";
+import { getSharePrice } from "@/lib/estimatePrice";
 
 function SellChoiceMarket({
   choiceMarket,
+  sharePrice,
 }: {
   choiceMarket: ChoiceMarketWithHoldings;
+  sharePrice: number;
 }) {
   const shares = choiceMarket.holdings[0].shares;
   const value = formatDollarsWithCents(shares * choiceMarket.share_price);
@@ -39,6 +42,7 @@ function SellChoiceMarket({
           value={choiceMarket.id.toString()}
           className="h-[40px]"
           choiceMarket={choiceMarket}
+          sharePrice={sharePrice}
           disabled={true}
         />
         <div className="flex flex-col">
@@ -101,8 +105,16 @@ function SellContent({
             {subMarketWithHoldings.choice_markets.map(
               (choice_market, index) => {
                 if (!choice_market.holdings.length) return;
+                const sharePrice = getSharePrice(
+                  subMarketWithHoldings,
+                  choice_market.id
+                );
                 return (
-                  <SellChoiceMarket key={index} choiceMarket={choice_market} />
+                  <SellChoiceMarket
+                    key={index}
+                    choiceMarket={choice_market}
+                    sharePrice={sharePrice}
+                  />
                 );
               }
             )}

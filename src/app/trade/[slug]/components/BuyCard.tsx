@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -107,6 +107,7 @@ export default function BuyCard({
       ...formState.slice(index + 1),
     ]);
   };
+
   return (
     <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useFormState } from "react-dom";
+import { useState } from "react";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { textCssMap } from "@/lib/cssMaps";
@@ -23,13 +24,19 @@ import Summary from "./Summary";
 import submitSell from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
 
+type SellChoiceMarketProps = {
+  choiceMarket: ChoiceMarketWithHoldings;
+  sharePrice: number;
+  formState: SellFormState;
+  handleAmountChange: (value: string) => void;
+};
+
 function SellChoiceMarket({
   choiceMarket,
   sharePrice,
-}: {
-  choiceMarket: ChoiceMarketWithHoldings;
-  sharePrice: number;
-}) {
+  formState,
+  handleAmountChange,
+}: SellChoiceMarketProps) {
   const shares = choiceMarket.holdings[0].shares;
   const value = formatDollarsWithCents(shares * sharePrice);
 
@@ -43,6 +50,7 @@ function SellChoiceMarket({
           className="h-[40px]"
           choiceMarket={choiceMarket}
           sharePrice={sharePrice}
+          checked={!!formState[choiceMarket.id]}
           disabled={true}
         />
         <div className="flex flex-col">
@@ -55,6 +63,8 @@ function SellChoiceMarket({
       <AmountInput
         id={choiceMarket.id.toString()}
         name={choiceMarket.id.toString()}
+        value={formState[choiceMarket.id] || ""}
+        onChange={(e) => handleAmountChange(e.target.value)}
       />
     </div>
   );
@@ -90,8 +100,12 @@ function SellSubMarket({ children, subMarket }: SellSubMarketProps) {
 
 function SellContent({
   subMarketsWithHoldings,
+  formState,
+  handleAmountChange,
 }: {
   subMarketsWithHoldings: SubMarketWithHoldings[];
+  formState: SellFormState;
+  handleAmountChange: (choice_market_id: number) => (value: string) => void;
 }) {
   if (!subMarketsWithHoldings?.length)
     return (
@@ -114,6 +128,8 @@ function SellContent({
                     key={index}
                     choiceMarket={choice_market}
                     sharePrice={sharePrice}
+                    formState={formState}
+                    handleAmountChange={handleAmountChange(choice_market.id)}
                   />
                 );
               }
@@ -125,11 +141,21 @@ function SellContent({
   );
 }
 
+type SellFormState = {
+  [key: number]: string;
+};
+
 export default function SellCard({
   subMarkets,
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
+  const [formState, setFormState] = useState<SellFormState>({});
+
+  const handleAmountChange = (choiceMarketId: number) => (value: string) => {
+    setFormState({ ...formState, [choiceMarketId]: value });
+  };
+
   const subMarketsWithHoldings = subMarkets.filter((subMarket) => {
     return subMarket.choice_markets.filter(
       (choiceMarket) => choiceMarket.holdings.length
@@ -141,7 +167,11 @@ export default function SellCard({
     <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
-          <SellContent subMarketsWithHoldings={subMarketsWithHoldings} />
+          <SellContent
+            subMarketsWithHoldings={subMarketsWithHoldings}
+            formState={formState}
+            handleAmountChange={handleAmountChange}
+          />
         </CardContent>
         {subMarketsWithHoldings.length ? (
           <CardFooter className="flex flex-col px-0 py-4">

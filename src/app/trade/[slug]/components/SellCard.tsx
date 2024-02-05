@@ -20,7 +20,7 @@ import {
 
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
-import Summary from "./Summary";
+import { SummarySell } from "./Summary";
 import submitSell from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
 
@@ -28,7 +28,7 @@ type SellChoiceMarketProps = {
   choiceMarket: ChoiceMarketWithHoldings;
   sharePrice: number;
   formState: SellFormState;
-  handleAmountChange: (value: string) => void;
+  handleAmountChange: (value: number) => void;
 };
 
 function SellChoiceMarket({
@@ -50,7 +50,7 @@ function SellChoiceMarket({
           className="h-[40px]"
           choiceMarket={choiceMarket}
           sharePrice={sharePrice}
-          checked={!!formState[choiceMarket.id]}
+          checked={!!formState[choiceMarket.id]?.amount}
           disabled={true}
         />
         <div className="flex flex-col">
@@ -63,8 +63,8 @@ function SellChoiceMarket({
       <AmountInput
         id={choiceMarket.id.toString()}
         name={choiceMarket.id.toString()}
-        value={formState[choiceMarket.id] || ""}
-        onChange={(e) => handleAmountChange(e.target.value)}
+        value={formState[choiceMarket.id]?.amount || ""}
+        onChange={(e) => handleAmountChange(Number(e.target.value))}
       />
     </div>
   );
@@ -105,7 +105,12 @@ function SellContent({
 }: {
   subMarketsWithHoldings: SubMarketWithHoldings[];
   formState: SellFormState;
-  handleAmountChange: (choice_market_id: number) => (value: string) => void;
+  handleAmountChange: (
+    subMarketTitle: string,
+    choiceMarketTitle: string,
+    choice_market_id: number,
+    sharePrice: number
+  ) => (value: number) => void;
 }) {
   if (!subMarketsWithHoldings?.length)
     return (
@@ -129,7 +134,13 @@ function SellContent({
                     choiceMarket={choice_market}
                     sharePrice={sharePrice}
                     formState={formState}
-                    handleAmountChange={handleAmountChange(choice_market.id)}
+                    handleAmountChange={handleAmountChange(
+                      subMarketWithHoldings.card_title ||
+                        subMarketWithHoldings.title,
+                      choice_market.title,
+                      choice_market.id,
+                      sharePrice
+                    )}
                   />
                 );
               }
@@ -141,8 +152,13 @@ function SellContent({
   );
 }
 
-type SellFormState = {
-  [key: number]: string;
+export type SellFormState = {
+  [key: number]: {
+    subMarketTitle: string;
+    choiceMarketTitle: string;
+    sharePrice: number;
+    amount: number;
+  };
 };
 
 export default function SellCard({
@@ -151,17 +167,32 @@ export default function SellCard({
   subMarkets: SubMarketWithHoldings[];
 }) {
   const [formState, setFormState] = useState<SellFormState>({});
+  const [state, formAction] = useFormState(submitSell, null);
 
-  const handleAmountChange = (choiceMarketId: number) => (value: string) => {
-    setFormState({ ...formState, [choiceMarketId]: value });
-  };
+  const handleAmountChange =
+    (
+      subMarketTitle: string,
+      choiceMarketTitle: string,
+      choiceMarketId: number,
+      sharePrice: number
+    ) =>
+    (amount: number) => {
+      setFormState({
+        ...formState,
+        [choiceMarketId]: {
+          subMarketTitle: subMarketTitle,
+          choiceMarketTitle: choiceMarketTitle,
+          sharePrice: sharePrice,
+          amount: amount,
+        },
+      });
+    };
 
   const subMarketsWithHoldings = subMarkets.filter((subMarket) => {
     return subMarket.choice_markets.filter(
       (choiceMarket) => choiceMarket.holdings.length
     ).length;
   });
-  const [state, formAction] = useFormState(submitSell, null);
 
   return (
     <form action={(payload) => formAction(payload)}>
@@ -176,7 +207,7 @@ export default function SellCard({
         {subMarketsWithHoldings.length ? (
           <CardFooter className="flex flex-col px-0 py-4">
             <Separator className="bg-neutral-800" />
-            <Summary isBuy={false} />
+            <SummarySell formState={formState} />
           </CardFooter>
         ) : null}
       </Card>

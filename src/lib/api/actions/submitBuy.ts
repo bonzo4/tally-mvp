@@ -23,6 +23,11 @@ class FormError extends Error {
   }
 }
 
+export type SubMarketError = {
+  input_type: "RADIO" | "TEXT";
+  message: string;
+};
+
 export type UseFormState =
   | {
       status: "success";
@@ -32,10 +37,7 @@ export type UseFormState =
       status: "error";
       message: string;
       errors: {
-        [key: string]: {
-          input_type: "RADIO" | "TEXT";
-          message: string;
-        };
+        [key: string]: SubMarketError;
       };
     }
   | null;
@@ -93,7 +95,7 @@ function validateFormData(formData: FormattedFormData[]) {
     // Check if there are amounts without any radio buttons
     if (amount && !choice_market_id) {
       errors.push({
-        message: "Missing choice selection",
+        message: "Missing selection.",
         sub_market_id: sub_market_id,
         input_type: "RADIO" as "RADIO" | "TEXT",
       });

@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -14,19 +13,22 @@ import { VscCircleFilled } from "react-icons/vsc";
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummaryBuy } from "./Summary";
-import submitBuy, { UseFormState } from "@/lib/api/actions/submitBuy";
+import submitBuy, {
+  UseFormState,
+  SubMarketError,
+} from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
 
 function BuySubMarket({
   subMarket,
   formState,
-  useFormState,
+  error,
   handleRadioButtonChange,
   handleAmountChange,
 }: {
   subMarket: SubMarketWithHoldings;
   formState: BuyFormState;
-  useFormState: UseFormState;
+  error: SubMarketError | null;
   handleRadioButtonChange: ({
     sharePrice,
     choiceMarketTitle,
@@ -39,6 +41,8 @@ function BuySubMarket({
   const { card_title } = subMarket;
   const color = subMarket.color || "primary";
   const dotColor = textCssMap[color as keyof typeof textCssMap];
+
+  const errorCss = error ? "rounded-lg border border-red-500 p-1" : "";
 
   return (
     <div className="flex flex-col space-y-2">
@@ -55,28 +59,31 @@ function BuySubMarket({
         <VscCircleFilled className={cn(dotColor, "")} />
       </div>
       <fieldset className="space-y-2">
-        <div className="flex w-full space-x-2">
-          {subMarket.choice_markets.map((choiceMarket, index) => {
-            const sharePrice = getSharePrice(subMarket, choiceMarket.id);
-            return (
-              <ChoiceButton
-                id={choiceMarket.id.toString()}
-                name={subMarket.id.toString()}
-                value={choiceMarket.id.toString()}
-                key={index}
-                className="h-[40px] w-full"
-                choiceMarket={choiceMarket}
-                sharePrice={sharePrice}
-                checked={formState.choiceMarketTitle === choiceMarket.title}
-                onChange={(e) =>
-                  handleRadioButtonChange({
-                    choiceMarketTitle: choiceMarket.title,
-                    sharePrice: sharePrice,
-                  })
-                }
-              />
-            );
-          })}
+        <div className="space-y-1">
+          <div className={cn(errorCss, "flex w-full space-x-2")}>
+            {subMarket.choice_markets.map((choiceMarket, index) => {
+              const sharePrice = getSharePrice(subMarket, choiceMarket.id);
+              return (
+                <ChoiceButton
+                  id={choiceMarket.id.toString()}
+                  name={subMarket.id.toString()}
+                  value={choiceMarket.id.toString()}
+                  key={index}
+                  className="h-[40px] w-full"
+                  choiceMarket={choiceMarket}
+                  sharePrice={sharePrice}
+                  checked={formState.choiceMarketTitle === choiceMarket.title}
+                  onChange={(e) =>
+                    handleRadioButtonChange({
+                      choiceMarketTitle: choiceMarket.title,
+                      sharePrice: sharePrice,
+                    })
+                  }
+                />
+              );
+            })}
+          </div>
+          {error && <div className="text-xs text-red-500">{error.message}</div>}
         </div>
         <AmountInput
           id={subMarket.id.toString() + " amount"}
@@ -164,7 +171,9 @@ export default function BuyCard({
               key={index}
               subMarket={subMarket}
               formState={formState[index]}
-              useFormState={state}
+              error={
+                state?.status === "error" ? state.errors[subMarket.id] : null
+              }
               handleRadioButtonChange={handleRadioButtonChange(
                 index,
                 subMarket.card_title || subMarket.title

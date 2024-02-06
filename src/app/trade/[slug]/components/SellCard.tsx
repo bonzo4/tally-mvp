@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useFormState } from "react-dom";
+import { useState } from "react";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { textCssMap } from "@/lib/cssMaps";
@@ -19,17 +20,23 @@ import {
 
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
-import Summary from "./Summary";
+import { SummarySell } from "./Summary";
 import submitSell from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
+
+type SellChoiceMarketProps = {
+  choiceMarket: ChoiceMarketWithHoldings;
+  sharePrice: number;
+  formState: SellFormState;
+  handleAmountChange: (value: number) => void;
+};
 
 function SellChoiceMarket({
   choiceMarket,
   sharePrice,
-}: {
-  choiceMarket: ChoiceMarketWithHoldings;
-  sharePrice: number;
-}) {
+  formState,
+  handleAmountChange,
+}: SellChoiceMarketProps) {
   const shares = choiceMarket.holdings[0].shares;
   const value = formatDollarsWithCents(shares * sharePrice);
 
@@ -43,6 +50,7 @@ function SellChoiceMarket({
           className="h-[40px]"
           choiceMarket={choiceMarket}
           sharePrice={sharePrice}
+          checked={!!formState[choiceMarket.id]?.amount}
           disabled={true}
         />
         <div className="flex flex-col">
@@ -55,6 +63,8 @@ function SellChoiceMarket({
       <AmountInput
         id={choiceMarket.id.toString()}
         name={choiceMarket.id.toString()}
+        value={formState[choiceMarket.id]?.amount || ""}
+        onChange={(e) => handleAmountChange(Number(e.target.value))}
       />
     </div>
   );
@@ -90,8 +100,17 @@ function SellSubMarket({ children, subMarket }: SellSubMarketProps) {
 
 function SellContent({
   subMarketsWithHoldings,
+  formState,
+  handleAmountChange,
 }: {
   subMarketsWithHoldings: SubMarketWithHoldings[];
+  formState: SellFormState;
+  handleAmountChange: (
+    subMarketTitle: string,
+    choiceMarketTitle: string,
+    choice_market_id: number,
+    sharePrice: number
+  ) => (value: number) => void;
 }) {
   if (!subMarketsWithHoldings?.length)
     return (
@@ -114,6 +133,14 @@ function SellContent({
                     key={index}
                     choiceMarket={choice_market}
                     sharePrice={sharePrice}
+                    formState={formState}
+                    handleAmountChange={handleAmountChange(
+                      subMarketWithHoldings.card_title ||
+                        subMarketWithHoldings.title,
+                      choice_market.title,
+                      choice_market.id,
+                      sharePrice
+                    )}
                   />
                 );
               }
@@ -125,28 +152,62 @@ function SellContent({
   );
 }
 
+export type SellFormState = {
+  [key: number]: {
+    subMarketTitle: string;
+    choiceMarketTitle: string;
+    sharePrice: number;
+    amount: number;
+  };
+};
+
 export default function SellCard({
   subMarkets,
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
+  const [formState, setFormState] = useState<SellFormState>({});
+  const [state, formAction] = useFormState(submitSell, null);
+
+  const handleAmountChange =
+    (
+      subMarketTitle: string,
+      choiceMarketTitle: string,
+      choiceMarketId: number,
+      sharePrice: number
+    ) =>
+    (amount: number) => {
+      setFormState({
+        ...formState,
+        [choiceMarketId]: {
+          subMarketTitle: subMarketTitle,
+          choiceMarketTitle: choiceMarketTitle,
+          sharePrice: sharePrice,
+          amount: amount,
+        },
+      });
+    };
+
   const subMarketsWithHoldings = subMarkets.filter((subMarket) => {
     return subMarket.choice_markets.filter(
       (choiceMarket) => choiceMarket.holdings.length
     ).length;
   });
-  const [state, formAction] = useFormState(submitSell, null);
 
   return (
     <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
-          <SellContent subMarketsWithHoldings={subMarketsWithHoldings} />
+          <SellContent
+            subMarketsWithHoldings={subMarketsWithHoldings}
+            formState={formState}
+            handleAmountChange={handleAmountChange}
+          />
         </CardContent>
         {subMarketsWithHoldings.length ? (
           <CardFooter className="flex flex-col px-0 py-4">
             <Separator className="bg-neutral-800" />
-            <Summary isBuy={false} />
+            <SummarySell formState={formState} />
           </CardFooter>
         ) : null}
       </Card>

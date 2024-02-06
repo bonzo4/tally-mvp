@@ -155,6 +155,7 @@ type ChoiceButtonProps = React.HTMLAttributes<HTMLInputElement> & {
   value: string;
   sharePrice: number;
   disabled?: boolean;
+  checked: boolean;
   choiceMarket: ChoiceMarketWithHoldings;
 };
 

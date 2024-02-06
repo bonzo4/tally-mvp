@@ -8,6 +8,9 @@ export default function AmountInput(props: InputProps) {
     <Input
       {...rest}
       placeholder="Order amount in $"
+      type="number"
+      min="0"
+      step="any"
       className={cn(
         className,
         "h-[44px] border border-tally-gray/40 bg-tally-layer-2 text-tally-gray focus:border-tally-gray"

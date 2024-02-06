@@ -14,17 +14,19 @@ import { VscCircleFilled } from "react-icons/vsc";
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummaryBuy } from "./Summary";
-import submitBuy from "@/lib/api/actions/submitBuy";
+import submitBuy, { UseFormState } from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
 
 function BuySubMarket({
   subMarket,
   formState,
+  useFormState,
   handleRadioButtonChange,
   handleAmountChange,
 }: {
   subMarket: SubMarketWithHoldings;
   formState: BuyFormState;
+  useFormState: UseFormState;
   handleRadioButtonChange: ({
     sharePrice,
     choiceMarketTitle,
@@ -101,7 +103,10 @@ export default function BuyCard({
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
-  const [state, formAction] = useFormState(submitBuy, null);
+  const [state, formAction] = useFormState<UseFormState, FormData>(
+    submitBuy,
+    null
+  );
 
   const [formState, setFormState] = useState(
     Array(subMarkets.length).fill({
@@ -159,6 +164,7 @@ export default function BuyCard({
               key={index}
               subMarket={subMarket}
               formState={formState[index]}
+              useFormState={state}
               handleRadioButtonChange={handleRadioButtonChange(
                 index,
                 subMarket.card_title || subMarket.title

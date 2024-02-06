@@ -41,7 +41,7 @@ export function SummarySell({ formState }: { formState: SellFormState }) {
         <div className="text-tally-gray">Total Cost</div>
         <Input
           className="border border-tally-layer-2 bg-transparent text-tally-gray"
-          value={formatDollarsWithCents(total)}
+          defaultValue={formatDollarsWithCents(total)}
         />
         <Button
           type="submit"
@@ -76,7 +76,7 @@ export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
         <div className="text-tally-gray">Total Cost</div>
         <Input
           className="border border-tally-layer-2 bg-transparent text-tally-gray"
-          value={formatDollarsWithCents(total)}
+          defaultValue={formatDollarsWithCents(total)}
         />
         <Button
           type="submit"

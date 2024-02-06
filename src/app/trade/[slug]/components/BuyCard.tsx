@@ -13,14 +13,9 @@ import { VscCircleFilled } from "react-icons/vsc";
 
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
-import Summary from "./Summary";
+import { SummaryBuy } from "./Summary";
 import submitBuy from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
-
-type FormState = {
-  trade_side: string;
-  amount: string;
-};
 
 function BuySubMarket({
   subMarket,
@@ -29,9 +24,15 @@ function BuySubMarket({
   handleAmountChange,
 }: {
   subMarket: SubMarketWithHoldings;
-  formState: FormState;
-  handleRadioButtonChange: (value: string) => void;
-  handleAmountChange: (value: string) => void;
+  formState: BuyFormState;
+  handleRadioButtonChange: ({
+    sharePrice,
+    choiceMarketTitle,
+  }: {
+    sharePrice: number;
+    choiceMarketTitle: string;
+  }) => void;
+  handleAmountChange: (amount: number) => void;
 }) {
   const { card_title } = subMarket;
   const color = subMarket.color || "primary";
@@ -64,8 +65,13 @@ function BuySubMarket({
                 className="h-[40px] w-full"
                 choiceMarket={choiceMarket}
                 sharePrice={sharePrice}
-                checked={formState.trade_side === choiceMarket.title}
-                onChange={(e) => handleRadioButtonChange(choiceMarket.title)}
+                checked={formState.choiceMarketTitle === choiceMarket.title}
+                onChange={(e) =>
+                  handleRadioButtonChange({
+                    choiceMarketTitle: choiceMarket.title,
+                    sharePrice: sharePrice,
+                  })
+                }
               />
             );
           })}
@@ -74,12 +80,21 @@ function BuySubMarket({
           id={subMarket.id.toString() + " amount"}
           name={subMarket.id.toString() + " amount"}
           value={formState.amount}
-          onChange={(e) => handleAmountChange(e.target.value)}
+          onChange={(e) => handleAmountChange(Number(e.target.value))}
         />
       </fieldset>
     </div>
   );
 }
+
+// The index and subMarketTitle don't change with user input,
+// but we want to pass this data to the Summary component.
+export type BuyFormState = {
+  subMarketTitle: string;
+  choiceMarketTitle: string;
+  sharePrice: number;
+  amount: number;
+};
 
 export default function BuyCard({
   subMarkets,
@@ -89,24 +104,51 @@ export default function BuyCard({
   const [state, formAction] = useFormState(submitBuy, null);
 
   const [formState, setFormState] = useState(
-    Array(subMarkets.length).fill({ trade_side: "", amount: "" })
+    Array(subMarkets.length).fill({
+      index: "",
+      subMarketTitle: "",
+      choiceMarketTitle: "",
+      amount: "",
+    })
   );
 
-  const handleRadioButtonChange = (index: number) => (value: string) => {
-    setFormState([
-      ...formState.slice(0, index),
-      { trade_side: value, amount: formState[index].amount },
-      ...formState.slice(index + 1),
-    ]);
-  };
+  // The sharePrice and choiceMarketTitle change whenever user selects a different option.
+  // The index and subMarketTitle are closures and don't need to change.
+  const handleRadioButtonChange =
+    (index: number, subMarketTitle: string) =>
+    ({
+      choiceMarketTitle,
+      sharePrice,
+    }: {
+      choiceMarketTitle: string;
+      sharePrice: number;
+    }) => {
+      setFormState([
+        ...formState.slice(0, index),
+        {
+          choiceMarketTitle: choiceMarketTitle,
+          subMarketTitle: subMarketTitle,
+          sharePrice: sharePrice,
+          amount: formState[index].amount,
+        },
+        ...formState.slice(index + 1),
+      ]);
+    };
 
-  const handleAmountChange = (index: number) => (value: string) => {
-    setFormState([
-      ...formState.slice(0, index),
-      { trade_side: formState[index].trade_side, amount: value },
-      ...formState.slice(index + 1),
-    ]);
-  };
+  // The amount changes whenever user types in a different amount.
+  const handleAmountChange =
+    (index: number, subMarketTitle: string) => (amount: number) => {
+      setFormState([
+        ...formState.slice(0, index),
+        {
+          choiceMarketTitle: formState[index].choiceMarketTitle,
+          subMarketTitle: subMarketTitle,
+          sharePrice: formState[index].sharePrice || 0,
+          amount: amount,
+        },
+        ...formState.slice(index + 1),
+      ]);
+    };
 
   return (
     <form action={(payload) => formAction(payload)}>
@@ -117,14 +159,20 @@ export default function BuyCard({
               key={index}
               subMarket={subMarket}
               formState={formState[index]}
-              handleRadioButtonChange={handleRadioButtonChange(index)}
-              handleAmountChange={handleAmountChange(index)}
+              handleRadioButtonChange={handleRadioButtonChange(
+                index,
+                subMarket.card_title || subMarket.title
+              )}
+              handleAmountChange={handleAmountChange(
+                index,
+                subMarket.card_title || subMarket.title
+              )}
             />
           ))}
         </CardContent>
         <CardFooter className="flex flex-col px-0 py-4">
           <Separator className="bg-neutral-800" />
-          <Summary isBuy={true} />
+          <SummaryBuy formState={formState} />
         </CardFooter>
       </Card>
     </form>

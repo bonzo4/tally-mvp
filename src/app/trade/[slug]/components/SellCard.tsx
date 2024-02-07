@@ -21,13 +21,17 @@ import {
 import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummarySell } from "./Summary";
-import submitSell from "@/lib/api/actions/submitSell";
+import submitSell, {
+  SellErrorMessages,
+  SellUseFormState,
+} from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
 
 type SellChoiceMarketProps = {
   choiceMarket: ChoiceMarketWithHoldings;
   sharePrice: number;
   formState: SellFormState;
+  error: SellErrorMessages | null;
   handleAmountChange: (value: number) => void;
 };
 
@@ -35,10 +39,13 @@ function SellChoiceMarket({
   choiceMarket,
   sharePrice,
   formState,
+  error,
   handleAmountChange,
 }: SellChoiceMarketProps) {
   const shares = choiceMarket.holdings[0].shares;
   const value = formatDollarsWithCents(shares * sharePrice);
+
+  const errorCss = error ? "rounded-lg border border-red-500 p-1" : "";
 
   return (
     <div className="flex flex-col space-y-2">
@@ -60,12 +67,15 @@ function SellChoiceMarket({
           <div className="text-right text-white">{`(${value})`}</div>
         </div>
       </div>
-      <AmountInput
-        id={choiceMarket.id.toString()}
-        name={choiceMarket.id.toString()}
-        value={formState[choiceMarket.id]?.amount || ""}
-        onChange={(e) => handleAmountChange(Number(e.target.value))}
-      />
+      <div className={cn(errorCss)}>
+        <AmountInput
+          id={choiceMarket.id.toString()}
+          name={choiceMarket.id.toString()}
+          value={formState[choiceMarket.id]?.amount || ""}
+          onChange={(e) => handleAmountChange(Number(e.target.value))}
+        />
+      </div>
+      {error && <div className="text-xs text-red-500">{error.text}</div>}
     </div>
   );
 }
@@ -101,10 +111,12 @@ function SellSubMarket({ children, subMarket }: SellSubMarketProps) {
 function SellContent({
   subMarketsWithHoldings,
   formState,
+  state,
   handleAmountChange,
 }: {
   subMarketsWithHoldings: SubMarketWithHoldings[];
   formState: SellFormState;
+  state: SellUseFormState;
   handleAmountChange: (
     subMarketTitle: string,
     choiceMarketTitle: string,
@@ -134,6 +146,11 @@ function SellContent({
                     choiceMarket={choice_market}
                     sharePrice={sharePrice}
                     formState={formState}
+                    error={
+                      state?.status === "error"
+                        ? state.errors[choice_market.id]
+                        : null
+                    }
                     handleAmountChange={handleAmountChange(
                       subMarketWithHoldings.card_title ||
                         subMarketWithHoldings.title,
@@ -167,7 +184,10 @@ export default function SellCard({
   subMarkets: SubMarketWithHoldings[];
 }) {
   const [formState, setFormState] = useState<SellFormState>({});
-  const [state, formAction] = useFormState(submitSell, null);
+  const [state, formAction] = useFormState<SellUseFormState, FormData>(
+    submitSell,
+    null
+  );
 
   const handleAmountChange =
     (
@@ -201,6 +221,7 @@ export default function SellCard({
           <SellContent
             subMarketsWithHoldings={subMarketsWithHoldings}
             formState={formState}
+            state={state}
             handleAmountChange={handleAmountChange}
           />
         </CardContent>

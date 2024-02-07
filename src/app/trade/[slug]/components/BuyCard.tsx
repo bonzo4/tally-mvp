@@ -15,7 +15,7 @@ import ChoiceButton from "./ChoiceButton";
 import { SummaryBuy } from "./Summary";
 import submitBuy, {
   UseFormState,
-  SubMarketError,
+  ErrorMessages,
 } from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
 
@@ -28,7 +28,7 @@ function BuySubMarket({
 }: {
   subMarket: SubMarketWithHoldings;
   formState: BuyFormState;
-  error: SubMarketError | null;
+  error: ErrorMessages | null;
   handleRadioButtonChange: ({
     sharePrice,
     choiceMarketTitle,
@@ -60,7 +60,12 @@ function BuySubMarket({
       </div>
       <fieldset className="space-y-2">
         <div className="space-y-1">
-          <div className={cn(errorCss, "flex w-full space-x-2")}>
+          <div
+            className={cn(
+              error?.radio ? errorCss : "",
+              "flex w-full space-x-2"
+            )}
+          >
             {subMarket.choice_markets.map((choiceMarket, index) => {
               const sharePrice = getSharePrice(subMarket, choiceMarket.id);
               return (
@@ -83,14 +88,21 @@ function BuySubMarket({
               );
             })}
           </div>
-          {error && <div className="text-xs text-red-500">{error.message}</div>}
+          {error?.radio && (
+            <div className="text-xs text-red-500">{error.radio}</div>
+          )}
         </div>
-        <AmountInput
-          id={subMarket.id.toString() + " amount"}
-          name={subMarket.id.toString() + " amount"}
-          value={formState.amount}
-          onChange={(e) => handleAmountChange(Number(e.target.value))}
-        />
+        <div className={cn(error?.text ? errorCss : "")}>
+          <AmountInput
+            id={subMarket.id.toString() + " amount"}
+            name={subMarket.id.toString() + " amount"}
+            value={formState.amount}
+            onChange={(e) => handleAmountChange(Number(e.target.value))}
+          />
+        </div>
+        {error?.text && (
+          <div className="text-xs text-red-500">{error.text}</div>
+        )}
       </fieldset>
     </div>
   );

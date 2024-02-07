@@ -76,7 +76,8 @@ export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
         <div className="text-tally-gray">Total Cost</div>
         <Input
           className="border border-tally-layer-2 bg-transparent text-tally-gray"
-          defaultValue={formatDollarsWithCents(total)}
+          value={formatDollarsWithCents(total)}
+          readOnly={true}
         />
         <Button
           type="submit"

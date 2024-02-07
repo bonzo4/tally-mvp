@@ -8,24 +8,13 @@ import { Database } from "@/lib/supabase/types";
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
 
-type FormErrorProps = {
-  sub_market_id: string;
-  input_type: "RADIO" | "TEXT";
-  message: string;
+export type ErrorMessages = {
+  radio: string;
+  text: string;
 };
 
-class FormError extends Error {
-  errors: FormErrorProps[];
-
-  constructor(errors: FormErrorProps[]) {
-    super("Form validation failed.");
-    this.errors = errors;
-  }
-}
-
-export type SubMarketError = {
-  input_type: "RADIO" | "TEXT";
-  message: string;
+export type SubMarketErrors = {
+  [key: number]: ErrorMessages;
 };
 
 export type UseFormState =
@@ -36,11 +25,18 @@ export type UseFormState =
   | {
       status: "error";
       message: string;
-      errors: {
-        [key: string]: SubMarketError;
-      };
+      errors: SubMarketErrors;
     }
   | null;
+
+class FormError extends Error {
+  errors: SubMarketErrors;
+
+  constructor(errors: SubMarketErrors) {
+    super("Form validation failed.");
+    this.errors = errors;
+  }
+}
 
 type FormattedFormData = {
   sub_market_id: string;
@@ -90,18 +86,24 @@ function formatFormData(formData_: FormData): FormattedFormData[] {
 }
 
 function validateFormData(formData: FormattedFormData[]) {
-  const errors = [];
+  const errors = {} as SubMarketErrors;
   for (const { sub_market_id, choice_market_id, amount } of formData) {
     // Check if there are amounts without any radio buttons
-    if (amount && !choice_market_id) {
-      errors.push({
-        message: "Missing selection.",
-        sub_market_id: sub_market_id,
-        input_type: "RADIO" as "RADIO" | "TEXT",
-      });
+    if (amount && Number(amount) > 0 && !choice_market_id) {
+      errors[Number(sub_market_id)] = {
+        ...errors[Number(sub_market_id)],
+        radio: "Missing selection.",
+      };
+    }
+    // Check if amount is 100,000,000 or more.
+    if (amount && Number(amount) >= 100000000) {
+      errors[Number(sub_market_id)] = {
+        ...errors[Number(sub_market_id)],
+        text: "Number too large. Must be < 100,000,000.",
+      };
     }
   }
-  if (errors.length > 0) {
+  if (Object.keys(errors).length) {
     throw new FormError(errors);
   }
 }
@@ -174,14 +176,8 @@ export default async function submitBuy(
       const useFormState: UseFormState = {
         status: "error",
         message: "Form validation failed.",
-        errors: {},
+        errors: error.errors,
       };
-      for (const err of error.errors) {
-        useFormState.errors[err.sub_market_id] = {
-          input_type: err.input_type,
-          message: err.message,
-        };
-      }
       return useFormState;
     }
     return {

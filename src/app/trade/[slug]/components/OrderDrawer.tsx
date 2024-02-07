@@ -9,10 +9,13 @@ import {
 } from "@/components/ui/drawer";
 import Order from "./Order";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
+import { UserDoc } from "@/lib/supabase/queries/user";
 
 export default function OrderDrawer({
+  user,
   subMarkets,
 }: {
+  user: UserDoc | null;
   subMarkets: SubMarketWithHoldings[];
 }) {
   return (
@@ -28,7 +31,7 @@ export default function OrderDrawer({
         <DrawerHeader>
           {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
-        <Order subMarkets={subMarkets} />
+        <Order user={user} subMarkets={subMarkets} />
       </DrawerContent>
     </Drawer>
   );

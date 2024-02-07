@@ -86,11 +86,11 @@ export default async function TradePage({
         <div className="mb-10 flex w-full space-x-12">
           <div className="flex flex-grow flex-col space-y-8 py-5">
             <Chart />
-            <OrderDrawer subMarkets={market.sub_markets} />
+            <OrderDrawer user={user} subMarkets={market.sub_markets} />
             <TradingTabs />
           </div>
           <div className="hidden py-5 lg:block">
-            <Order subMarkets={market.sub_markets} />
+            <Order user={user} subMarkets={market.sub_markets} />
           </div>
         </div>
         <RelatedMarkets />

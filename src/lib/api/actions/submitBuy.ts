@@ -8,16 +8,16 @@ import { Database } from "@/lib/supabase/types";
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
 
-export type ErrorMessages = {
+export type BuyErrorMessages = {
   radio: string;
   text: string;
 };
 
-export type SubMarketErrors = {
-  [key: number]: ErrorMessages;
+type BuyErrors = {
+  [key: number]: BuyErrorMessages;
 };
 
-export type UseFormState =
+export type BuyUseFormState =
   | {
       status: "success";
       message: string;
@@ -25,20 +25,20 @@ export type UseFormState =
   | {
       status: "error";
       message: string;
-      errors: SubMarketErrors;
+      errors: BuyErrors;
     }
   | null;
 
 class FormError extends Error {
-  errors: SubMarketErrors;
+  errors: BuyErrors;
 
-  constructor(errors: SubMarketErrors) {
+  constructor(errors: BuyErrors) {
     super("Form validation failed.");
     this.errors = errors;
   }
 }
 
-type FormattedFormData = {
+type FormattedBuyFormData = {
   sub_market_id: string;
   choice_market_id: string | undefined;
   amount: string | undefined;
@@ -48,7 +48,7 @@ type FormattedFormData = {
 // from amount input (e.g. "$100"). They are associated by the name of the input.
 // The former has a name "[id]" while the latter has a name "[id] amount".
 // Thus we want to group them together.
-function formatFormData(formData_: FormData): FormattedFormData[] {
+function formatFormData(formData_: FormData): FormattedBuyFormData[] {
   const formData: Record<
     string,
     { choice_market_id?: string; amount?: string }
@@ -85,8 +85,8 @@ function formatFormData(formData_: FormData): FormattedFormData[] {
   return formDataArr;
 }
 
-function validateFormData(formData: FormattedFormData[]) {
-  const errors = {} as SubMarketErrors;
+function validateFormData(formData: FormattedBuyFormData[]) {
+  const errors = {} as BuyErrors;
   for (const { sub_market_id, choice_market_id, amount } of formData) {
     // Check if there are amounts without any radio buttons
     if (amount && Number(amount) > 0 && !choice_market_id) {
@@ -99,7 +99,7 @@ function validateFormData(formData: FormattedFormData[]) {
     if (amount && Number(amount) >= 100000000) {
       errors[Number(sub_market_id)] = {
         ...errors[Number(sub_market_id)],
-        text: "Number too large. Must be < 100,000,000.",
+        text: "Number too large. Must be <$100,000,000.",
       };
     }
   }
@@ -111,7 +111,7 @@ function validateFormData(formData: FormattedFormData[]) {
 export default async function submitBuy(
   prevState: any,
   formData: FormData
-): Promise<UseFormState> {
+): Promise<BuyUseFormState> {
   try {
     const supabase = createServerSupabaseClient();
     const {
@@ -173,7 +173,7 @@ export default async function submitBuy(
     };
   } catch (error) {
     if (error instanceof FormError) {
-      const useFormState: UseFormState = {
+      const useFormState: BuyUseFormState = {
         status: "error",
         message: "Form validation failed.",
         errors: error.errors,

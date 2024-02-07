@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -14,11 +15,10 @@ import AmountInput from "./TradeInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummaryBuy } from "./Summary";
 import submitBuy, {
-  UseFormState,
-  ErrorMessages,
+  BuyUseFormState,
+  BuyErrorMessages,
 } from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
-import { useState } from "react";
 
 function BuySubMarket({
   subMarket,
@@ -29,7 +29,7 @@ function BuySubMarket({
 }: {
   subMarket: SubMarketWithHoldings;
   formState: BuyFormState;
-  error: ErrorMessages | null;
+  error: BuyErrorMessages | null;
   handleRadioButtonChange: ({
     sharePrice,
     choiceMarketTitle,
@@ -123,7 +123,7 @@ export default function BuyCard({
 }: {
   subMarkets: SubMarketWithHoldings[];
 }) {
-  const [state, formAction] = useFormState<UseFormState, FormData>(
+  const [state, formAction] = useFormState<BuyUseFormState, FormData>(
     submitBuy,
     null
   );

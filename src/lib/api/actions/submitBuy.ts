@@ -8,8 +8,16 @@ import { Database } from "@/lib/supabase/types";
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
 
-// state.errors[21][25];
-export type SubscribeState =
+export type ErrorMessages = {
+  radio: string;
+  text: string;
+};
+
+export type SubMarketErrors = {
+  [key: number]: ErrorMessages;
+};
+
+export type UseFormState =
   | {
       status: "success";
       message: string;
@@ -17,26 +25,30 @@ export type SubscribeState =
   | {
       status: "error";
       message: string;
-      /*
-         {
-            21: {
-              25: "Invalid email address."
-            }
-         }
-      */
-      errors?: {
-        [key: number]: {
-          [nestedKey: number]: string;
-        };
-      };
+      errors: SubMarketErrors;
     }
   | null;
+
+class FormError extends Error {
+  errors: SubMarketErrors;
+
+  constructor(errors: SubMarketErrors) {
+    super("Form validation failed.");
+    this.errors = errors;
+  }
+}
+
+type FormattedFormData = {
+  sub_market_id: string;
+  choice_market_id: string | undefined;
+  amount: string | undefined;
+};
 
 // Data received from form has radio buttons input (e.g. "Yes" or "No") separate
 // from amount input (e.g. "$100"). They are associated by the name of the input.
 // The former has a name "[id]" while the latter has a name "[id] amount".
 // Thus we want to group them together.
-function formatFormData(formData_: FormData) {
+function formatFormData(formData_: FormData): FormattedFormData[] {
   const formData: Record<
     string,
     { choice_market_id?: string; amount?: string }
@@ -73,56 +85,105 @@ function formatFormData(formData_: FormData) {
   return formDataArr;
 }
 
-export default async function submitBuy(prevState: any, formData: FormData) {
-  const supabase = createServerSupabaseClient();
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-
-  if (!authUser) {
-    console.log("User not authenticated");
-    return;
+function validateFormData(formData: FormattedFormData[]) {
+  const errors = {} as SubMarketErrors;
+  for (const { sub_market_id, choice_market_id, amount } of formData) {
+    // Check if there are amounts without any radio buttons
+    if (amount && Number(amount) > 0 && !choice_market_id) {
+      errors[Number(sub_market_id)] = {
+        ...errors[Number(sub_market_id)],
+        radio: "Missing selection.",
+      };
+    }
+    // Check if amount is 100,000,000 or more.
+    if (amount && Number(amount) >= 100000000) {
+      errors[Number(sub_market_id)] = {
+        ...errors[Number(sub_market_id)],
+        text: "Number too large. Must be < 100,000,000.",
+      };
+    }
   }
-  const user = authUser
-    ? await getUser({
-        supabase: supabase,
-        options: { userId: authUser.id },
-      })
-    : null;
-
-  if (!user) {
-    console.log("User not found");
-    return;
+  if (Object.keys(errors).length) {
+    throw new FormError(errors);
   }
+}
 
-  // convert FormData to cleaner object
-  let formData_ = formatFormData(formData);
+export default async function submitBuy(
+  prevState: any,
+  formData: FormData
+): Promise<UseFormState> {
+  try {
+    const supabase = createServerSupabaseClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
 
-  // remove unfilled fields
-  formData_ = formData_.filter(
-    (data) => data.amount !== "" && data.choice_market_id !== ""
-  );
+    if (!authUser) {
+      throw Error("AuthError: User is not authenticated.");
+    }
+    const user = authUser
+      ? await getUser({
+          supabase: supabase,
+          options: { userId: authUser.id },
+        })
+      : null;
 
-  // group transactions together before POSTING
-  const txns = [];
-  for (const txn of formData_) {
-    // validate that amount is a number and not negative
-    const { avgPrice, cumulative, shareCount } = await estimateBuy(
-      supabase,
-      Number(txn.choice_market_id),
-      Number(txn.amount)
+    if (!user) {
+      throw Error("AuthError: User could not be found.");
+    }
+
+    // convert FormData to cleaner object
+    let formData_ = formatFormData(formData);
+
+    // check if form is valid
+    validateFormData(formData_);
+
+    // remove unfilled fields
+    formData_ = formData_.filter(
+      (data) => data.amount !== "" && data.choice_market_id !== ""
     );
-    txns.push({
-      user_id: user.id,
-      choice_market_id: Number(txn.choice_market_id),
-      total_amount: cumulative,
-      shares: shareCount,
-      avg_share_price: avgPrice,
-      trade_side: "BUY" as trade_side,
-      status: "PENDING" as trade_status,
-    });
-  }
-  const { data, error } = await supabase.from("orders").insert(txns).select();
 
-  return prevState;
+    // group transactions together before POSTING
+    const txns = [];
+    for (const txn of formData_) {
+      // validate that amount is a number and not negative
+      const { avgPrice, cumulative, shareCount } = await estimateBuy(
+        supabase,
+        Number(txn.choice_market_id),
+        Number(txn.amount)
+      );
+      txns.push({
+        user_id: user.id,
+        choice_market_id: Number(txn.choice_market_id),
+        total_amount: cumulative,
+        shares: shareCount,
+        avg_share_price: avgPrice,
+        trade_side: "BUY" as trade_side,
+        status: "PENDING" as trade_status,
+      });
+    }
+    const { data, error } = await supabase.from("orders").insert(txns).select();
+    if (error) {
+      throw error;
+    }
+
+    return {
+      status: "success",
+      message: "Order submitted successfully.",
+    };
+  } catch (error) {
+    if (error instanceof FormError) {
+      const useFormState: UseFormState = {
+        status: "error",
+        message: "Form validation failed.",
+        errors: error.errors,
+      };
+      return useFormState;
+    }
+    return {
+      status: "error",
+      message: "An error occurred while submitting your order.",
+      errors: {},
+    };
+  }
 }

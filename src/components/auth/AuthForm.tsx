@@ -4,7 +4,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createBrowserClient } from "@supabase/ssr";
 
-export function LoginForm() {
+export function LoginForm({ redirectTo }: { redirectTo: string }) {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -34,7 +34,7 @@ export function LoginForm() {
       theme="dark"
       showLinks={false}
       providers={["google", "discord"]}
-      redirectTo={`${process.env.NEXT_PUBLIC_URL}/auth/callback`}
+      redirectTo={`${process.env.NEXT_PUBLIC_URL}/auth/callback?redirectTo=${redirectTo}`}
     />
   );
 }

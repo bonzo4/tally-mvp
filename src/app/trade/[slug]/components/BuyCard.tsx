@@ -112,10 +112,10 @@ function BuySubMarket({
   );
 }
 
-function LoginButton() {
+function LoginButton({ slug }: { slug: string }) {
   return (
     <Link
-      href="/login"
+      href={`/login?redirect=/trade/${slug}`}
       className="w-full underline hover:cursor-pointer hover:no-underline"
     >
       <Button className="w-full border border-tally-primary bg-tally-background px-5 py-2 text-[16px] font-medium text-tally-primary hover:bg-tally-layer-1">
@@ -137,9 +137,11 @@ export type BuyFormState = {
 export default function BuyCard({
   subMarkets,
   user,
+  slug,
 }: {
   subMarkets: SubMarketWithHoldings[];
   user: UserDoc | null;
+  slug: string;
 }) {
   const [state, formAction] = useFormState<BuyUseFormState, FormData>(
     submitBuy,
@@ -218,7 +220,11 @@ export default function BuyCard({
         </CardContent>
         <CardFooter className="flex flex-col px-0 py-4">
           <Separator className="bg-neutral-800" />
-          {user ? <SummaryBuy formState={formState} /> : <LoginButton />}
+          {user ? (
+            <SummaryBuy formState={formState} />
+          ) : (
+            <LoginButton slug={slug} />
+          )}
         </CardFooter>
       </Card>
     </form>

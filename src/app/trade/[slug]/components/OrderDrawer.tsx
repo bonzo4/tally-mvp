@@ -14,9 +14,11 @@ import { UserDoc } from "@/lib/supabase/queries/user";
 export default function OrderDrawer({
   user,
   subMarkets,
+  slug,
 }: {
   user: UserDoc | null;
   subMarkets: SubMarketWithHoldings[];
+  slug: string;
 }) {
   return (
     <Drawer>
@@ -31,7 +33,7 @@ export default function OrderDrawer({
         <DrawerHeader>
           {/* Header is for margin between top of content and drag bar. */}
         </DrawerHeader>
-        <Order user={user} subMarkets={subMarkets} />
+        <Order slug={slug} user={user} subMarkets={subMarkets} />
       </DrawerContent>
     </Drawer>
   );

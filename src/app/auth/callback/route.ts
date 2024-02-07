@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteSupabaseClient();
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
+  const redirectTo = searchParams.get("redirectTo") || "/";
 
   if (code) {
     await supabase.auth.exchangeCodeForSession(code);
@@ -50,5 +51,5 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL("/", req.url));
+  return NextResponse.redirect(new URL(redirectTo, req.url));
 }

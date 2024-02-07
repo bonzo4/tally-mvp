@@ -172,10 +172,10 @@ function SellContent({
   );
 }
 
-function LoginButton() {
+function LoginButton({ slug }: { slug: string }) {
   return (
     <Link
-      href="/login"
+      href={`/login?redirect=/trade/${slug}`}
       className="w-full underline hover:cursor-pointer hover:no-underline"
     >
       <Button className="w-full border border-tally-primary bg-tally-background px-5 py-2 text-[16px] font-medium text-tally-primary hover:bg-tally-layer-1">
@@ -197,9 +197,11 @@ export type SellFormState = {
 export default function SellCard({
   subMarkets,
   user,
+  slug,
 }: {
   subMarkets: SubMarketWithHoldings[];
   user: UserDoc | null;
+  slug: string;
 }) {
   const [formState, setFormState] = useState<SellFormState>({});
   const [state, formAction] = useFormState<SellUseFormState, FormData>(
@@ -244,7 +246,7 @@ export default function SellCard({
               handleAmountChange={handleAmountChange}
             />
           ) : (
-            <LoginButton />
+            <LoginButton slug={slug} />
           )}
         </CardContent>
         {subMarketsWithHoldings.length ? (

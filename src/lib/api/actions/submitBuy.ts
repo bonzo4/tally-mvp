@@ -99,7 +99,7 @@ function validateFormData(formData: FormattedFormData[]) {
     if (amount && Number(amount) >= 100000000) {
       errors[Number(sub_market_id)] = {
         ...errors[Number(sub_market_id)],
-        text: "Number too large. Must be < 100,000,000.",
+        text: "Number too large. Must be <$100,000,000.",
       };
     }
   }

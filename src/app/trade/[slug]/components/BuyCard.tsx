@@ -18,6 +18,7 @@ import submitBuy, {
   ErrorMessages,
 } from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
+import { useState } from "react";
 
 function BuySubMarket({
   subMarket,

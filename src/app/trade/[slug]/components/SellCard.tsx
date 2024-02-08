@@ -60,7 +60,7 @@ function SellChoiceMarket({
           className="h-[40px]"
           choiceMarket={choiceMarket}
           sharePrice={sharePrice}
-          checked={!!formState[choiceMarket.id]?.amount}
+          checked={!!formState[choiceMarket.id]?.shares}
           disabled={true}
         />
         <div className="flex flex-col">
@@ -76,7 +76,8 @@ function SellChoiceMarket({
           name={choiceMarket.id.toString()}
           label="Shares"
           placeholder="Number of shares to sell"
-          value={formState[choiceMarket.id]?.amount || ""}
+          step="1"
+          value={formState[choiceMarket.id]?.shares || ""}
           onChange={(e) => handleAmountChange(Number(e.target.value))}
         />
       </div>
@@ -192,7 +193,7 @@ export type SellFormState = {
     subMarketTitle: string;
     choiceMarketTitle: string;
     sharePrice: number;
-    amount: number;
+    shares: number;
   };
 };
 
@@ -218,14 +219,14 @@ export default function SellCard({
       choiceMarketId: number,
       sharePrice: number
     ) =>
-    (amount: number) => {
+    (shares: number) => {
       setFormState({
         ...formState,
         [choiceMarketId]: {
           subMarketTitle: subMarketTitle,
           choiceMarketTitle: choiceMarketTitle,
           sharePrice: sharePrice,
-          amount: amount,
+          shares: shares,
         },
       });
     };

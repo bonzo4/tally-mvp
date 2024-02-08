@@ -8,7 +8,8 @@ type OrderInputProps = InputProps & {
 };
 
 export default function OrderInput(props: OrderInputProps) {
-  const { className, id, error, label, placeholder, value, ...rest } = props;
+  const { className, id, error, label, placeholder, step, value, ...rest } =
+    props;
 
   const errorCss = error
     ? "border-red-500 focus:border-red-500"
@@ -22,7 +23,8 @@ export default function OrderInput(props: OrderInputProps) {
         id={id}
         placeholder={placeholder}
         min="0"
-        step="any"
+        type="number"
+        step={step || "any"}
         value={value || ""}
         className={cn(
           className,

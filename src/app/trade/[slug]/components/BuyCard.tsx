@@ -102,6 +102,7 @@ function BuySubMarket({
           label="Amount in $"
           name={subMarket.id.toString() + " amount"}
           placeholder="Order amount in $"
+          step="any"
           value={formState.amount}
           onChange={(e) => handleAmountChange(Number(e.target.value))}
         />

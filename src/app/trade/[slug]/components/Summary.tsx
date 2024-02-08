@@ -48,7 +48,13 @@ function SellLineItem({
   );
 }
 
-export function SummarySell({ formState }: { formState: SellFormState }) {
+export function SummarySell({
+  isFormEnabled,
+  formState,
+}: {
+  isFormEnabled: boolean;
+  formState: SellFormState;
+}) {
   let total = 0;
   for (const key in formState) {
     const number = Number(formState[key].shares) || 0;
@@ -67,13 +73,13 @@ export function SummarySell({ formState }: { formState: SellFormState }) {
         <Button
           type="submit"
           className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+          disabled={!isFormEnabled}
         >
           Sell
         </Button>
       </div>
       <div className="space-y-1 text-sm text-white">
         {Object.entries(formState).map(([key, value], index) => {
-          console.log(value);
           if (!value.shares) return null;
           return (
             <SellLineItem

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 type OrderInputProps = InputProps & {
   label: string;
-  error?: string;
+  error?: string | null;
 };
 
 export default function OrderInput(props: OrderInputProps) {

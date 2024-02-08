@@ -1,24 +1,27 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useFormState } from "react-dom";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { textCssMap } from "@/lib/cssMaps";
 import { Separator } from "@/components/ui/separator";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
+import { UserDoc } from "@/lib/supabase/queries/user";
 import { VscCircleFilled } from "react-icons/vsc";
-
-import AmountInput from "./TradeInput";
-import ChoiceButton from "./ChoiceButton";
-import { SummaryBuy } from "./Summary";
 import submitBuy, {
   BuyUseFormState,
   BuyErrorMessages,
 } from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
+
+import AmountInput from "./TradeInput";
+import ChoiceButton from "./ChoiceButton";
+import { SummaryBuy } from "./Summary";
 
 function BuySubMarket({
   subMarket,
@@ -109,6 +112,19 @@ function BuySubMarket({
   );
 }
 
+function LoginButton({ slug }: { slug: string }) {
+  return (
+    <Link
+      href={`/login?redirect=/trade/${slug}`}
+      className="w-full underline hover:cursor-pointer hover:no-underline"
+    >
+      <Button className="w-full border border-tally-primary bg-tally-background px-5 py-2 text-[16px] font-medium text-tally-primary hover:bg-tally-layer-1">
+        Log In
+      </Button>
+    </Link>
+  );
+}
+
 // The index and subMarketTitle don't change with user input,
 // but we want to pass this data to the Summary component.
 export type BuyFormState = {
@@ -120,8 +136,12 @@ export type BuyFormState = {
 
 export default function BuyCard({
   subMarkets,
+  user,
+  slug,
 }: {
   subMarkets: SubMarketWithHoldings[];
+  user: UserDoc | null;
+  slug: string;
 }) {
   const [state, formAction] = useFormState<BuyUseFormState, FormData>(
     submitBuy,
@@ -200,7 +220,11 @@ export default function BuyCard({
         </CardContent>
         <CardFooter className="flex flex-col px-0 py-4">
           <Separator className="bg-neutral-800" />
-          <SummaryBuy formState={formState} />
+          {user ? (
+            <SummaryBuy formState={formState} />
+          ) : (
+            <LoginButton slug={slug} />
+          )}
         </CardFooter>
       </Card>
     </form>

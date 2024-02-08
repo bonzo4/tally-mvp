@@ -5,10 +5,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BuyCard from "./BuyCard";
 import SellCard from "./SellCard";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
+import { UserDoc } from "@/lib/supabase/queries/user";
 
 export default function Order({
+  slug,
+  user,
   subMarkets,
 }: {
+  slug: string;
+  user: UserDoc | null;
   subMarkets: SubMarketWithHoldings[];
 }) {
   return (
@@ -31,13 +36,13 @@ export default function Order({
         </TabsTrigger>
       </TabsList>
       <TabsContent className="flex flex-col overflow-auto" value="buy">
-        <BuyCard subMarkets={subMarkets} />
+        <BuyCard slug={slug} user={user} subMarkets={subMarkets} />
       </TabsContent>
       <TabsContent
         className="flex flex-col overflow-auto bg-transparent"
         value="sell"
       >
-        <SellCard subMarkets={subMarkets} />
+        <SellCard slug={slug} user={user} subMarkets={subMarkets} />
       </TabsContent>
     </Tabs>
   );

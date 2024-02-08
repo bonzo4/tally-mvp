@@ -2,7 +2,15 @@ import Link from "next/link";
 
 import { LoginForm } from "@/components/auth/AuthForm";
 
-export default function Login() {
+export default function Login({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  let redirectTo = searchParams.redirect || "";
+  if (searchParams.redirect && Array.isArray(searchParams.redirect)) {
+    redirectTo = searchParams.redirect[0];
+  }
   return (
     <div className="flex w-full items-center justify-center px-4 py-8 lg:px-16 lg:py-16">
       <div className="w-full max-w-[500px] rounded-3xl bg-zinc-900 px-6 py-8 lg:px-16 lg:py-16">
@@ -14,7 +22,7 @@ export default function Login() {
         <div className="mb-4">
           <p className="text-center text-lg text-gray-400">Degening awaits!</p>
         </div>
-        <LoginForm />
+        <LoginForm redirectTo={redirectTo as string} />
         <div className="mt-8">
           <p className="text-center text-gray-400">
             Don&apos;t yet have an account?{" "}

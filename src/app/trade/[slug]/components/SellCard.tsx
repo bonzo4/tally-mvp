@@ -1,14 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useFormState } from "react-dom";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { textCssMap } from "@/lib/cssMaps";
 import { Separator } from "@/components/ui/separator";
 import { VscCircleFilled } from "react-icons/vsc";
+import { UserDoc } from "@/lib/supabase/queries/user";
 import {
   ChoiceMarketWithHoldings,
   SubMarketWithHoldings,
@@ -169,6 +172,19 @@ function SellContent({
   );
 }
 
+function LoginButton({ slug }: { slug: string }) {
+  return (
+    <Link
+      href={`/login?redirect=/trade/${slug}`}
+      className="w-full underline hover:cursor-pointer hover:no-underline"
+    >
+      <Button className="w-full border border-tally-primary bg-tally-background px-5 py-2 text-[16px] font-medium text-tally-primary hover:bg-tally-layer-1">
+        Log In
+      </Button>
+    </Link>
+  );
+}
+
 export type SellFormState = {
   [key: number]: {
     subMarketTitle: string;
@@ -180,8 +196,12 @@ export type SellFormState = {
 
 export default function SellCard({
   subMarkets,
+  user,
+  slug,
 }: {
   subMarkets: SubMarketWithHoldings[];
+  user: UserDoc | null;
+  slug: string;
 }) {
   const [formState, setFormState] = useState<SellFormState>({});
   const [state, formAction] = useFormState<SellUseFormState, FormData>(
@@ -218,12 +238,16 @@ export default function SellCard({
     <form action={(payload) => formAction(payload)}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
-          <SellContent
-            subMarketsWithHoldings={subMarketsWithHoldings}
-            formState={formState}
-            state={state}
-            handleAmountChange={handleAmountChange}
-          />
+          {user ? (
+            <SellContent
+              subMarketsWithHoldings={subMarketsWithHoldings}
+              formState={formState}
+              state={state}
+              handleAmountChange={handleAmountChange}
+            />
+          ) : (
+            <LoginButton slug={slug} />
+          )}
         </CardContent>
         {subMarketsWithHoldings.length ? (
           <CardFooter className="flex flex-col px-0 py-4">

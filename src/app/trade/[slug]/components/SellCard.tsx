@@ -21,7 +21,7 @@ import {
   formatDollarsWithCents,
 } from "@/lib/formats";
 
-import AmountInput from "./TradeInput";
+import OrderInput from "./OrderInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummarySell } from "./Summary";
 import submitSell, {
@@ -71,9 +71,11 @@ function SellChoiceMarket({
         </div>
       </div>
       <div className={cn(errorCss)}>
-        <AmountInput
+        <OrderInput
           id={choiceMarket.id.toString()}
           name={choiceMarket.id.toString()}
+          label="Shares"
+          placeholder="Number of shares to sell"
           value={formState[choiceMarket.id]?.amount || ""}
           onChange={(e) => handleAmountChange(Number(e.target.value))}
         />

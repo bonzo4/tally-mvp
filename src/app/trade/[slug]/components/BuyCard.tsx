@@ -19,7 +19,7 @@ import submitBuy, {
 } from "@/lib/api/actions/submitBuy";
 import { getSharePrice } from "@/lib/estimatePrice";
 
-import AmountInput from "./TradeInput";
+import OrderInput from "./OrderInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummaryBuy } from "./Summary";
 
@@ -96,17 +96,15 @@ function BuySubMarket({
             <div className="text-xs text-red-500">{error.radio}</div>
           )}
         </div>
-        <div className={cn(error?.text ? errorCss : "")}>
-          <AmountInput
-            id={subMarket.id.toString() + " amount"}
-            name={subMarket.id.toString() + " amount"}
-            value={formState.amount}
-            onChange={(e) => handleAmountChange(Number(e.target.value))}
-          />
-        </div>
-        {error?.text && (
-          <div className="text-xs text-red-500">{error.text}</div>
-        )}
+        <OrderInput
+          id={subMarket.id.toString() + " amount"}
+          error={error?.text}
+          label="Amount in $"
+          name={subMarket.id.toString() + " amount"}
+          placeholder="Order amount in $"
+          value={formState.amount}
+          onChange={(e) => handleAmountChange(Number(e.target.value))}
+        />
       </fieldset>
     </div>
   );

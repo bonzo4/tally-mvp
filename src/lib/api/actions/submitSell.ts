@@ -39,19 +39,19 @@ class SellFormError extends Error {
 
 type FormattedSellFormData = {
   choice_market_id: string | undefined;
-  amount: string | undefined;
+  shares: string | undefined;
 };
 
 function formatSellFormData(formData_: FormData): FormattedSellFormData[] {
   const formData: Record<
     number,
-    { choice_market_id?: string; amount?: string }
+    { choice_market_id?: string; shares?: string }
   > = {};
   const formDataArr = [];
   for (const [key, value] of formData_.entries()) {
     formDataArr.push({
       choice_market_id: key,
-      amount: value as string,
+      shares: value as string,
     });
   }
   return formDataArr;
@@ -59,12 +59,12 @@ function formatSellFormData(formData_: FormData): FormattedSellFormData[] {
 
 function validateFormData(formData: FormattedSellFormData[]) {
   const errors = {} as SellErrors;
-  for (const { choice_market_id, amount } of formData) {
+  for (const { choice_market_id, shares } of formData) {
     // Check if amount is 100,000,000 or more.
-    if (amount && Number(amount) >= 100000000) {
+    if (shares && Number(shares) >= 100000000) {
       errors[Number(choice_market_id)] = {
         ...errors[Number(choice_market_id)],
-        text: "Number too large. Must be <$100,000,000.",
+        text: "Number too large. Must be <100,000,000.",
       };
     }
   }
@@ -104,23 +104,24 @@ export default async function submitSell(
     validateFormData(formData_);
 
     // remove unfilled fields
-    formData_ = formData_.filter((data) => data.amount !== "");
+    formData_ = formData_.filter((data) => data.shares !== "");
 
     // group transactions together before POSTING
     const txns = [];
     for (const txn of formData_) {
       // validate that amount is a number and not negative
-      const { avgPrice, cumulative, shareCount } = await estimateSell({
-        supabase: supabase,
-        choiceMarketId: Number(txn.choice_market_id),
-        userId: user.id,
-        amount: Number(txn.amount),
-      });
+      const { avgPrice, cumulativeDollars, cumulativeShares } =
+        await estimateSell({
+          supabase: supabase,
+          choiceMarketId: Number(txn.choice_market_id),
+          userId: user.id,
+          shares: Number(txn.shares),
+        });
       txns.push({
         user_id: user.id,
         choice_market_id: Number(txn.choice_market_id),
-        total_amount: cumulative,
-        shares: shareCount,
+        total_amount: cumulativeDollars,
+        shares: cumulativeShares,
         avg_share_price: avgPrice,
         trade_side: "BUY" as trade_side,
         status: "PENDING" as trade_status,

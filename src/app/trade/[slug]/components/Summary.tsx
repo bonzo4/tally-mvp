@@ -8,7 +8,7 @@ import {
   formatDollarsWithoutCents,
 } from "@/lib/formats";
 
-function LineItem({
+function BuyLineItem({
   title,
   shares,
   value,
@@ -28,38 +28,65 @@ function LineItem({
   );
 }
 
-export function SummarySell({ formState }: { formState: SellFormState }) {
+function SellLineItem({
+  title,
+  shares,
+  value,
+}: {
+  title: string;
+  shares: number;
+  value: number;
+}) {
+  return (
+    <div className="flex w-full justify-between">
+      <div className="text-sm text-gray-400">{title}</div>
+      <div className="flex">
+        <span>{`${formatNumberWithCommasNoDecimals(shares)}`}</span>
+        <span>&nbsp;{`(~${formatDollarsWithoutCents(value)})`}</span>
+      </div>
+    </div>
+  );
+}
+
+export function SummarySell({
+  isFormEnabled,
+  formState,
+}: {
+  isFormEnabled: boolean;
+  formState: SellFormState;
+}) {
   let total = 0;
   for (const key in formState) {
-    const number = Number(formState[key].amount) || 0;
+    const number = Number(formState[key].shares) || 0;
     total += number;
   }
 
   return (
     <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
       <div className="space-y-2">
-        <div className="text-tally-gray">Total Cost</div>
+        <div className="text-tally-gray">Total Shares</div>
         <Input
           className="border border-tally-layer-2 bg-transparent text-tally-gray"
-          value={formatDollarsWithCents(total)}
+          value={formatNumberWithCommasNoDecimals(total)}
           readOnly={true}
         />
         <Button
           type="submit"
           className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+          disabled={!isFormEnabled}
         >
           Sell
         </Button>
       </div>
       <div className="space-y-1 text-sm text-white">
         {Object.entries(formState).map(([key, value], index) => {
-          if (!value.amount) return null;
+          if (!value.shares) return null;
           return (
-            <LineItem
+            <SellLineItem
               key={index}
               title={value.subMarketTitle + ": " + value.choiceMarketTitle}
-              shares={value.amount / value.sharePrice}
-              value={value.amount}
+              shares={value.shares}
+              value={value.shares * value.sharePrice}
             />
           );
         })}
@@ -95,7 +122,7 @@ export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
           ) => {
             if (!amount || !sharePrice) return null;
             return (
-              <LineItem
+              <BuyLineItem
                 key={index}
                 title={subMarketTitle + ": " + choiceMarketTitle}
                 shares={sharePrice ? amount / sharePrice : 0}

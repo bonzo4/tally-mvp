@@ -108,12 +108,12 @@ export async function estimateSell({
   supabase,
   choiceMarketId,
   userId,
-  amount,
+  shares,
 }: {
   supabase: SupabaseClient<Database>;
   choiceMarketId: number;
   userId: number;
-  amount: number;
+  shares: number;
 }) {
   // get slug
   const slug = await getSlugFromChoiceMarketId(supabase, choiceMarketId);
@@ -139,24 +139,51 @@ export async function estimateSell({
   const { totalPot, choicePot } = getPotSizes(subMarkets, choiceMarketId);
 
   // calculate total spend
-  const { cumulative, shareCount } = estimateSellByDollars({
-    amount,
-    cumulative: 0,
-    shareCount: 0,
+  const { cumulativeDollars, cumulativeShares } = estimateSellByShares({
+    cumulativeDollars: 0,
+    cumulativeShares: 0,
+    shares: shares,
     choicePot,
     totalPot,
     sharesHeld,
   });
-  const avgPrice = shareCount ? cumulative / shareCount : 0;
+  const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
   console.log(
     "avgPrice",
     avgPrice,
-    "cumulative",
-    cumulative,
-    "shareCount",
-    shareCount
+    "cumulative dollars",
+    cumulativeDollars,
+    "cumulative shares",
+    cumulativeShares
   );
-  return { avgPrice, cumulative, shareCount };
+  return { avgPrice, cumulativeDollars, cumulativeShares };
+}
+
+function estimateSellByShares({
+  cumulativeDollars,
+  cumulativeShares,
+  shares,
+  choicePot,
+  totalPot,
+  sharesHeld,
+}: {
+  cumulativeDollars: number;
+  cumulativeShares: number;
+  shares: number;
+  sharesHeld: number;
+  choicePot: number;
+  totalPot: number;
+}) {
+  let sharePrice = choicePot / totalPot;
+  while (sharesHeld && cumulativeShares < shares) {
+    choicePot -= sharePrice;
+    totalPot -= sharePrice;
+    cumulativeShares += 1;
+    sharesHeld -= 1;
+    cumulativeDollars += sharePrice;
+    sharePrice = choicePot / totalPot;
+  }
+  return { cumulativeDollars, cumulativeShares };
 }
 
 function estimateSellByDollars({

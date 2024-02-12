@@ -36,9 +36,11 @@ function BuySubMarket({
   handleRadioButtonChange: ({
     sharePrice,
     choiceMarketTitle,
+    choiceMarketId,
   }: {
     sharePrice: number;
     choiceMarketTitle: string;
+    choiceMarketId: number;
   }) => void;
   handleAmountChange: (amount: number) => void;
 }) {
@@ -85,6 +87,7 @@ function BuySubMarket({
                   onChange={(e) =>
                     handleRadioButtonChange({
                       choiceMarketTitle: choiceMarket.title,
+                      choiceMarketId: choiceMarket.id,
                       sharePrice: sharePrice,
                     })
                   }
@@ -129,6 +132,7 @@ function LoginButton({ slug }: { slug: string }) {
 export type BuyFormState = {
   subMarketTitle: string;
   choiceMarketTitle: string;
+  choiceMarketId: number;
   sharePrice: number;
   amount: number;
 };
@@ -147,11 +151,12 @@ export default function BuyCard({
     null
   );
 
-  const [formState, setFormState] = useState(
+  const [formState, setFormState] = useState<BuyFormState[]>(
     Array(subMarkets.length).fill({
-      index: "",
       subMarketTitle: "",
       choiceMarketTitle: "",
+      choiceMarketId: 0,
+      sharePrice: 0,
       amount: "",
     })
   );
@@ -162,15 +167,18 @@ export default function BuyCard({
     (index: number, subMarketTitle: string) =>
     ({
       choiceMarketTitle,
+      choiceMarketId,
       sharePrice,
     }: {
       choiceMarketTitle: string;
+      choiceMarketId: number;
       sharePrice: number;
     }) => {
       setFormState([
         ...formState.slice(0, index),
         {
           choiceMarketTitle: choiceMarketTitle,
+          choiceMarketId: choiceMarketId,
           subMarketTitle: subMarketTitle,
           sharePrice: sharePrice,
           amount: formState[index].amount,
@@ -186,6 +194,7 @@ export default function BuyCard({
         ...formState.slice(0, index),
         {
           choiceMarketTitle: formState[index].choiceMarketTitle,
+          choiceMarketId: formState[index].choiceMarketId,
           subMarketTitle: subMarketTitle,
           sharePrice: formState[index].sharePrice || 0,
           amount: amount,

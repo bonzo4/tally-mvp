@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SellFormState } from "./SellCard";
 import { BuyFormState } from "./BuyCard";
+import { SellFormState } from "./SellCard";
+import Popup from "./Popup";
 import {
   formatNumberWithCommasNoDecimals,
   formatDollarsWithCents,
@@ -132,6 +133,7 @@ export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
           }
         )}
       </div>
+      <Popup formState={formState} />
     </div>
   );
 }

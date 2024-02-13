@@ -108,6 +108,62 @@ function validateFormData(formData: FormattedBuyFormData[]) {
   }
 }
 
+export async function validateBuy(
+  prevState: any,
+  formData: FormData
+): Promise<BuyUseFormState> {
+  try {
+    const supabase = createServerSupabaseClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+
+    if (!authUser) {
+      throw Error("AuthError: User is not authenticated.");
+    }
+    const user = authUser
+      ? await getUser({
+          supabase: supabase,
+          options: { userId: authUser.id },
+        })
+      : null;
+
+    if (!user) {
+      throw Error("AuthError: User could not be found.");
+    }
+
+    // convert FormData to cleaner object
+    let formData_ = formatFormData(formData);
+
+    // check if form is valid
+    validateFormData(formData_);
+
+    // remove unfilled fields
+    formData_ = formData_.filter(
+      (data) => data.amount !== "" && data.choice_market_id !== ""
+    );
+
+    return {
+      status: "success",
+      message: "Order validated successfully.",
+    };
+  } catch (error) {
+    if (error instanceof FormError) {
+      const useFormState: BuyUseFormState = {
+        status: "error",
+        message: "Form validation failed.",
+        errors: error.errors,
+      };
+      return useFormState;
+    }
+    return {
+      status: "error",
+      message: "An error occurred while submitting your order.",
+      errors: {},
+    };
+  }
+}
+
 export default async function submitBuy(
   prevState: any,
   formData: FormData
@@ -147,16 +203,17 @@ export default async function submitBuy(
     const txns = [];
     for (const txn of formData_) {
       // validate that amount is a number and not negative
-      const { avgPrice, cumulative, shareCount } = await estimateBuy(
-        supabase,
-        Number(txn.choice_market_id),
-        Number(txn.amount)
-      );
+      const { avgPrice, cumulativeDollars, cumulativeShares } =
+        await estimateBuy(
+          supabase,
+          Number(txn.choice_market_id),
+          Number(txn.amount)
+        );
       txns.push({
         user_id: user.id,
         choice_market_id: Number(txn.choice_market_id),
-        total_amount: cumulative,
-        shares: shareCount,
+        total_amount: cumulativeDollars,
+        shares: cumulativeShares,
         avg_share_price: avgPrice,
         trade_side: "BUY" as trade_side,
         status: "PENDING" as trade_status,

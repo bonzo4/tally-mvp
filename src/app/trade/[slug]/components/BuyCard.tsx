@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarke
 import { UserDoc } from "@/lib/supabase/queries/user";
 import { VscCircleFilled } from "react-icons/vsc";
 import submitBuy, {
+  validateBuy,
   BuyUseFormState,
   BuyErrorMessages,
 } from "@/lib/api/actions/submitBuy";
@@ -146,10 +147,22 @@ export default function BuyCard({
   user: UserDoc | null;
   slug: string;
 }) {
-  const [state, formAction] = useFormState<BuyUseFormState, FormData>(
-    submitBuy,
-    null
-  );
+  const [validateFormState, validateFormAction] = useFormState<
+    BuyUseFormState,
+    FormData
+  >(validateBuy, null);
+  const [submitFormState, submitFormAction] = useFormState<
+    BuyUseFormState,
+    FormData
+  >(submitBuy, null);
+
+  useEffect(() => {
+    console.log("submitFormState", submitFormState);
+  }, [submitFormState]);
+
+  useEffect(() => {
+    console.log("validateFormState", validateFormState);
+  }, [validateFormState]);
 
   const [formState, setFormState] = useState<BuyFormState[]>(
     Array(subMarkets.length).fill({
@@ -158,6 +171,7 @@ export default function BuyCard({
       choiceMarketId: 0,
       sharePrice: 0,
       amount: "",
+      submitType: "",
     })
   );
 
@@ -204,7 +218,7 @@ export default function BuyCard({
     };
 
   return (
-    <form action={(payload) => formAction(payload)}>
+    <form id="my-form" action={(payload) => submitFormAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (
@@ -213,7 +227,9 @@ export default function BuyCard({
               subMarket={subMarket}
               formState={formState[index]}
               error={
-                state?.status === "error" ? state.errors[subMarket.id] : null
+                validateFormState?.status === "error"
+                  ? validateFormState.errors[subMarket.id]
+                  : null
               }
               handleRadioButtonChange={handleRadioButtonChange(
                 index,
@@ -229,7 +245,19 @@ export default function BuyCard({
         <CardFooter className="flex flex-col px-0 py-4">
           <Separator className="bg-neutral-800" />
           {user ? (
-            <SummaryBuy formState={formState} />
+            <SummaryBuy
+              formState={formState}
+              validateFormState={validateFormState}
+              validateFormAction={(payload) => validateFormAction(payload)}
+            >
+              <Button
+                type="submit"
+                form="my-form"
+                className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
+              >
+                Confirm
+              </Button>
+            </SummaryBuy>
           ) : (
             <LoginButton slug={slug} />
           )}

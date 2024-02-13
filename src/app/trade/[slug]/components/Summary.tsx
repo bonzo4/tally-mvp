@@ -8,6 +8,7 @@ import {
   formatDollarsWithCents,
   formatDollarsWithoutCents,
 } from "@/lib/formats";
+import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
 
 function BuyLineItem({
   title,
@@ -96,7 +97,17 @@ export function SummarySell({
   );
 }
 
-export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
+export function SummaryBuy({
+  children,
+  formState,
+  validateFormState,
+  validateFormAction,
+}: {
+  children: React.ReactNode;
+  formState: BuyFormState[];
+  validateFormAction: (payload: any) => void;
+  validateFormState: BuyUseFormState;
+}) {
   const total = formState.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   return (
@@ -108,12 +119,21 @@ export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
           value={formatDollarsWithCents(total)}
           readOnly={true}
         />
-        <Button
-          type="submit"
-          className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
+        <Popup
+          formState={formState}
+          validateFormState={validateFormState}
+          trigger={
+            <Button
+              type={undefined}
+              formAction={validateFormAction}
+              className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
+            >
+              Buy
+            </Button>
+          }
         >
-          Buy
-        </Button>
+          {children}
+        </Popup>
       </div>
       <div className="space-y-1 text-sm text-white">
         {formState.map(
@@ -133,7 +153,6 @@ export function SummaryBuy({ formState }: { formState: BuyFormState[] }) {
           }
         )}
       </div>
-      <Popup formState={formState} />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { estimateBuy } from "@/lib/estimatePrice";
@@ -219,15 +221,19 @@ export default async function submitBuy(
         status: "PENDING" as trade_status,
       });
     }
-    const { data, error } = await supabase.from("orders").insert(txns).select();
+    const { data: data, error: error } = await supabase
+      .from("orders")
+      .insert(txns)
+      .select();
+
+    // TODO: submit transaction to smart contract
+    const { data: data_, error: error_ } = await submitToSmartContract(txns);
+
+    // TODO: Handle error if smart contract fails and redirect appropriately
+
     if (error) {
       throw error;
     }
-
-    return {
-      status: "success",
-      message: "Order submitted successfully.",
-    };
   } catch (error) {
     if (error instanceof FormError) {
       const useFormState: BuyUseFormState = {
@@ -243,4 +249,12 @@ export default async function submitBuy(
       errors: {},
     };
   }
+  redirect("/profile");
+}
+
+async function submitToSmartContract(txns: any) {
+  return {
+    data: true,
+    error: false,
+  };
 }

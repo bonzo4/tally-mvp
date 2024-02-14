@@ -61,47 +61,43 @@ export async function estimateBuy(
   const { totalPot, choicePot } = getPotSizes(subMarkets, choiceMarketId);
 
   // calculate total spend
-  const { cumulative, shareCount } = estimateBuyByDollars({
+  const { cumulativeDollars, cumulativeShares } = estimateBuyByDollars({
     amount,
-    cumulative: 0,
-    shareCount: 0,
     choicePot,
     totalPot,
   });
-  const avgPrice = shareCount ? cumulative / shareCount : 0;
+  const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
   console.log(
     "avgPrice",
     avgPrice,
-    "cumulative",
-    cumulative,
-    "shareCount",
-    shareCount
+    "cumulativeDollars",
+    cumulativeDollars,
+    "cumulativeShares",
+    cumulativeShares
   );
-  return { avgPrice, cumulative, shareCount };
+  return { avgPrice, cumulativeDollars, cumulativeShares };
 }
 
 function estimateBuyByDollars({
   amount,
-  cumulative,
-  shareCount,
   choicePot,
   totalPot,
 }: {
   amount: number;
-  cumulative: number;
-  shareCount: number;
   choicePot: number;
   totalPot: number;
 }) {
   let sharePrice = choicePot / totalPot;
-  while (cumulative + sharePrice <= amount) {
+  let cumulativeDollars = 0;
+  let cumulativeShares = 0;
+  while (cumulativeDollars + sharePrice <= amount) {
     choicePot += sharePrice;
     totalPot += sharePrice;
-    shareCount += 1;
-    cumulative += sharePrice;
+    cumulativeShares += 1;
+    cumulativeDollars += sharePrice;
     sharePrice = choicePot / totalPot;
   }
-  return { cumulative, shareCount };
+  return { cumulativeDollars, cumulativeShares };
 }
 
 export async function estimateSell({

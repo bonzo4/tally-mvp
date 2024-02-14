@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useWindowSize } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +34,6 @@ type HamburgerMenuProps = {
 };
 
 export default function HamburgerMenu({ className, user }: HamburgerMenuProps) {
-  const { width, height } = useWindowSize();
   return (
     <div className={className}>
       <IconContext.Provider value={{ className: "text-tally-primary text-xl" }}>

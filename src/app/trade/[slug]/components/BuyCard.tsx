@@ -156,14 +156,6 @@ export default function BuyCard({
     FormData
   >(submitBuy, null);
 
-  useEffect(() => {
-    console.log("submitFormState", submitFormState);
-  }, [submitFormState]);
-
-  useEffect(() => {
-    console.log("validateFormState", validateFormState);
-  }, [validateFormState]);
-
   const [formState, setFormState] = useState<BuyFormState[]>(
     Array(subMarkets.length).fill({
       subMarketTitle: "",

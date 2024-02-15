@@ -16,9 +16,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { BuyEstimate } from "@/app/api/estimatePrice/route";
 import { BuyFormState } from "./BuyCard";
-import { SellFormState } from "./SelLCard";
+import { SellFormState } from "./SellCard";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
@@ -26,7 +25,15 @@ import {
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
 import { SellUseFormState } from "@/lib/api/actions/submitSell";
 
-function BuyEstimateLineItem({ txn }: { txn: BuyEstimate }) {
+export type Estimate = {
+  subMarketTitle: string;
+  choiceMarketTitle: string;
+  avgPrice: number;
+  cumulativeDollars: number;
+  cumulativeShares: number;
+};
+
+function BuyEstimateLineItem({ txn }: { txn: Estimate }) {
   return (
     <TableRow className="hover:bg-tally-layer-1">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
@@ -42,11 +49,7 @@ function BuyEstimateLineItem({ txn }: { txn: BuyEstimate }) {
   );
 }
 
-function ReceiptEstimate({
-  buyEstimate,
-}: {
-  buyEstimate: BuyEstimate[] | null;
-}) {
+function ReceiptEstimate({ buyEstimate }: { buyEstimate: Estimate[] | null }) {
   const total = buyEstimate?.reduce(
     (acc, txn) => acc + txn.cumulativeDollars,
     0
@@ -90,7 +93,7 @@ export function SellConfirmation({
   formState: SellFormState;
   validateFormState: SellUseFormState;
 }) {
-  const [buyEstimate, setBuyEstimate] = useState<BuyEstimate[] | null>(null);
+  const [buyEstimate, setBuyEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -133,7 +136,7 @@ export function SellConfirmation({
   );
 }
 
-export default function Popup({
+export function BuyConfirmation({
   children,
   trigger,
   formState,
@@ -144,13 +147,13 @@ export default function Popup({
   formState: BuyFormState[];
   validateFormState: BuyUseFormState;
 }) {
-  const [buyEstimate, setBuyEstimate] = useState<BuyEstimate[] | null>(null);
+  const [buyEstimate, setBuyEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (open) {
       (async () => {
-        const res = await fetch("/api/estimatePrice", {
+        const res = await fetch("/api/estimateBuy", {
           method: "POST",
           body: JSON.stringify(formState),
         });

@@ -2,23 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
 import { estimateSell } from "@/lib/estimatePrice";
-import { SellFormState } from "@/app/trade/[slug]/components/SellCard";
 import getUser from "@/lib/supabase/user";
 
-export type BuyEstimate = {
-  subMarketTitle: string;
-  choiceMarketTitle: string;
-  avgPrice: number;
-  cumulativeDollars: number;
-  cumulativeShares: number;
-};
+import { SellFormState } from "@/app/trade/[slug]/components/SellCard";
+import { Estimate } from "@/app/trade/[slug]/components/Popup";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const supabase = createRouteSupabaseClient();
     const user = await getUser(supabase);
     const txns: SellFormState = await req.json();
-    let resData: BuyEstimate[] = [];
+    let resData: Estimate[] = [];
 
     for (const key of Object.keys(txns)) {
       const txn = txns[Number(key)];

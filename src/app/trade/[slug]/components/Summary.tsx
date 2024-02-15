@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BuyFormState } from "./BuyCard";
 import { SellFormState } from "./SellCard";
-import Popup, { SellConfirmation } from "./Popup";
+import { BuyConfirmation, SellConfirmation } from "./Popup";
 import {
   formatNumberWithCommasNoDecimals,
   formatDollarsWithCents,
@@ -135,7 +135,7 @@ export function SummaryBuy({
           value={formatDollarsWithCents(total)}
           readOnly={true}
         />
-        <Popup
+        <BuyConfirmation
           formState={formState}
           validateFormState={validateFormState}
           trigger={
@@ -149,7 +149,7 @@ export function SummaryBuy({
           }
         >
           {children}
-        </Popup>
+        </BuyConfirmation>
       </div>
       <div className="space-y-1 text-sm text-white">
         {formState.map(

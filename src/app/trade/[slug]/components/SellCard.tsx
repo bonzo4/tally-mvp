@@ -123,13 +123,13 @@ function SellContent({
   subMarketsWithHoldings,
   formState,
   setIsFormEnabled,
-  state,
+  validateFormState,
   handleAmountChange,
 }: {
   subMarketsWithHoldings: SubMarketWithHoldings[];
   formState: SellFormState;
   setIsFormEnabled: (enabled: boolean) => void;
-  state: SellUseFormState;
+  validateFormState: SellUseFormState;
   handleAmountChange: (
     subMarketTitle: string,
     choiceMarketTitle: string,
@@ -160,8 +160,8 @@ function SellContent({
                     ? "Insufficient balance."
                     : null;
                 const backendError =
-                  state?.status === "error"
-                    ? state.errors[choice_market.id].text
+                  validateFormState?.status === "error"
+                    ? validateFormState.errors[choice_market.id].text
                     : null;
                 return (
                   <SellChoiceMarket
@@ -225,12 +225,12 @@ export default function SellCard({
     SellUseFormState,
     FormData
   >(validateSell, null);
+  const [submitFormState, submitFormAction] = useFormState<
+    SellUseFormState,
+    FormData
+  >(submitSell, null);
   const [formState, setFormState] = useState<SellFormState>({});
   const [isFormEnabled, setIsFormEnabled] = useState<boolean>(true);
-  const [state, formAction] = useFormState<SellUseFormState, FormData>(
-    submitSell,
-    null
-  );
 
   const handleAmountChange =
     (
@@ -259,7 +259,7 @@ export default function SellCard({
   });
 
   return (
-    <form id="sell-form" action={(payload) => formAction(payload)}>
+    <form id="sell-form" action={(payload) => submitFormAction(payload)}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
           {user ? (
@@ -267,7 +267,7 @@ export default function SellCard({
               subMarketsWithHoldings={subMarketsWithHoldings}
               formState={formState}
               setIsFormEnabled={setIsFormEnabled}
-              state={state}
+              validateFormState={validateFormState}
               handleAmountChange={handleAmountChange}
             />
           ) : (

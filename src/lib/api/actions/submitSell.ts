@@ -1,5 +1,7 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { estimateSell } from "@/lib/estimatePrice";
@@ -73,6 +75,60 @@ function validateFormData(formData: FormattedSellFormData[]) {
   }
 }
 
+export async function validateSell(
+  prevState: any,
+  formData: FormData
+): Promise<SellUseFormState> {
+  try {
+    const supabase = createServerSupabaseClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+
+    if (!authUser) {
+      throw Error("AuthError: User is not authenticated.");
+    }
+    const user = authUser
+      ? await getUser({
+          supabase: supabase,
+          options: { userId: authUser.id },
+        })
+      : null;
+
+    if (!user) {
+      throw Error("AuthError: User is not authenticated.");
+    }
+
+    // format data
+    let formData_ = formatSellFormData(formData);
+
+    // check if form is valid
+    validateFormData(formData_);
+
+    // remove unfilled fields
+    formData_ = formData_.filter((data) => data.shares !== "");
+
+    return {
+      status: "success",
+      message: "Order validated successfully.",
+    };
+  } catch (error) {
+    if (error instanceof SellFormError) {
+      const useFormState: SellUseFormState = {
+        status: "error",
+        message: "Form validation failed.",
+        errors: error.errors,
+      };
+      return useFormState;
+    }
+    return {
+      status: "error",
+      message: "An error occurred while submitting your order.",
+      errors: {},
+    };
+  }
+}
+
 export default async function submitSell(
   prevState: any,
   formData: FormData
@@ -123,17 +179,12 @@ export default async function submitSell(
         total_amount: cumulativeDollars,
         shares: cumulativeShares,
         avg_share_price: avgPrice,
-        trade_side: "BUY" as trade_side,
+        trade_side: "SELL" as trade_side,
         status: "PENDING" as trade_status,
       });
     }
     const { data, error } = await supabase.from("orders").insert(txns).select();
-
-    return {
-      status: "success",
-      message: "Order submitted successfully.",
-    };
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof SellFormError) {
       const useFormState: SellUseFormState = {
         status: "error",
@@ -144,8 +195,9 @@ export default async function submitSell(
     }
     return {
       status: "error",
-      message: "An error occurred while submitting your order.",
+      message: error.message,
       errors: {},
     };
   }
+  redirect("/profile");
 }

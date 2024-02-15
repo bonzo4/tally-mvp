@@ -1,32 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { estimateBuy } from "@/lib/estimatePrice";
-import { BuyFormState } from "@/app/trade/[slug]/components/BuyCard";
+import { estimateSell } from "@/lib/estimatePrice";
 import getUser from "@/lib/supabase/user";
 
-export type BuyEstimate = {
-  subMarketTitle: string;
-  choiceMarketTitle: string;
-  avgPrice: number;
-  cumulativeDollars: number;
-  cumulativeShares: number;
-};
+import { SellFormState } from "@/app/trade/[slug]/components/SellCard";
+import { Estimate } from "@/app/trade/[slug]/components/Popup";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const supabase = createRouteSupabaseClient();
-    const user = getUser(supabase);
-    const txns: BuyFormState[] = await req.json();
-    let resData: BuyEstimate[] = [];
+    const user = await getUser(supabase);
+    const txns: SellFormState = await req.json();
+    let resData: Estimate[] = [];
 
-    for (const txn of txns) {
-      const { choiceMarketId, amount } = txn;
-      if (!choiceMarketId || !amount) {
+    for (const key of Object.keys(txns)) {
+      const txn = txns[Number(key)];
+      const { choiceMarketId, shares } = txn;
+      if (!choiceMarketId || !shares) {
         continue;
       }
       const { avgPrice, cumulativeDollars, cumulativeShares } =
-        await estimateBuy(supabase, choiceMarketId, amount);
+        await estimateSell({
+          supabase: supabase,
+          choiceMarketId: choiceMarketId,
+          userId: user.id,
+          shares: shares,
+        });
       resData.push({
         subMarketTitle: txn.subMarketTitle,
         choiceMarketTitle: txn.choiceMarketTitle,

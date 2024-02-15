@@ -16,15 +16,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { BuyEstimate } from "@/app/api/estimatePrice/route";
 import { BuyFormState } from "./BuyCard";
+import { SellFormState } from "./SellCard";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
 } from "@/lib/formats";
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
+import { SellUseFormState } from "@/lib/api/actions/submitSell";
 
-function BuyEstimateLineItem({ txn }: { txn: BuyEstimate }) {
+export type Estimate = {
+  subMarketTitle: string;
+  choiceMarketTitle: string;
+  avgPrice: number;
+  cumulativeDollars: number;
+  cumulativeShares: number;
+};
+
+function BuyEstimateLineItem({ txn }: { txn: Estimate }) {
   return (
     <TableRow className="hover:bg-tally-layer-1">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
@@ -40,11 +49,7 @@ function BuyEstimateLineItem({ txn }: { txn: BuyEstimate }) {
   );
 }
 
-function ReceiptEstimate({
-  buyEstimate,
-}: {
-  buyEstimate: BuyEstimate[] | null;
-}) {
+function ReceiptEstimate({ buyEstimate }: { buyEstimate: Estimate[] | null }) {
   const total = buyEstimate?.reduce(
     (acc, txn) => acc + txn.cumulativeDollars,
     0
@@ -77,24 +82,80 @@ function ReceiptEstimate({
   );
 }
 
-export default function Popup({
-  children,
+export function SellConfirmation({
   trigger,
+  submit,
   formState,
   validateFormState,
 }: {
-  children: React.ReactNode;
   trigger: React.ReactNode;
-  formState: BuyFormState[];
-  validateFormState: BuyUseFormState;
+  submit: React.ReactNode;
+  formState: SellFormState;
+  validateFormState: SellUseFormState;
 }) {
-  const [buyEstimate, setBuyEstimate] = useState<BuyEstimate[] | null>(null);
+  const [buyEstimate, setBuyEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (open) {
       (async () => {
-        const res = await fetch("/api/estimatePrice", {
+        const res = await fetch("/api/estimateSell", {
+          method: "POST",
+          body: JSON.stringify(formState),
+        });
+        const data = await res.json();
+        setBuyEstimate(data);
+      })();
+    }
+  }, [open, formState]);
+
+  useEffect(() => {
+    setOpen(validateFormState?.status === "success");
+  }, [validateFormState]);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      {trigger}
+      <DialogContent className="border border-tally-red bg-tally-background text-white">
+        <DialogHeader>
+          <DialogTitle>Order Cofirmation</DialogTitle>
+          <DialogDescription>
+            Please note that the price provided for your transaction is an
+            estimate based on current market conditions. Actual transaction
+            prices may vary due to market volatility, timing, and order
+            execution factors. We strive to provide the most accurate estimates
+            possible, but cannot guarantee the final transaction price will
+            match the estimated price. Proceed with awareness of potential price
+            adjustments.
+          </DialogDescription>
+        </DialogHeader>
+        <ReceiptEstimate buyEstimate={buyEstimate} />
+        {submit}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function BuyConfirmation({
+  children,
+  trigger,
+  submit,
+  formState,
+  validateFormState,
+}: {
+  children: React.ReactNode;
+  trigger: React.ReactNode;
+  submit: React.ReactNode;
+  formState: BuyFormState[];
+  validateFormState: BuyUseFormState;
+}) {
+  const [buyEstimate, setBuyEstimate] = useState<Estimate[] | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (open) {
+      (async () => {
+        const res = await fetch("/api/estimateBuy", {
           method: "POST",
           body: JSON.stringify(formState),
         });
@@ -125,7 +186,7 @@ export default function Popup({
           </DialogDescription>
         </DialogHeader>
         <ReceiptEstimate buyEstimate={buyEstimate} />
-        <form action={() => console.log("actioning!")}>{children}</form>
+        {submit}
       </DialogContent>
     </Dialog>
   );

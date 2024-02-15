@@ -24,7 +24,10 @@ import {
 import OrderInput from "./OrderInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummarySell } from "./Summary";
-import submitSell, { SellUseFormState } from "@/lib/api/actions/submitSell";
+import submitSell, {
+  SellUseFormState,
+  validateSell,
+} from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
 
 type SellChoiceMarketProps = {
@@ -120,13 +123,13 @@ function SellContent({
   subMarketsWithHoldings,
   formState,
   setIsFormEnabled,
-  state,
+  validateFormState,
   handleAmountChange,
 }: {
   subMarketsWithHoldings: SubMarketWithHoldings[];
   formState: SellFormState;
   setIsFormEnabled: (enabled: boolean) => void;
-  state: SellUseFormState;
+  validateFormState: SellUseFormState;
   handleAmountChange: (
     subMarketTitle: string,
     choiceMarketTitle: string,
@@ -157,8 +160,8 @@ function SellContent({
                     ? "Insufficient balance."
                     : null;
                 const backendError =
-                  state?.status === "error"
-                    ? state.errors[choice_market.id].text
+                  validateFormState?.status === "error"
+                    ? validateFormState.errors[choice_market.id].text
                     : null;
                 return (
                   <SellChoiceMarket
@@ -203,6 +206,7 @@ export type SellFormState = {
   [key: number]: {
     subMarketTitle: string;
     choiceMarketTitle: string;
+    choiceMarketId: number;
     sharePrice: number;
     shares: number;
   };
@@ -217,16 +221,16 @@ export default function SellCard({
   user: UserDoc | null;
   slug: string;
 }) {
+  const [validateFormState, validateFormAction] = useFormState<
+    SellUseFormState,
+    FormData
+  >(validateSell, null);
+  const [submitFormState, submitFormAction] = useFormState<
+    SellUseFormState,
+    FormData
+  >(submitSell, null);
   const [formState, setFormState] = useState<SellFormState>({});
   const [isFormEnabled, setIsFormEnabled] = useState<boolean>(true);
-  const [state, formAction] = useFormState<SellUseFormState, FormData>(
-    submitSell,
-    null
-  );
-
-  useEffect(() => {
-    console.log("isFormEnabled", isFormEnabled);
-  }, [isFormEnabled]);
 
   const handleAmountChange =
     (
@@ -241,6 +245,7 @@ export default function SellCard({
         [choiceMarketId]: {
           subMarketTitle: subMarketTitle,
           choiceMarketTitle: choiceMarketTitle,
+          choiceMarketId: choiceMarketId,
           sharePrice: sharePrice,
           shares: shares,
         },
@@ -254,7 +259,7 @@ export default function SellCard({
   });
 
   return (
-    <form action={(payload) => formAction(payload)}>
+    <form id="sell-form" action={(payload) => submitFormAction(payload)}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
           {user ? (
@@ -262,7 +267,7 @@ export default function SellCard({
               subMarketsWithHoldings={subMarketsWithHoldings}
               formState={formState}
               setIsFormEnabled={setIsFormEnabled}
-              state={state}
+              validateFormState={validateFormState}
               handleAmountChange={handleAmountChange}
             />
           ) : (
@@ -272,7 +277,12 @@ export default function SellCard({
         {subMarketsWithHoldings.length ? (
           <CardFooter className="flex flex-col px-0 py-4">
             <Separator className="bg-neutral-800" />
-            <SummarySell isFormEnabled={isFormEnabled} formState={formState} />
+            <SummarySell
+              isFormEnabled={isFormEnabled}
+              formState={formState}
+              validateFormState={validateFormState}
+              validateFormAction={validateFormAction}
+            />
           </CardFooter>
         ) : null}
       </Card>

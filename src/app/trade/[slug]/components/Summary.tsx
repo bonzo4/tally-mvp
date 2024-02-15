@@ -1,14 +1,17 @@
+import { useFormStatus } from "react-dom";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BuyFormState } from "./BuyCard";
 import { SellFormState } from "./SellCard";
-import Popup from "./Popup";
+import { BuyConfirmation, SellConfirmation } from "./Popup";
 import {
   formatNumberWithCommasNoDecimals,
   formatDollarsWithCents,
   formatDollarsWithoutCents,
 } from "@/lib/formats";
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
+import { SellUseFormState } from "@/lib/api/actions/submitSell";
 
 function BuyLineItem({
   title,
@@ -53,10 +56,16 @@ function SellLineItem({
 export function SummarySell({
   isFormEnabled,
   formState,
+  validateFormState,
+  validateFormAction,
 }: {
   isFormEnabled: boolean;
   formState: SellFormState;
+  validateFormState: SellUseFormState;
+  validateFormAction: (payload: any) => void;
 }) {
+  const { pending } = useFormStatus();
+
   let total = 0;
   for (const key in formState) {
     const number = Number(formState[key].shares) || 0;
@@ -72,13 +81,30 @@ export function SummarySell({
           value={formatNumberWithCommasNoDecimals(total)}
           readOnly={true}
         />
-        <Button
-          type="submit"
-          className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
-          disabled={!isFormEnabled}
-        >
-          Sell
-        </Button>
+        <SellConfirmation
+          formState={formState}
+          validateFormState={validateFormState}
+          trigger={
+            <Button
+              type={undefined}
+              formAction={validateFormAction}
+              className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+              disabled={!isFormEnabled}
+            >
+              Sell
+            </Button>
+          }
+          submit={
+            <Button
+              type="submit"
+              form="sell-form"
+              className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+              disabled={!!pending}
+            >
+              {pending ? "Processing..." : "Confirm Sell"}
+            </Button>
+          }
+        />
       </div>
       <div className="space-y-1 text-sm text-white">
         {Object.entries(formState).map(([key, value], index) => {
@@ -98,17 +124,16 @@ export function SummarySell({
 }
 
 export function SummaryBuy({
-  children,
   formState,
   validateFormState,
   validateFormAction,
 }: {
-  children: React.ReactNode;
   formState: BuyFormState[];
   validateFormAction: (payload: any) => void;
   validateFormState: BuyUseFormState;
 }) {
   const total = formState.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const { pending } = useFormStatus();
 
   return (
     <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
@@ -119,7 +144,7 @@ export function SummaryBuy({
           value={formatDollarsWithCents(total)}
           readOnly={true}
         />
-        <Popup
+        <BuyConfirmation
           formState={formState}
           validateFormState={validateFormState}
           trigger={
@@ -131,9 +156,19 @@ export function SummaryBuy({
               Buy
             </Button>
           }
+          submit={
+            <Button
+              type="submit"
+              form="buy-form"
+              className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
+              disabled={!!pending}
+            >
+              {pending ? "Processing..." : "Confirm Buy"}
+            </Button>
+          }
         >
-          {children}
-        </Popup>
+          {pending && <div className="text-white">Processing...</div>}
+        </BuyConfirmation>
       </div>
       <div className="space-y-1 text-sm text-white">
         {formState.map(

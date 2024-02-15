@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -156,14 +156,6 @@ export default function BuyCard({
     FormData
   >(submitBuy, null);
 
-  useEffect(() => {
-    console.log("submitFormState", submitFormState);
-  }, [submitFormState]);
-
-  useEffect(() => {
-    console.log("validateFormState", validateFormState);
-  }, [validateFormState]);
-
   const [formState, setFormState] = useState<BuyFormState[]>(
     Array(subMarkets.length).fill({
       subMarketTitle: "",
@@ -218,7 +210,7 @@ export default function BuyCard({
     };
 
   return (
-    <form id="my-form" action={(payload) => submitFormAction(payload)}>
+    <form id="buy-form" action={(payload) => submitFormAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (
@@ -249,15 +241,7 @@ export default function BuyCard({
               formState={formState}
               validateFormState={validateFormState}
               validateFormAction={(payload) => validateFormAction(payload)}
-            >
-              <Button
-                type="submit"
-                form="my-form"
-                className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
-              >
-                Confirm
-              </Button>
-            </SummaryBuy>
+            />
           ) : (
             <LoginButton slug={slug} />
           )}

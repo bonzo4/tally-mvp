@@ -54,13 +54,11 @@ function SellLineItem({
 }
 
 export function SummarySell({
-  children,
   isFormEnabled,
   formState,
   validateFormState,
   validateFormAction,
 }: {
-  children: React.ReactNode;
   isFormEnabled: boolean;
   formState: SellFormState;
   validateFormState: SellUseFormState;
@@ -96,9 +94,17 @@ export function SummarySell({
               Sell
             </Button>
           }
-        >
-          {children}
-        </SellConfirmation>
+          submit={
+            <Button
+              type="submit"
+              form="sell-form"
+              className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+              disabled={!!pending}
+            >
+              {pending ? "Processing..." : "Confirm Sell"}
+            </Button>
+          }
+        />
       </div>
       <div className="space-y-1 text-sm text-white">
         {Object.entries(formState).map(([key, value], index) => {
@@ -155,7 +161,7 @@ export function SummaryBuy({
               type="submit"
               form="buy-form"
               className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
-              disabled={pending ? true : false}
+              disabled={!!pending}
             >
               {pending ? "Processing..." : "Confirm Buy"}
             </Button>

@@ -282,15 +282,7 @@ export default function SellCard({
               formState={formState}
               validateFormState={validateFormState}
               validateFormAction={validateFormAction}
-            >
-              <Button
-                type="submit"
-                form="sell-form"
-                className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
-              >
-                Confirm Sell
-              </Button>
-            </SummarySell>
+            />
           </CardFooter>
         ) : null}
       </Card>

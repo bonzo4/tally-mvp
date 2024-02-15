@@ -139,11 +139,13 @@ export function SellConfirmation({
 export function BuyConfirmation({
   children,
   trigger,
+  submit,
   formState,
   validateFormState,
 }: {
   children: React.ReactNode;
   trigger: React.ReactNode;
+  submit: React.ReactNode;
   formState: BuyFormState[];
   validateFormState: BuyUseFormState;
 }) {
@@ -184,7 +186,7 @@ export function BuyConfirmation({
           </DialogDescription>
         </DialogHeader>
         <ReceiptEstimate buyEstimate={buyEstimate} />
-        <form action={() => console.log("actioning!")}>{children}</form>
+        {submit}
       </DialogContent>
     </Dialog>
   );

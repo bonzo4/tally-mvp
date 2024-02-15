@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormState } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -241,15 +241,7 @@ export default function BuyCard({
               formState={formState}
               validateFormState={validateFormState}
               validateFormAction={(payload) => validateFormAction(payload)}
-            >
-              <Button
-                type="submit"
-                form="buy-form"
-                className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
-              >
-                Confirm Buy
-              </Button>
-            </SummaryBuy>
+            />
           ) : (
             <LoginButton slug={slug} />
           )}

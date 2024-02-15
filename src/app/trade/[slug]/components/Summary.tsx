@@ -1,3 +1,5 @@
+import { useFormStatus } from "react-dom";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BuyFormState } from "./BuyCard";
@@ -64,6 +66,8 @@ export function SummarySell({
   validateFormState: SellUseFormState;
   validateFormAction: (payload: any) => void;
 }) {
+  const { pending } = useFormStatus();
+
   let total = 0;
   for (const key in formState) {
     const number = Number(formState[key].shares) || 0;
@@ -114,17 +118,16 @@ export function SummarySell({
 }
 
 export function SummaryBuy({
-  children,
   formState,
   validateFormState,
   validateFormAction,
 }: {
-  children: React.ReactNode;
   formState: BuyFormState[];
   validateFormAction: (payload: any) => void;
   validateFormState: BuyUseFormState;
 }) {
   const total = formState.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const { pending } = useFormStatus();
 
   return (
     <div className="flex w-full flex-col space-y-5 pb-2 pt-4">
@@ -147,8 +150,18 @@ export function SummaryBuy({
               Buy
             </Button>
           }
+          submit={
+            <Button
+              type="submit"
+              form="buy-form"
+              className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
+              disabled={pending ? true : false}
+            >
+              {pending ? "Processing..." : "Confirm Buy"}
+            </Button>
+          }
         >
-          {children}
+          {pending && <div className="text-white">Processing...</div>}
         </BuyConfirmation>
       </div>
       <div className="space-y-1 text-sm text-white">

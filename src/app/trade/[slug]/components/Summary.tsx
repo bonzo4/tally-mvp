@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BuyFormState } from "./BuyCard";
 import { SellFormState } from "./SellCard";
-import Popup from "./Popup";
+import Popup, { SellConfirmation } from "./Popup";
 import {
   formatNumberWithCommasNoDecimals,
   formatDollarsWithCents,
   formatDollarsWithoutCents,
 } from "@/lib/formats";
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
+import { SellUseFormState } from "@/lib/api/actions/submitSell";
 
 function BuyLineItem({
   title,
@@ -51,11 +52,17 @@ function SellLineItem({
 }
 
 export function SummarySell({
+  children,
   isFormEnabled,
   formState,
+  validateFormState,
+  validateFormAction,
 }: {
+  children: React.ReactNode;
   isFormEnabled: boolean;
   formState: SellFormState;
+  validateFormState: SellUseFormState;
+  validateFormAction: (payload: any) => void;
 }) {
   let total = 0;
   for (const key in formState) {
@@ -72,13 +79,22 @@ export function SummarySell({
           value={formatNumberWithCommasNoDecimals(total)}
           readOnly={true}
         />
-        <Button
-          type="submit"
-          className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
-          disabled={!isFormEnabled}
+        <SellConfirmation
+          formState={formState}
+          validateFormState={validateFormState}
+          trigger={
+            <Button
+              type={undefined}
+              formAction={validateFormAction}
+              className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+              disabled={!isFormEnabled}
+            >
+              Sell
+            </Button>
+          }
         >
-          Sell
-        </Button>
+          {children}
+        </SellConfirmation>
       </div>
       <div className="space-y-1 text-sm text-white">
         {Object.entries(formState).map(([key, value], index) => {

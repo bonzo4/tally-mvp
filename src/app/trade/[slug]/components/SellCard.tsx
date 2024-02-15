@@ -24,7 +24,10 @@ import {
 import OrderInput from "./OrderInput";
 import ChoiceButton from "./ChoiceButton";
 import { SummarySell } from "./Summary";
-import submitSell, { SellUseFormState } from "@/lib/api/actions/submitSell";
+import submitSell, {
+  SellUseFormState,
+  validateSell,
+} from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
 
 type SellChoiceMarketProps = {
@@ -203,6 +206,7 @@ export type SellFormState = {
   [key: number]: {
     subMarketTitle: string;
     choiceMarketTitle: string;
+    choiceMarketId: number;
     sharePrice: number;
     shares: number;
   };
@@ -217,16 +221,16 @@ export default function SellCard({
   user: UserDoc | null;
   slug: string;
 }) {
+  const [validateFormState, validateFormAction] = useFormState<
+    SellUseFormState,
+    FormData
+  >(validateSell, null);
   const [formState, setFormState] = useState<SellFormState>({});
   const [isFormEnabled, setIsFormEnabled] = useState<boolean>(true);
   const [state, formAction] = useFormState<SellUseFormState, FormData>(
     submitSell,
     null
   );
-
-  useEffect(() => {
-    console.log("isFormEnabled", isFormEnabled);
-  }, [isFormEnabled]);
 
   const handleAmountChange =
     (
@@ -241,6 +245,7 @@ export default function SellCard({
         [choiceMarketId]: {
           subMarketTitle: subMarketTitle,
           choiceMarketTitle: choiceMarketTitle,
+          choiceMarketId: choiceMarketId,
           sharePrice: sharePrice,
           shares: shares,
         },
@@ -254,7 +259,7 @@ export default function SellCard({
   });
 
   return (
-    <form action={(payload) => formAction(payload)}>
+    <form id="sell-form" action={(payload) => formAction(payload)}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
           {user ? (
@@ -272,7 +277,20 @@ export default function SellCard({
         {subMarketsWithHoldings.length ? (
           <CardFooter className="flex flex-col px-0 py-4">
             <Separator className="bg-neutral-800" />
-            <SummarySell isFormEnabled={isFormEnabled} formState={formState} />
+            <SummarySell
+              isFormEnabled={isFormEnabled}
+              formState={formState}
+              validateFormState={validateFormState}
+              validateFormAction={validateFormAction}
+            >
+              <Button
+                type="submit"
+                form="sell-form"
+                className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
+              >
+                Confirm Sell
+              </Button>
+            </SummarySell>
           </CardFooter>
         ) : null}
       </Card>

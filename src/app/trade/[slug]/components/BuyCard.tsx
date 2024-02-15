@@ -218,7 +218,7 @@ export default function BuyCard({
     };
 
   return (
-    <form id="my-form" action={(payload) => submitFormAction(payload)}>
+    <form id="buy-form" action={(payload) => submitFormAction(payload)}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (
@@ -252,10 +252,10 @@ export default function BuyCard({
             >
               <Button
                 type="submit"
-                form="my-form"
+                form="buy-form"
                 className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
               >
-                Confirm
+                Confirm Buy
               </Button>
             </SummaryBuy>
           ) : (

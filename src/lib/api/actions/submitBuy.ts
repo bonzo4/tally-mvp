@@ -234,7 +234,7 @@ export default async function submitBuy(
     if (error) {
       throw error;
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof FormError) {
       const useFormState: BuyUseFormState = {
         status: "error",
@@ -245,7 +245,7 @@ export default async function submitBuy(
     }
     return {
       status: "error",
-      message: "An error occurred while submitting your order.",
+      message: error.message,
       errors: {},
     };
   }

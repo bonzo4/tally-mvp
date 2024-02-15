@@ -37,7 +37,11 @@ async function getTradeMarketsQuery({
     .from("prediction_markets")
     .select("*, sub_markets(*, choice_markets(*, holdings(*)))")
     .eq("slug", options.slug)
-    .order("order", { foreignTable: "sub_markets", ascending: true });
+    .order("order", { foreignTable: "sub_markets", ascending: true })
+    .order("order", {
+      foreignTable: "sub_markets.choice_markets",
+      ascending: true,
+    });
 }
 
 export async function getTradeMarkets({

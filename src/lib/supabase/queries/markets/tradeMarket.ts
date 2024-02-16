@@ -41,6 +41,10 @@ async function getTradeMarketsQuery({
     .order("order", {
       foreignTable: "sub_markets.choice_markets",
       ascending: true,
+    })
+    .order("created_at", {
+      foreignTable: "sub_markets.choice_markets",
+      ascending: true,
     });
 }
 

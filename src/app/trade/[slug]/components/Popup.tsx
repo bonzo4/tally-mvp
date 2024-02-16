@@ -33,7 +33,7 @@ export type Estimate = {
   cumulativeShares: number;
 };
 
-function BuyEstimateLineItem({ txn }: { txn: Estimate }) {
+function EstimateLineItem({ txn }: { txn: Estimate }) {
   return (
     <TableRow className="hover:bg-tally-layer-1">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
@@ -49,11 +49,8 @@ function BuyEstimateLineItem({ txn }: { txn: Estimate }) {
   );
 }
 
-function ReceiptEstimate({ buyEstimate }: { buyEstimate: Estimate[] | null }) {
-  const total = buyEstimate?.reduce(
-    (acc, txn) => acc + txn.cumulativeDollars,
-    0
-  );
+function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
+  const total = estimate?.reduce((acc, txn) => acc + txn.cumulativeDollars, 0);
   return (
     <Table>
       <TableHeader>
@@ -66,9 +63,13 @@ function ReceiptEstimate({ buyEstimate }: { buyEstimate: Estimate[] | null }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {buyEstimate?.map((txn, index) => (
-          <BuyEstimateLineItem key={index} txn={txn} />
-        ))}
+        {estimate ? (
+          estimate.map((txn, index) => (
+            <EstimateLineItem key={index} txn={txn} />
+          ))
+        ) : (
+          <div>Loading...</div>
+        )}
       </TableBody>
       <TableFooter>
         <TableRow className="bg-tally-layer-1 hover:bg-tally-layer-2">
@@ -93,7 +94,7 @@ export function SellConfirmation({
   formState: SellFormState;
   validateFormState: SellUseFormState;
 }) {
-  const [buyEstimate, setBuyEstimate] = useState<Estimate[] | null>(null);
+  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -104,7 +105,7 @@ export function SellConfirmation({
           body: JSON.stringify(formState),
         });
         const data = await res.json();
-        setBuyEstimate(data);
+        setEstimate(data);
       })();
     }
   }, [open, formState]);
@@ -129,7 +130,7 @@ export function SellConfirmation({
             adjustments.
           </DialogDescription>
         </DialogHeader>
-        <ReceiptEstimate buyEstimate={buyEstimate} />
+        <ReceiptEstimate estimate={estimate} />
         {submit}
       </DialogContent>
     </Dialog>
@@ -149,7 +150,7 @@ export function BuyConfirmation({
   formState: BuyFormState[];
   validateFormState: BuyUseFormState;
 }) {
-  const [buyEstimate, setBuyEstimate] = useState<Estimate[] | null>(null);
+  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -160,7 +161,7 @@ export function BuyConfirmation({
           body: JSON.stringify(formState),
         });
         const data = await res.json();
-        setBuyEstimate(data);
+        setEstimate(data);
       })();
     }
   }, [open, formState]);
@@ -185,7 +186,7 @@ export function BuyConfirmation({
             adjustments.
           </DialogDescription>
         </DialogHeader>
-        <ReceiptEstimate buyEstimate={buyEstimate} />
+        <ReceiptEstimate estimate={estimate} />
         {submit}
       </DialogContent>
     </Dialog>

@@ -49,6 +49,14 @@ function EstimateLineItem({ txn }: { txn: Estimate }) {
   );
 }
 
+function Loading() {
+  return (
+    <div className="flex items-center justify-center py-4 text-white">
+      Loading...
+    </div>
+  );
+}
+
 function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
   const total = estimate?.reduce((acc, txn) => acc + txn.cumulativeDollars, 0);
   return (
@@ -68,7 +76,7 @@ function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
             <EstimateLineItem key={index} txn={txn} />
           ))
         ) : (
-          <div>Loading...</div>
+          <Loading />
         )}
       </TableBody>
       <TableFooter>

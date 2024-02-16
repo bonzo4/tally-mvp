@@ -26,8 +26,7 @@ function BuyLineItem({
     <div className="flex w-full justify-between">
       <div className="text-sm text-gray-400">{title}</div>
       <div className="flex">
-        <span>{`~${formatNumberWithCommasNoDecimals(shares)}`}</span>
-        <span>&nbsp;{`(${formatDollarsWithoutCents(value)})`}</span>
+        <span>&nbsp;{`${formatDollarsWithoutCents(value)}`}</span>
       </div>
     </div>
   );
@@ -47,7 +46,6 @@ function SellLineItem({
       <div className="text-sm text-gray-400">{title}</div>
       <div className="flex">
         <span>{`${formatNumberWithCommasNoDecimals(shares)}`}</span>
-        <span>&nbsp;{`(~${formatDollarsWithoutCents(value)})`}</span>
       </div>
     </div>
   );
@@ -91,7 +89,7 @@ export function SummarySell({
               className="w-full bg-tally-red px-5 py-2 text-black hover:bg-tally-red/90 hover:text-black"
               disabled={!isFormEnabled}
             >
-              Sell
+              Get Sell Estimate
             </Button>
           }
           submit={
@@ -153,7 +151,7 @@ export function SummaryBuy({
               formAction={validateFormAction}
               className="w-full bg-tally-primary px-5 py-2 text-black hover:bg-tally-primary/90 hover:text-black"
             >
-              Buy
+              Get Buy Estimate
             </Button>
           }
           submit={

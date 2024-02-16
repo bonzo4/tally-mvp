@@ -74,7 +74,6 @@ function SellChoiceMarket({
           <div className="text-right text-white">{`${formatNumberWithCommasNoDecimals(
             shares
           )} shares `}</div>
-          <div className="text-right text-white">{`(${value})`}</div>
         </div>
       </div>
       <OrderInput

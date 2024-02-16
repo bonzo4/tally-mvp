@@ -42,8 +42,18 @@ export function getPotSizes(subMarket: SubMarket, choiceMarketId: number) {
 
 export function getSharePrice(subMarket: SubMarket, choiceMarketId: number) {
   const { choicePot, totalPot } = getPotSizes(subMarket, choiceMarketId);
-  const sharePrice = totalPot ? choicePot / totalPot : 0;
+  const sharePrice = calculateSharePrice({ choicePot, totalPot });
   return sharePrice;
+}
+
+function calculateSharePrice({
+  choicePot,
+  totalPot,
+}: {
+  choicePot: number;
+  totalPot: number;
+}) {
+  return choicePot && totalPot ? choicePot / totalPot : 1;
 }
 
 export async function estimateBuy(
@@ -87,7 +97,7 @@ function estimateBuyByDollars({
   choicePot: number;
   totalPot: number;
 }) {
-  let sharePrice = choicePot / totalPot;
+  let sharePrice = calculateSharePrice({ choicePot, totalPot });
   let cumulativeDollars = 0;
   let cumulativeShares = 0;
   while (cumulativeDollars + sharePrice <= amount) {
@@ -95,7 +105,7 @@ function estimateBuyByDollars({
     totalPot += sharePrice;
     cumulativeShares += 1;
     cumulativeDollars += sharePrice;
-    sharePrice = choicePot / totalPot;
+    sharePrice = calculateSharePrice({ choicePot, totalPot });
   }
   return { cumulativeDollars, cumulativeShares };
 }
@@ -170,14 +180,14 @@ function estimateSellByShares({
   choicePot: number;
   totalPot: number;
 }) {
-  let sharePrice = choicePot / totalPot;
+  let sharePrice = calculateSharePrice({ choicePot, totalPot });
   while (sharesHeld && cumulativeShares < shares) {
     choicePot -= sharePrice;
     totalPot -= sharePrice;
     cumulativeShares += 1;
     sharesHeld -= 1;
     cumulativeDollars += sharePrice;
-    sharePrice = choicePot / totalPot;
+    sharePrice = calculateSharePrice({ choicePot, totalPot });
   }
   return { cumulativeDollars, cumulativeShares };
 }
@@ -197,14 +207,14 @@ function estimateSellByDollars({
   choicePot: number;
   totalPot: number;
 }) {
-  let sharePrice = choicePot / totalPot;
+  let sharePrice = calculateSharePrice({ choicePot, totalPot });
   while (sharesHeld && cumulative + sharePrice <= amount) {
     choicePot -= sharePrice;
     totalPot -= sharePrice;
     shareCount += 1;
     sharesHeld -= 1;
     cumulative += sharePrice;
-    sharePrice = choicePot / totalPot;
+    sharePrice = calculateSharePrice({ choicePot, totalPot });
   }
   return { cumulative, shareCount };
 }

@@ -180,7 +180,7 @@ export default async function submitSell(
         shares: cumulativeShares,
         avg_share_price: avgPrice,
         trade_side: "SELL" as trade_side,
-        status: "PENDING" as trade_status,
+        status: "CONFIRMED" as trade_status,
       });
     }
     const { data, error } = await supabase.from("orders").insert(txns).select();

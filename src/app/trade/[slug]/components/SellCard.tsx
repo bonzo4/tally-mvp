@@ -37,6 +37,7 @@ type SellChoiceMarketProps = {
   error: string | null;
   handleAmountChange: (value: number) => void;
   setIsFormEnabled: (enabled: boolean) => void;
+  enabledInput: number | null;
 };
 
 function SellChoiceMarket({
@@ -46,6 +47,7 @@ function SellChoiceMarket({
   error,
   handleAmountChange,
   setIsFormEnabled,
+  enabledInput,
 }: SellChoiceMarketProps) {
   const shares = choiceMarket.holdings[0].shares;
   const value = formatDollarsWithCents(shares * sharePrice);
@@ -74,7 +76,6 @@ function SellChoiceMarket({
           <div className="text-right text-white">{`${formatNumberWithCommasNoDecimals(
             shares
           )} shares `}</div>
-          <div className="text-right text-white">{`(${value})`}</div>
         </div>
       </div>
       <OrderInput
@@ -85,6 +86,7 @@ function SellChoiceMarket({
         step="1"
         error={error}
         value={inputAmount}
+        disabled={enabledInput ? enabledInput !== choiceMarket.id : false}
         onChange={(e) => handleAmountChange(Number(e.target.value))}
       />
     </div>
@@ -145,6 +147,15 @@ function SellContent({
   return (
     <>
       {subMarketsWithHoldings.map((subMarketWithHoldings, index) => {
+        // Only allow one choice within a submarket for sell order.
+        // Preventing issue where price of later sells are impacted by prior sells.
+        let enabledInput: number | null = null;
+        for (const choiceMarket of subMarketWithHoldings.choice_markets) {
+          if (formState[choiceMarket.id]?.shares) {
+            enabledInput = choiceMarket.id;
+            break;
+          }
+        }
         return (
           <SellSubMarket key={index} subMarket={subMarketWithHoldings}>
             {subMarketWithHoldings.choice_markets.map(
@@ -178,6 +189,7 @@ function SellContent({
                       choice_market.id,
                       sharePrice
                     )}
+                    enabledInput={enabledInput}
                   />
                 );
               }

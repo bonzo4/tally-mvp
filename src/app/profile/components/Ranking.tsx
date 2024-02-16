@@ -95,8 +95,8 @@ export default function Rankings({
       <RankPortfolio value={portfolio} />
       <RankPNL value={pnl} />
       <RankVolume
-        value={volumeAndRank.total_volume}
-        rank={volumeAndRank.rank}
+        value={volumeAndRank?.total_volume || 0}
+        rank={volumeAndRank?.rank || 0}
       />
       <RankMarkets value={markets} />
       <RankFairLaunches value={fairLaunches} />

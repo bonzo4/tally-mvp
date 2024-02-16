@@ -218,7 +218,7 @@ export default async function submitBuy(
         shares: cumulativeShares,
         avg_share_price: avgPrice,
         trade_side: "BUY" as trade_side,
-        status: "PENDING" as trade_status,
+        status: "CONFIRMED" as trade_status,
       });
     }
     const { data: data, error: error } = await supabase

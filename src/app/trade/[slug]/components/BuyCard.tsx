@@ -241,6 +241,7 @@ export default function BuyCard({
               formState={formState}
               validateFormState={validateFormState}
               validateFormAction={(payload) => validateFormAction(payload)}
+              submitFormState={submitFormState}
             />
           ) : (
             <LoginButton slug={slug} />

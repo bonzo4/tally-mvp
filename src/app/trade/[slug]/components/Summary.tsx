@@ -51,6 +51,10 @@ function SellLineItem({
   );
 }
 
+function ErrorMessage({ message }: { message: string }) {
+  return <div className="text-sm text-red-500">{message}</div>;
+}
+
 export function SummarySell({
   isFormEnabled,
   formState,
@@ -123,10 +127,12 @@ export function SummarySell({
 
 export function SummaryBuy({
   formState,
+  submitFormState,
   validateFormState,
   validateFormAction,
 }: {
   formState: BuyFormState[];
+  submitFormState: BuyUseFormState;
   validateFormAction: (payload: any) => void;
   validateFormState: BuyUseFormState;
 }) {
@@ -167,6 +173,9 @@ export function SummaryBuy({
         >
           {pending && <div className="text-white">Processing...</div>}
         </BuyConfirmation>
+        {validateFormState?.status === "error" && (
+          <ErrorMessage message={validateFormState.message} />
+        )}
       </div>
       <div className="space-y-1 text-sm text-white">
         {formState.map(

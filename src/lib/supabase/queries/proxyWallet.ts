@@ -21,7 +21,7 @@ async function getProxyWalletQuery({
   options: { userId },
 }: GetProxyWalletOptions): Promise<PostgrestResponse<ProxyWallet>> {
   return await supabase
-    .from("proxy_wallets")
+    .from("user_balances")
     .select("unredeemable_balance, usdc_balance")
     .eq("user_id", userId);
 }

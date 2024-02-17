@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: wallet } = await supabase
-    .from("proxy_wallets")
+    .from("user_balances")
     .select("*")
     .eq("user_id", userDoc.id)
     .single();
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
   if (!wallet) {
     const walletKeys = createWallet();
 
-    const { error } = await supabase.from("proxy_wallets").insert({
+    const { error } = await supabase.from("user_balances").insert({
       user_id: userDoc.id,
       encrypted_secret_key: walletKeys.encryptedSecretKey,
       public_key: walletKeys.publicKeyString,

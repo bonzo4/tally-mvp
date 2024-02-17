@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { estimateBuy } from "@/lib/estimatePrice";
@@ -110,6 +111,33 @@ function validateFormData(formData: FormattedBuyFormData[]) {
   }
 }
 
+async function checkSufficientFunds({
+  supabase,
+  userId,
+  formData_,
+}: {
+  supabase: SupabaseClient;
+  userId: number;
+  formData_: FormattedBuyFormData[];
+}) {
+  const { data: balancesData, error: balancesError } = await supabase
+    .from("user_balances")
+    .select()
+    .eq("user_id", userId);
+  if (!balancesData) {
+    throw new Error("Insufficient balance");
+  }
+  const userBalance =
+    balancesData[0].usdc_balance + balancesData[0].unredeemable_balance;
+  const totalAmount = formData_.reduce((acc, data) => {
+    return acc + Number(data?.amount);
+  }, 0);
+
+  if (userBalance < totalAmount) {
+    throw new Error("Insufficient balance");
+  }
+}
+
 export async function validateBuy(
   prevState: any,
   formData: FormData
@@ -145,11 +173,18 @@ export async function validateBuy(
       (data) => data.amount !== "" && data.choice_market_id !== ""
     );
 
+    // check if user has enough funds
+    await checkSufficientFunds({
+      supabase,
+      userId: user.id,
+      formData_: formData_,
+    });
+
     return {
       status: "success",
       message: "Order validated successfully.",
     };
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof FormError) {
       const useFormState: BuyUseFormState = {
         status: "error",
@@ -160,7 +195,7 @@ export async function validateBuy(
     }
     return {
       status: "error",
-      message: "An error occurred while submitting your order.",
+      message: error.message,
       errors: {},
     };
   }
@@ -200,6 +235,13 @@ export default async function submitBuy(
     formData_ = formData_.filter(
       (data) => data.amount !== "" && data.choice_market_id !== ""
     );
+
+    // check if user has enough funds
+    await checkSufficientFunds({
+      supabase,
+      userId: user.id,
+      formData_: formData_,
+    });
 
     // group transactions together before POSTING
     const txns = [];

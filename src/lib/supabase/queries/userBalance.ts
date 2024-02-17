@@ -2,39 +2,39 @@ import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../types";
 import { fetchQuery } from "../fetch";
 
-export type ProxyWallet = {
+export type UserBalance = {
   unredeemable_balance: number;
   usdc_balance: number;
 };
 
-type GetProxyWalletQueryOptions = {
+type GetUserBalanceQueryOptions = {
   userId: number;
 };
 
-type GetProxyWalletOptions = {
+type GetUserBalanceOptions = {
   supabase: SupabaseClient<Database>;
-  options: GetProxyWalletQueryOptions;
+  options: GetUserBalanceQueryOptions;
 };
 
-async function getProxyWalletQuery({
+async function getUserBalanceQuery({
   supabase,
   options: { userId },
-}: GetProxyWalletOptions): Promise<PostgrestResponse<ProxyWallet>> {
+}: GetUserBalanceOptions): Promise<PostgrestResponse<UserBalance>> {
   return await supabase
-    .from("proxy_wallets")
+    .from("user_balances")
     .select("unredeemable_balance, usdc_balance")
     .eq("user_id", userId);
 }
 
-export async function getProxyWallet({
+export async function getUserBalance({
   supabase,
   options,
-}: GetProxyWalletOptions) {
+}: GetUserBalanceOptions) {
   return (
-    await fetchQuery<ProxyWallet, GetProxyWalletQueryOptions>({
+    await fetchQuery<UserBalance, GetUserBalanceQueryOptions>({
       supabase,
       options,
-      query: getProxyWalletQuery,
+      query: getUserBalanceQuery,
     })
   )[0];
 }

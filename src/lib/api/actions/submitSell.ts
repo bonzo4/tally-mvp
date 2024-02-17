@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { estimateSell } from "@/lib/estimatePrice";
@@ -75,6 +76,36 @@ function validateFormData(formData: FormattedSellFormData[]) {
   }
 }
 
+async function checkEnoughShares({
+  supabase,
+  formData_,
+  userId,
+}: {
+  supabase: SupabaseClient;
+  formData_: FormattedSellFormData[];
+  userId: number;
+}) {
+  const errors = {} as SellErrors;
+  for (const txn of formData_) {
+    const { data, error } = await supabase
+      .from("holdings")
+      .select()
+      .eq("user_id", userId)
+      .eq("choice_market_id", Number(txn.choice_market_id));
+    if (!data) {
+      throw new Error("Insufficient shares.");
+    }
+    if (data[0]?.shares < Number(txn.shares)) {
+      errors[Number(txn.choice_market_id)] = {
+        text: "You do not have enough shares to sell.",
+      };
+    }
+  }
+  if (Object.keys(errors).length) {
+    throw new SellFormError(errors);
+  }
+}
+
 export async function validateSell(
   prevState: any,
   formData: FormData
@@ -107,6 +138,13 @@ export async function validateSell(
 
     // remove unfilled fields
     formData_ = formData_.filter((data) => data.shares !== "");
+
+    // check that users have enough shares
+    await checkEnoughShares({
+      supabase: supabase,
+      formData_: formData_,
+      userId: user.id,
+    });
 
     return {
       status: "success",
@@ -161,6 +199,13 @@ export default async function submitSell(
 
     // remove unfilled fields
     formData_ = formData_.filter((data) => data.shares !== "");
+
+    // check that users have enough shares
+    await checkEnoughShares({
+      supabase: supabase,
+      formData_: formData_,
+      userId: user.id,
+    });
 
     // group transactions together before POSTING
     const txns = [];

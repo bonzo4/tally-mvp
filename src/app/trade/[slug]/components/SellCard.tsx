@@ -172,7 +172,7 @@ function SellContent({
                     : null;
                 const backendError =
                   validateFormState?.status === "error"
-                    ? validateFormState.errors[choice_market.id].text
+                    ? validateFormState.errors[choice_market.id]?.text
                     : null;
                 return (
                   <SellChoiceMarket

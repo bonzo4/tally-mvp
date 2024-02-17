@@ -51,9 +51,9 @@ function EstimateLineItem({ txn }: { txn: Estimate }) {
 
 function Loading() {
   return (
-    <div className="flex items-center justify-center py-4 text-white">
-      Loading...
-    </div>
+    <TableRow className="flex items-center justify-center text-white">
+      <TableCell colSpan={5}>Loading...</TableCell>
+    </TableRow>
   );
 }
 

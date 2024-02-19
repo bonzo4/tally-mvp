@@ -1,5 +1,7 @@
 import { Database } from "@/lib/supabase/types";
 import { SupabaseClient } from "@supabase/supabase-js";
+
+import { FEE_RATE } from "@/lib/constants";
 import {
   getSubMarkets,
   SubMarketWithChoiceMarkets,
@@ -56,6 +58,10 @@ function calculateSharePrice({
   return choicePot && totalPot ? choicePot / totalPot : 1;
 }
 
+function estimateFees(amount: number) {
+  return amount * FEE_RATE;
+}
+
 export async function estimateBuy(
   supabase: SupabaseClient<Database>,
   choiceMarketId: number,
@@ -77,15 +83,21 @@ export async function estimateBuy(
     totalPot,
   });
   const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
+
+  const fees = estimateFees(cumulativeDollars);
+
   console.log(
     "avgPrice",
     avgPrice,
     "cumulativeDollars",
     cumulativeDollars,
     "cumulativeShares",
-    cumulativeShares
+    cumulativeShares,
+    "fees",
+    fees
   );
-  return { avgPrice, cumulativeDollars, cumulativeShares };
+
+  return { avgPrice, cumulativeDollars, cumulativeShares, fees };
 }
 
 function estimateBuyByDollars({
@@ -154,15 +166,18 @@ export async function estimateSell({
     sharesHeld,
   });
   const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
+  const fees = estimateFees(cumulativeDollars);
   console.log(
     "avgPrice",
     avgPrice,
     "cumulative dollars",
     cumulativeDollars,
     "cumulative shares",
-    cumulativeShares
+    cumulativeShares,
+    "fees",
+    fees
   );
-  return { avgPrice, cumulativeDollars, cumulativeShares };
+  return { avgPrice, cumulativeDollars, cumulativeShares, fees };
 }
 
 function estimateSellByShares({

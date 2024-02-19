@@ -7,6 +7,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { estimateBuy } from "@/lib/estimatePrice";
 import { Database } from "@/lib/supabase/types";
+import { FEE_RATE } from "@/lib/constants";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -254,6 +255,7 @@ export default async function submitBuy(
         avg_share_price: avgPrice,
         trade_side: "BUY" as trade_side,
         status: "CONFIRMED" as trade_status,
+        fees: cumulativeDollars * FEE_RATE,
       });
     }
     const { data: data, error: error } = await supabase

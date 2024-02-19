@@ -21,9 +21,11 @@ import { SellFormState } from "./SellCard";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
+  formatPercentageWithOneDecimal,
 } from "@/lib/formats";
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
 import { SellUseFormState } from "@/lib/api/actions/submitSell";
+import { FEE_RATE } from "@/lib/constants";
 
 export type Estimate = {
   subMarketTitle: string;
@@ -31,11 +33,12 @@ export type Estimate = {
   avgPrice: number;
   cumulativeDollars: number;
   cumulativeShares: number;
+  fees: number;
 };
 
 function EstimateLineItem({ txn }: { txn: Estimate }) {
   return (
-    <TableRow className="hover:bg-tally-layer-1">
+    <TableRow className="border-0 hover:bg-tally-background">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
       <TableCell>{txn.choiceMarketTitle}</TableCell>
       <TableCell>
@@ -57,8 +60,27 @@ function Loading() {
   );
 }
 
-function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
-  const total = estimate?.reduce((acc, txn) => acc + txn.cumulativeDollars, 0);
+function ReceiptEstimate({
+  estimate,
+  tradeSide,
+}: {
+  estimate: Estimate[] | null;
+  tradeSide: "BUY" | "SELL";
+}) {
+  const subtotal = estimate?.reduce(
+    (acc, txn) => acc + txn.cumulativeDollars,
+    0
+  );
+  const fees = estimate?.reduce((acc, txn) => acc + txn.fees, 0);
+  const total =
+    !subtotal || !fees
+      ? undefined
+      : tradeSide === "BUY"
+        ? subtotal + fees
+        : tradeSide === "SELL"
+          ? subtotal - fees
+          : undefined;
+
   return (
     <Table>
       <TableHeader>
@@ -80,7 +102,26 @@ function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
         )}
       </TableBody>
       <TableFooter>
-        <TableRow className="bg-tally-layer-1 hover:bg-tally-layer-2">
+        <TableRow className="bg-tally-background text-tally-gray hover:bg-tally-background">
+          <TableCell className="px-4 py-2" colSpan={4}>
+            Subtotal
+          </TableCell>
+          <TableCell className="px-4 py-2 text-right">
+            {subtotal
+              ? formatDollarsWithCents(subtotal)
+              : formatDollarsWithCents(0)}
+          </TableCell>
+        </TableRow>
+        <TableRow className="bg-tally-background text-tally-gray hover:bg-tally-background">
+          <TableCell
+            className="px-4 py-2"
+            colSpan={4}
+          >{`Fees (${formatPercentageWithOneDecimal(FEE_RATE)})`}</TableCell>
+          <TableCell className="px-4 py-2 text-right">
+            {fees ? formatDollarsWithCents(fees) : formatDollarsWithCents(0)}
+          </TableCell>
+        </TableRow>
+        <TableRow className="border-t border-white bg-tally-background hover:bg-tally-background">
           <TableCell colSpan={4}>Total</TableCell>
           <TableCell className="text-right">
             {total ? formatDollarsWithCents(total) : formatDollarsWithCents(0)}
@@ -134,7 +175,7 @@ export function SellConfirmation({
             slippage is within 5%; otherwise, they will be cancelled.
           </DialogDescription>
         </DialogHeader>
-        <ReceiptEstimate estimate={estimate} />
+        <ReceiptEstimate estimate={estimate} tradeSide="SELL" />
         {submit}
       </DialogContent>
     </Dialog>
@@ -186,7 +227,7 @@ export function BuyConfirmation({
             slippage is within 5%; otherwise, they will be cancelled.
           </DialogDescription>
         </DialogHeader>
-        <ReceiptEstimate estimate={estimate} />
+        <ReceiptEstimate estimate={estimate} tradeSide="BUY" />
         {submit}
       </DialogContent>
     </Dialog>

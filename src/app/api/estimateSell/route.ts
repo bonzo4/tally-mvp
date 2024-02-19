@@ -20,7 +20,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       if (!choiceMarketId || !shares) {
         continue;
       }
-      const { avgPrice, cumulativeDollars, cumulativeShares } =
+      const { avgPrice, cumulativeDollars, cumulativeShares, fees } =
         await estimateSell({
           supabase: supabase,
           choiceMarketId: choiceMarketId,
@@ -33,6 +33,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         avgPrice: avgPrice,
         cumulativeDollars: cumulativeDollars,
         cumulativeShares: cumulativeShares,
+        fees: fees,
       });
     }
     return NextResponse.json(resData, { status: 200 });

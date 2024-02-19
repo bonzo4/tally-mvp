@@ -18,7 +18,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       if (!choiceMarketId || !amount) {
         continue;
       }
-      const { avgPrice, cumulativeDollars, cumulativeShares } =
+      const { avgPrice, cumulativeDollars, cumulativeShares, fees } =
         await estimateBuy(supabase, choiceMarketId, amount);
       resData.push({
         subMarketTitle: txn.subMarketTitle,
@@ -26,8 +26,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         avgPrice: avgPrice,
         cumulativeDollars: cumulativeDollars,
         cumulativeShares: cumulativeShares,
+        fees: fees,
       });
     }
+
     return NextResponse.json(resData, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

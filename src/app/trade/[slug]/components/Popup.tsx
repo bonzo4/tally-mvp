@@ -129,13 +129,9 @@ export function SellConfirmation({
         <DialogHeader>
           <DialogTitle>Order Cofirmation</DialogTitle>
           <DialogDescription>
-            Please note that the price provided for your transaction is an
-            estimate based on current market conditions. Actual transaction
-            prices may vary due to market volatility, timing, and order
-            execution factors. We strive to provide the most accurate estimates
-            possible, but cannot guarantee the final transaction price will
-            match the estimated price. Proceed with awareness of potential price
-            adjustments.
+            Please note that the price provided below is an estimate. Actual
+            transaction prices may vary due. Transactions will proceed only if
+            slippage is within 5%; otherwise, they will be cancelled.
           </DialogDescription>
         </DialogHeader>
         <ReceiptEstimate estimate={estimate} />
@@ -185,13 +181,9 @@ export function BuyConfirmation({
         <DialogHeader>
           <DialogTitle>Order Cofirmation</DialogTitle>
           <DialogDescription>
-            Please note that the price provided for your transaction is an
-            estimate based on current market conditions. Actual transaction
-            prices may vary due to market volatility, timing, and order
-            execution factors. We strive to provide the most accurate estimates
-            possible, but cannot guarantee the final transaction price will
-            match the estimated price. Proceed with awareness of potential price
-            adjustments.
+            Please note that the price provided below is an estimate. Actual
+            transaction prices may vary due. Transactions will proceed only if
+            slippage is within 5%; otherwise, they will be cancelled.
           </DialogDescription>
         </DialogHeader>
         <ReceiptEstimate estimate={estimate} />

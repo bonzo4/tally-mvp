@@ -10,6 +10,9 @@ export function formatCents(dollars: number): string {
   if (dollars < 0.01) {
     return "<1¢";
   }
+  if (dollars > 0.99 && dollars < 1) {
+    return ">99¢";
+  }
   return formatCentsPrimitive(dollars);
 }
 

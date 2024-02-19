@@ -47,6 +47,27 @@ type FormattedBuyFormData = {
   amount: string | undefined;
 };
 
+async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    throw Error("AuthError: User is not authenticated.");
+  }
+  const user = authUser
+    ? await getUser({
+        supabase: supabase,
+        options: { userId: authUser.id },
+      })
+    : null;
+
+  if (!user) {
+    throw Error("AuthError: User could not be found.");
+  }
+  return user;
+}
+
 // Data received from form has radio buttons input (e.g. "Yes" or "No") separate
 // from amount input (e.g. "$100"). They are associated by the name of the input.
 // The former has a name "[id]" while the latter has a name "[id] amount".
@@ -144,23 +165,9 @@ export async function validateBuy(
 ): Promise<BuyUseFormState> {
   try {
     const supabase = createServerSupabaseClient();
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
 
-    if (!authUser) {
-      throw Error("AuthError: User is not authenticated.");
-    }
-    const user = authUser
-      ? await getUser({
-          supabase: supabase,
-          options: { userId: authUser.id },
-        })
-      : null;
-
-    if (!user) {
-      throw Error("AuthError: User could not be found.");
-    }
+    // check user is logged in
+    const user = await checkUserLoggedIn({ supabase });
 
     // convert FormData to cleaner object
     let formData_ = formatFormData(formData);
@@ -207,23 +214,9 @@ export default async function submitBuy(
 ): Promise<BuyUseFormState> {
   try {
     const supabase = createServerSupabaseClient();
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
 
-    if (!authUser) {
-      throw Error("AuthError: User is not authenticated.");
-    }
-    const user = authUser
-      ? await getUser({
-          supabase: supabase,
-          options: { userId: authUser.id },
-        })
-      : null;
-
-    if (!user) {
-      throw Error("AuthError: User could not be found.");
-    }
+    // check user is logged in
+    const user = await checkUserLoggedIn({ supabase });
 
     // convert FormData to cleaner object
     let formData_ = formatFormData(formData);

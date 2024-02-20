@@ -78,7 +78,7 @@ export async function estimateBuy(
 
   // calculate total spend
   const { cumulativeDollars, cumulativeShares } = estimateBuyByDollars({
-    amount,
+    amount: amount * (1 - FEE_RATE),
     choicePot,
     totalPot,
   });

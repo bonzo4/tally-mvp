@@ -129,13 +129,16 @@ export function SellConfirmation({
   submit,
   formState,
   validateFormState,
+  estimate,
+  setEstimate,
 }: {
   trigger: React.ReactNode;
   submit: React.ReactNode;
   formState: SellFormState;
   validateFormState: SellUseFormState;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
-  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -204,7 +207,7 @@ export function BuyConfirmation({
         setEstimate(data);
       })();
     }
-  }, [open, formState]);
+  }, [open, formState, setEstimate]);
 
   useEffect(() => {
     setOpen(validateFormState?.status === "success");

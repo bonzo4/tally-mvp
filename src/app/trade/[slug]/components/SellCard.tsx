@@ -29,6 +29,7 @@ import submitSell, {
   validateSell,
 } from "@/lib/api/actions/submitSell";
 import { getSharePrice } from "@/lib/estimatePrice";
+import { Estimate } from "@/app/api/estimateBuy/route";
 
 type SellChoiceMarketProps = {
   choiceMarket: ChoiceMarketWithHoldings;
@@ -237,12 +238,10 @@ export default function SellCard({
     SellUseFormState,
     FormData
   >(validateSell, null);
-  const [submitFormState, submitFormAction] = useFormState<
-    SellUseFormState,
-    FormData
-  >(submitSell, null);
   const [formState, setFormState] = useState<SellFormState>({});
   const [isFormEnabled, setIsFormEnabled] = useState<boolean>(true);
+  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
+  const submitSellWithEstimate = submitSell.bind(null, estimate);
 
   const handleAmountChange =
     (
@@ -271,7 +270,7 @@ export default function SellCard({
   });
 
   return (
-    <form id="sell-form" action={(payload) => submitFormAction(payload)}>
+    <form id="sell-form" action={submitSellWithEstimate}>
       <Card className="flex flex-col overflow-auto border-0 bg-zinc-900">
         <CardContent className="space-y-3 overflow-auto px-0 py-4">
           {user ? (
@@ -294,6 +293,8 @@ export default function SellCard({
               formState={formState}
               validateFormState={validateFormState}
               validateFormAction={validateFormAction}
+              estimate={estimate}
+              setEstimate={setEstimate}
             />
           </CardFooter>
         ) : null}

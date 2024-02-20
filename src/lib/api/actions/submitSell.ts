@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
-import { estimateSell } from "@/lib/estimatePrice";
 import { Database } from "@/lib/supabase/types";
+import { Estimate } from "@/app/api/estimateBuy/route";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -168,10 +168,14 @@ export async function validateSell(
 }
 
 export default async function submitSell(
-  prevState: any,
+  estimate: Estimate[] | null,
   formData: FormData
 ): Promise<SellUseFormState> {
   try {
+    if (!estimate) {
+      throw Error("No estimate provided. Please try again.");
+    }
+
     const supabase = createServerSupabaseClient();
     const {
       data: { user: authUser },
@@ -209,25 +213,19 @@ export default async function submitSell(
 
     // group transactions together before POSTING
     const txns = [];
-    for (const txn of formData_) {
-      // validate that amount is a number and not negative
-      const { avgPrice, cumulativeDollars, cumulativeShares } =
-        await estimateSell({
-          supabase: supabase,
-          choiceMarketId: Number(txn.choice_market_id),
-          userId: user.id,
-          shares: Number(txn.shares),
-        });
+    for (const txn of estimate) {
       txns.push({
         user_id: user.id,
-        choice_market_id: Number(txn.choice_market_id),
-        total_amount: cumulativeDollars,
-        shares: cumulativeShares,
-        avg_share_price: avgPrice,
-        trade_side: "SELL" as trade_side,
+        choice_market_id: Number(txn.choiceMarketId),
+        total_amount: txn.cumulativeDollars,
+        shares: txn.cumulativeShares,
+        avg_share_price: txn.avgPrice,
+        trade_side: txn.tradeSide,
         status: "CONFIRMED" as trade_status,
+        fees: txn.fees,
       });
     }
+
     const { data, error } = await supabase.from("orders").insert(txns).select();
   } catch (error: any) {
     if (error instanceof SellFormError) {

@@ -62,11 +62,15 @@ export function SummarySell({
   formState,
   validateFormState,
   validateFormAction,
+  estimate,
+  setEstimate,
 }: {
   isFormEnabled: boolean;
   formState: SellFormState;
   validateFormState: SellUseFormState;
   validateFormAction: (payload: any) => void;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
   const { pending } = useFormStatus();
 
@@ -88,6 +92,8 @@ export function SummarySell({
         <SellConfirmation
           formState={formState}
           validateFormState={validateFormState}
+          estimate={estimate}
+          setEstimate={setEstimate}
           trigger={
             <Button
               type={undefined}

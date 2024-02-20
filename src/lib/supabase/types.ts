@@ -1307,6 +1307,7 @@ export type Database = {
         | "RETRYING"
         | "FAILED"
         | "PENDING"
+        | "ESTIMATE"
     }
     CompositeTypes: {
       [_ in never]: never

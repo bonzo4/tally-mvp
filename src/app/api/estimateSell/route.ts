@@ -5,7 +5,17 @@ import { estimateSell } from "@/lib/estimatePrice";
 import getUser from "@/lib/supabase/user";
 
 import { SellFormState } from "@/app/trade/[slug]/components/SellCard";
-import { Estimate } from "@/app/trade/[slug]/components/Popup";
+
+export type Estimate = {
+  subMarketTitle: string;
+  choiceMarketTitle: string;
+  choiceMarketId: number;
+  tradeSide: "BUY" | "SELL";
+  avgPrice: number;
+  cumulativeDollars: number;
+  cumulativeShares: number;
+  fees: number;
+};
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
@@ -30,6 +40,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       resData.push({
         subMarketTitle: txn.subMarketTitle,
         choiceMarketTitle: txn.choiceMarketTitle,
+        choiceMarketId: txn.choiceMarketId,
+        tradeSide: "SELL",
         avgPrice: avgPrice,
         cumulativeDollars: cumulativeDollars,
         cumulativeShares: cumulativeShares,

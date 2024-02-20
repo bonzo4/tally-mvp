@@ -8,21 +8,23 @@ import { useFormState } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { textCssMap } from "@/lib/cssMaps";
 import { Separator } from "@/components/ui/separator";
+import { VscCircleFilled } from "react-icons/vsc";
+
+import OrderInput from "./OrderInput";
+import ChoiceButton from "./ChoiceButton";
+import { SummaryBuy } from "./Summary";
+
+import { Estimate } from "@/app/api/estimateBuy/route";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
 import { UserDoc } from "@/lib/supabase/queries/user";
-import { VscCircleFilled } from "react-icons/vsc";
+import { getSharePrice } from "@/lib/estimatePrice";
 import submitBuy, {
   validateBuy,
   BuyUseFormState,
   BuyErrorMessages,
 } from "@/lib/api/actions/submitBuy";
-import { getSharePrice } from "@/lib/estimatePrice";
-
-import OrderInput from "./OrderInput";
-import ChoiceButton from "./ChoiceButton";
-import { SummaryBuy } from "./Summary";
+import { textCssMap } from "@/lib/cssMaps";
 
 function BuySubMarket({
   subMarket,
@@ -151,10 +153,6 @@ export default function BuyCard({
     BuyUseFormState,
     FormData
   >(validateBuy, null);
-  const [submitFormState, submitFormAction] = useFormState<
-    BuyUseFormState,
-    FormData
-  >(submitBuy, null);
 
   const [formState, setFormState] = useState<BuyFormState[]>(
     Array(subMarkets.length).fill({
@@ -166,6 +164,9 @@ export default function BuyCard({
       submitType: "",
     })
   );
+
+  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
+  const newSubmitBuy = submitBuy.bind(null, estimate);
 
   // The sharePrice and choiceMarketTitle change whenever user selects a different option.
   // The index and subMarketTitle are closures and don't need to change.
@@ -210,7 +211,7 @@ export default function BuyCard({
     };
 
   return (
-    <form id="buy-form" action={(payload) => submitFormAction(payload)}>
+    <form id="buy-form" action={newSubmitBuy}>
       <Card className="flex flex-col border-0 bg-transparent">
         <CardContent className="space-y-4 px-0 py-4">
           {subMarkets.map((subMarket, index) => (
@@ -241,7 +242,8 @@ export default function BuyCard({
               formState={formState}
               validateFormState={validateFormState}
               validateFormAction={(payload) => validateFormAction(payload)}
-              submitFormState={submitFormState}
+              estimate={estimate}
+              setEstimate={setEstimate}
             />
           ) : (
             <LoginButton slug={slug} />

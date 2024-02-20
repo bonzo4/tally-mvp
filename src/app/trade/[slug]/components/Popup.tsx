@@ -26,15 +26,7 @@ import {
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
 import { SellUseFormState } from "@/lib/api/actions/submitSell";
 import { FEE_RATE } from "@/lib/constants";
-
-export type Estimate = {
-  subMarketTitle: string;
-  choiceMarketTitle: string;
-  avgPrice: number;
-  cumulativeDollars: number;
-  cumulativeShares: number;
-  fees: number;
-};
+import { Estimate } from "@/app/api/estimateBuy/route";
 
 function EstimateLineItem({ txn }: { txn: Estimate }) {
   return (
@@ -157,7 +149,7 @@ export function SellConfirmation({
         setEstimate(data);
       })();
     }
-  }, [open, formState]);
+  }, [open, formState, setEstimate]);
 
   useEffect(() => {
     setOpen(validateFormState?.status === "success");
@@ -188,14 +180,17 @@ export function BuyConfirmation({
   submit,
   formState,
   validateFormState,
+  estimate,
+  setEstimate,
 }: {
   children: React.ReactNode;
   trigger: React.ReactNode;
   submit: React.ReactNode;
   formState: BuyFormState[];
   validateFormState: BuyUseFormState;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
-  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {

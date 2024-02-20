@@ -5,9 +5,8 @@ import { redirect } from "next/navigation";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
-import { estimateBuy } from "@/lib/estimatePrice";
 import { Database } from "@/lib/supabase/types";
-import { FEE_RATE } from "@/lib/constants";
+import { Estimate } from "@/app/api/estimateBuy/route";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -210,10 +209,13 @@ export async function validateBuy(
 }
 
 export default async function submitBuy(
-  prevState: any,
+  estimate: Estimate[] | null,
   formData: FormData
 ): Promise<BuyUseFormState> {
   try {
+    if (!estimate) {
+      throw new Error("No estmate. Please try again.");
+    }
     const supabase = createServerSupabaseClient();
 
     // check user is logged in
@@ -239,23 +241,16 @@ export default async function submitBuy(
 
     // group transactions together before POSTING
     const txns = [];
-    for (const txn of formData_) {
-      // validate that amount is a number and not negative
-      const { avgPrice, cumulativeDollars, cumulativeShares } =
-        await estimateBuy(
-          supabase,
-          Number(txn.choice_market_id),
-          Number(txn.amount)
-        );
+    for (const txn of estimate) {
       txns.push({
         user_id: user.id,
-        choice_market_id: Number(txn.choice_market_id),
-        total_amount: cumulativeDollars,
-        shares: cumulativeShares,
-        avg_share_price: avgPrice,
-        trade_side: "BUY" as trade_side,
+        choice_market_id: Number(txn.choiceMarketId),
+        total_amount: txn.cumulativeDollars,
+        shares: txn.cumulativeShares,
+        avg_share_price: txn.avgPrice,
+        trade_side: txn.tradeSide,
         status: "CONFIRMED" as trade_status,
-        fees: cumulativeDollars * FEE_RATE,
+        fees: txn.fees,
       });
     }
     const { data: data, error: error } = await supabase

@@ -21,21 +21,16 @@ import { SellFormState } from "./SellCard";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
+  formatPercentageWithOneDecimal,
 } from "@/lib/formats";
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
 import { SellUseFormState } from "@/lib/api/actions/submitSell";
-
-export type Estimate = {
-  subMarketTitle: string;
-  choiceMarketTitle: string;
-  avgPrice: number;
-  cumulativeDollars: number;
-  cumulativeShares: number;
-};
+import { FEE_RATE } from "@/lib/constants";
+import { Estimate } from "@/app/api/estimateBuy/route";
 
 function EstimateLineItem({ txn }: { txn: Estimate }) {
   return (
-    <TableRow className="hover:bg-tally-layer-1">
+    <TableRow className="border-0 hover:bg-tally-background">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
       <TableCell>{txn.choiceMarketTitle}</TableCell>
       <TableCell>
@@ -57,8 +52,27 @@ function Loading() {
   );
 }
 
-function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
-  const total = estimate?.reduce((acc, txn) => acc + txn.cumulativeDollars, 0);
+function ReceiptEstimate({
+  estimate,
+  tradeSide,
+}: {
+  estimate: Estimate[] | null;
+  tradeSide: "BUY" | "SELL";
+}) {
+  const subtotal = estimate?.reduce(
+    (acc, txn) => acc + txn.cumulativeDollars,
+    0
+  );
+  const fees = estimate?.reduce((acc, txn) => acc + txn.fees, 0);
+  const total =
+    !subtotal || !fees
+      ? undefined
+      : tradeSide === "BUY"
+        ? subtotal + fees
+        : tradeSide === "SELL"
+          ? subtotal - fees
+          : undefined;
+
   return (
     <Table>
       <TableHeader>
@@ -80,7 +94,26 @@ function ReceiptEstimate({ estimate }: { estimate: Estimate[] | null }) {
         )}
       </TableBody>
       <TableFooter>
-        <TableRow className="bg-tally-layer-1 hover:bg-tally-layer-2">
+        <TableRow className="bg-tally-background text-tally-gray hover:bg-tally-background">
+          <TableCell className="px-4 py-2" colSpan={4}>
+            Subtotal
+          </TableCell>
+          <TableCell className="px-4 py-2 text-right">
+            {subtotal
+              ? formatDollarsWithCents(subtotal)
+              : formatDollarsWithCents(0)}
+          </TableCell>
+        </TableRow>
+        <TableRow className="bg-tally-background text-tally-gray hover:bg-tally-background">
+          <TableCell
+            className="px-4 py-2"
+            colSpan={4}
+          >{`Fees (${formatPercentageWithOneDecimal(FEE_RATE)})`}</TableCell>
+          <TableCell className="px-4 py-2 text-right">
+            {fees ? formatDollarsWithCents(fees) : formatDollarsWithCents(0)}
+          </TableCell>
+        </TableRow>
+        <TableRow className="border-t border-white bg-tally-background hover:bg-tally-background">
           <TableCell colSpan={4}>Total</TableCell>
           <TableCell className="text-right">
             {total ? formatDollarsWithCents(total) : formatDollarsWithCents(0)}
@@ -96,13 +129,16 @@ export function SellConfirmation({
   submit,
   formState,
   validateFormState,
+  estimate,
+  setEstimate,
 }: {
   trigger: React.ReactNode;
   submit: React.ReactNode;
   formState: SellFormState;
   validateFormState: SellUseFormState;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
-  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -116,7 +152,7 @@ export function SellConfirmation({
         setEstimate(data);
       })();
     }
-  }, [open, formState]);
+  }, [open, formState, setEstimate]);
 
   useEffect(() => {
     setOpen(validateFormState?.status === "success");
@@ -129,16 +165,12 @@ export function SellConfirmation({
         <DialogHeader>
           <DialogTitle>Order Cofirmation</DialogTitle>
           <DialogDescription>
-            Please note that the price provided for your transaction is an
-            estimate based on current market conditions. Actual transaction
-            prices may vary due to market volatility, timing, and order
-            execution factors. We strive to provide the most accurate estimates
-            possible, but cannot guarantee the final transaction price will
-            match the estimated price. Proceed with awareness of potential price
-            adjustments.
+            Please note that the price provided below is an estimate. Actual
+            transaction prices may vary due. Transactions will proceed only if
+            slippage is within 5%; otherwise, they will be cancelled.
           </DialogDescription>
         </DialogHeader>
-        <ReceiptEstimate estimate={estimate} />
+        <ReceiptEstimate estimate={estimate} tradeSide="SELL" />
         {submit}
       </DialogContent>
     </Dialog>
@@ -151,14 +183,17 @@ export function BuyConfirmation({
   submit,
   formState,
   validateFormState,
+  estimate,
+  setEstimate,
 }: {
   children: React.ReactNode;
   trigger: React.ReactNode;
   submit: React.ReactNode;
   formState: BuyFormState[];
   validateFormState: BuyUseFormState;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
-  const [estimate, setEstimate] = useState<Estimate[] | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -172,7 +207,7 @@ export function BuyConfirmation({
         setEstimate(data);
       })();
     }
-  }, [open, formState]);
+  }, [open, formState, setEstimate]);
 
   useEffect(() => {
     setOpen(validateFormState?.status === "success");
@@ -185,16 +220,12 @@ export function BuyConfirmation({
         <DialogHeader>
           <DialogTitle>Order Cofirmation</DialogTitle>
           <DialogDescription>
-            Please note that the price provided for your transaction is an
-            estimate based on current market conditions. Actual transaction
-            prices may vary due to market volatility, timing, and order
-            execution factors. We strive to provide the most accurate estimates
-            possible, but cannot guarantee the final transaction price will
-            match the estimated price. Proceed with awareness of potential price
-            adjustments.
+            Please note that the price provided below is an estimate. Actual
+            transaction prices may vary due. Transactions will proceed only if
+            slippage is within 5%; otherwise, they will be cancelled.
           </DialogDescription>
         </DialogHeader>
-        <ReceiptEstimate estimate={estimate} />
+        <ReceiptEstimate estimate={estimate} tradeSide="BUY" />
         {submit}
       </DialogContent>
     </Dialog>

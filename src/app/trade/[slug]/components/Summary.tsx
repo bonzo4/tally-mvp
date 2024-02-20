@@ -13,6 +13,8 @@ import {
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
 import { SellUseFormState } from "@/lib/api/actions/submitSell";
 
+import { Estimate } from "@/app/api/estimateBuy/route";
+
 function BuyLineItem({
   title,
   shares,
@@ -60,11 +62,15 @@ export function SummarySell({
   formState,
   validateFormState,
   validateFormAction,
+  estimate,
+  setEstimate,
 }: {
   isFormEnabled: boolean;
   formState: SellFormState;
   validateFormState: SellUseFormState;
   validateFormAction: (payload: any) => void;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
   const { pending } = useFormStatus();
 
@@ -86,6 +92,8 @@ export function SummarySell({
         <SellConfirmation
           formState={formState}
           validateFormState={validateFormState}
+          estimate={estimate}
+          setEstimate={setEstimate}
           trigger={
             <Button
               type={undefined}
@@ -127,14 +135,16 @@ export function SummarySell({
 
 export function SummaryBuy({
   formState,
-  submitFormState,
   validateFormState,
   validateFormAction,
+  estimate,
+  setEstimate,
 }: {
   formState: BuyFormState[];
-  submitFormState: BuyUseFormState;
   validateFormAction: (payload: any) => void;
   validateFormState: BuyUseFormState;
+  estimate: Estimate[] | null;
+  setEstimate: (value: Estimate[] | null) => void;
 }) {
   const total = formState.reduce((acc, curr) => acc + Number(curr.amount), 0);
   const { pending } = useFormStatus();
@@ -170,6 +180,8 @@ export function SummaryBuy({
               {pending ? "Processing..." : "Confirm Buy"}
             </Button>
           }
+          estimate={estimate}
+          setEstimate={setEstimate}
         >
           {pending && <div className="text-white">Processing...</div>}
         </BuyConfirmation>

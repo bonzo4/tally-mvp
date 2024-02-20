@@ -98,3 +98,10 @@ export function formatIsoAsDateWithoutTime(isoString: string) {
   const year = date.getFullYear();
   return `${appendOrdinalSuffixes(day)} ${month} ${year}`;
 }
+
+export function formatPercentageWithOneDecimal(decimal: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "percent",
+    maximumFractionDigits: 1,
+  }).format(decimal);
+}

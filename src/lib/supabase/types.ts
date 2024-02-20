@@ -704,6 +704,7 @@ export type Database = {
           avg_share_price: number | null
           choice_market_id: number
           created_at: string
+          fees: number
           id: number
           shares: number | null
           status: Database["public"]["Enums"]["trade_status"]
@@ -715,6 +716,7 @@ export type Database = {
           avg_share_price?: number | null
           choice_market_id: number
           created_at?: string
+          fees?: number
           id?: number
           shares?: number | null
           status?: Database["public"]["Enums"]["trade_status"]
@@ -726,6 +728,7 @@ export type Database = {
           avg_share_price?: number | null
           choice_market_id?: number
           created_at?: string
+          fees?: number
           id?: number
           shares?: number | null
           status?: Database["public"]["Enums"]["trade_status"]
@@ -1304,6 +1307,7 @@ export type Database = {
         | "RETRYING"
         | "FAILED"
         | "PENDING"
+        | "ESTIMATE"
     }
     CompositeTypes: {
       [_ in never]: never

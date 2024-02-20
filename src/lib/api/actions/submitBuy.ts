@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
-import { estimateBuy } from "@/lib/estimatePrice";
 import { Database } from "@/lib/supabase/types";
+import { Estimate } from "@/app/api/estimateBuy/route";
+import { FEE_RATE } from "@/lib/constants";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -46,6 +47,27 @@ type FormattedBuyFormData = {
   choice_market_id: string | undefined;
   amount: string | undefined;
 };
+
+async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    throw Error("AuthError: User is not authenticated.");
+  }
+  const user = authUser
+    ? await getUser({
+        supabase: supabase,
+        options: { userId: authUser.id },
+      })
+    : null;
+
+  if (!user) {
+    throw Error("AuthError: User could not be found.");
+  }
+  return user;
+}
 
 // Data received from form has radio buttons input (e.g. "Yes" or "No") separate
 // from amount input (e.g. "$100"). They are associated by the name of the input.
@@ -133,7 +155,7 @@ async function checkSufficientFunds({
     return acc + Number(data?.amount);
   }, 0);
 
-  if (userBalance < totalAmount) {
+  if (userBalance < totalAmount * (1 + FEE_RATE)) {
     throw new Error("Insufficient balance");
   }
 }
@@ -144,23 +166,9 @@ export async function validateBuy(
 ): Promise<BuyUseFormState> {
   try {
     const supabase = createServerSupabaseClient();
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
 
-    if (!authUser) {
-      throw Error("AuthError: User is not authenticated.");
-    }
-    const user = authUser
-      ? await getUser({
-          supabase: supabase,
-          options: { userId: authUser.id },
-        })
-      : null;
-
-    if (!user) {
-      throw Error("AuthError: User could not be found.");
-    }
+    // check user is logged in
+    const user = await checkUserLoggedIn({ supabase });
 
     // convert FormData to cleaner object
     let formData_ = formatFormData(formData);
@@ -202,28 +210,17 @@ export async function validateBuy(
 }
 
 export default async function submitBuy(
-  prevState: any,
+  estimate: Estimate[] | null,
   formData: FormData
 ): Promise<BuyUseFormState> {
   try {
+    if (!estimate) {
+      throw new Error("No estmate. Please try again.");
+    }
     const supabase = createServerSupabaseClient();
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
 
-    if (!authUser) {
-      throw Error("AuthError: User is not authenticated.");
-    }
-    const user = authUser
-      ? await getUser({
-          supabase: supabase,
-          options: { userId: authUser.id },
-        })
-      : null;
-
-    if (!user) {
-      throw Error("AuthError: User could not be found.");
-    }
+    // check user is logged in
+    const user = await checkUserLoggedIn({ supabase });
 
     // convert FormData to cleaner object
     let formData_ = formatFormData(formData);
@@ -245,22 +242,16 @@ export default async function submitBuy(
 
     // group transactions together before POSTING
     const txns = [];
-    for (const txn of formData_) {
-      // validate that amount is a number and not negative
-      const { avgPrice, cumulativeDollars, cumulativeShares } =
-        await estimateBuy(
-          supabase,
-          Number(txn.choice_market_id),
-          Number(txn.amount)
-        );
+    for (const txn of estimate) {
       txns.push({
         user_id: user.id,
-        choice_market_id: Number(txn.choice_market_id),
-        total_amount: cumulativeDollars,
-        shares: cumulativeShares,
-        avg_share_price: avgPrice,
-        trade_side: "BUY" as trade_side,
+        choice_market_id: Number(txn.choiceMarketId),
+        total_amount: txn.cumulativeDollars,
+        shares: txn.cumulativeShares,
+        avg_share_price: txn.avgPrice,
+        trade_side: txn.tradeSide,
         status: "CONFIRMED" as trade_status,
+        fees: txn.fees,
       });
     }
     const { data: data, error: error } = await supabase

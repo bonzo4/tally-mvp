@@ -124,6 +124,30 @@ function ReceiptEstimate({
   );
 }
 
+function BalanceDelta({
+  total,
+  balance,
+  tradeSide,
+}: {
+  total: number;
+  balance: number;
+  tradeSide: "BUY" | "SELL";
+}) {
+  const delta = tradeSide === "BUY" ? balance - total : balance + total;
+  return (
+    <div className="px-4 text-sm text-tally-gray">
+      <div className="grid grid-cols-4">
+        <div className="col-span-3 text-right">Current Balance</div>
+        <div className="text-right">{formatDollarsWithCents(balance)}</div>
+      </div>
+      <div className="grid grid-cols-4">
+        <div className="col-span-3 text-right">New Balanace</div>
+        <div className="text-right">{formatDollarsWithCents(delta)}</div>
+      </div>
+    </div>
+  );
+}
+
 export function SellConfirmation({
   trigger,
   submit,
@@ -140,7 +164,6 @@ export function SellConfirmation({
   setEstimate: (value: Estimate[] | null) => void;
 }) {
   const [open, setOpen] = useState<boolean>(false);
-
   useEffect(() => {
     if (open) {
       (async () => {
@@ -154,9 +177,24 @@ export function SellConfirmation({
     }
   }, [open, formState, setEstimate]);
 
+  const [balance, setBalance] = useState<number | null>(null);
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/userBalance");
+      const { userBalance } = await res.json();
+      setBalance(Number(userBalance));
+    })();
+  }, []);
+
   useEffect(() => {
     setOpen(validateFormState?.status === "success");
   }, [validateFormState]);
+
+  const subtotal = estimate?.reduce(
+    (acc, txn) => acc + txn.cumulativeDollars,
+    0
+  );
+  const fees = estimate?.reduce((acc, txn) => acc + txn.fees, 0);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -171,6 +209,11 @@ export function SellConfirmation({
           </DialogDescription>
         </DialogHeader>
         <ReceiptEstimate estimate={estimate} tradeSide="SELL" />
+        <BalanceDelta
+          total={subtotal && fees ? subtotal - fees : 0}
+          balance={balance ? balance : 0}
+          tradeSide="SELL"
+        />
         {submit}
       </DialogContent>
     </Dialog>
@@ -195,7 +238,6 @@ export function BuyConfirmation({
   setEstimate: (value: Estimate[] | null) => void;
 }) {
   const [open, setOpen] = useState<boolean>(false);
-
   useEffect(() => {
     if (open) {
       (async () => {
@@ -209,9 +251,24 @@ export function BuyConfirmation({
     }
   }, [open, formState, setEstimate]);
 
+  const [balance, setBalance] = useState<number | null>(null);
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/userBalance");
+      const { userBalance } = await res.json();
+      setBalance(Number(userBalance));
+    })();
+  }, []);
+
   useEffect(() => {
     setOpen(validateFormState?.status === "success");
   }, [validateFormState]);
+
+  const subtotal = estimate?.reduce(
+    (acc, txn) => acc + txn.cumulativeDollars,
+    0
+  );
+  const fees = estimate?.reduce((acc, txn) => acc + txn.fees, 0);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -226,6 +283,11 @@ export function BuyConfirmation({
           </DialogDescription>
         </DialogHeader>
         <ReceiptEstimate estimate={estimate} tradeSide="BUY" />
+        <BalanceDelta
+          total={subtotal && fees ? subtotal + fees : 0}
+          balance={balance ? balance : 0}
+          tradeSide="BUY"
+        />
         {submit}
       </DialogContent>
     </Dialog>

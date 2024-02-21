@@ -66,7 +66,7 @@ export default function TradeBody({
   return (
     <>
       <div className="flex flex-grow flex-col space-y-8 py-5">
-        <Chart />
+        <Chart slug={slug} />
         {width < 1024 ? (
           <OrderDrawer
             slug={slug}

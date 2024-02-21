@@ -70,12 +70,19 @@ function Legend() {
   );
 }
 
-export default function Chart() {
+export default function Chart({ slug }: { slug: string }) {
   const [choiceFilter, setChoiceFilter] = useState<string>("Yes");
   const [timeFilter, setTimeFilter] = useState<string>("All");
+  const [priceHistory, setPriceHistory] = useState<any[]>([]);
 
   const formatTooltip = (value: number, name: string) => {
     return [formatDollarsWithCents(value), name];
+  };
+
+  const handleTimeClick = async (time: { title: string; value: string }) => {
+    setTimeFilter(time.title);
+    console.log("slug in react component", slug, "timeFrame", time.value);
+    await fetch(`/api/priceHistory?slug=${slug}&timeFrame=${time.value}`);
   };
 
   return (
@@ -104,9 +111,9 @@ export default function Chart() {
           {TEST_TIME_FILTERS.map((time, index) => (
             <FilterButton
               key={index}
-              name={time}
+              name={time.title}
               selected={timeFilter}
-              onClick={() => setTimeFilter(time)}
+              onClick={() => handleTimeClick(time)}
             />
           ))}
         </div>
@@ -146,7 +153,13 @@ export default function Chart() {
   );
 }
 
-const TEST_TIME_FILTERS = ["1H", "6H", "1D", "1W", "1M", "All"];
+const TEST_TIME_FILTERS = [
+  { title: "1H", value: "1 hour" },
+  { title: "1D", value: "1 day" },
+  { title: "1W", value: "1 week" },
+  { title: "1M", value: "1 month" },
+  { title: "All", value: "all" },
+];
 
 const data = [
   {

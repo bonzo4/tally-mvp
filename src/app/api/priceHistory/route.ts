@@ -30,9 +30,6 @@ export async function GET(request: NextRequest) {
       supabase: supabase,
       options: { slug, timeFrame },
     });
-
-    console.log(resData);
-
     return NextResponse.json(resData, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

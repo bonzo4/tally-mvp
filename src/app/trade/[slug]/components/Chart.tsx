@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -17,6 +17,13 @@ import {
   FilterButtonProps,
 } from "@/components/FilterButton";
 import { formatDollarsWithCents } from "@/lib/formats";
+import { hexMap } from "@/lib/cssMaps";
+
+import { Database } from "@/lib/supabase/types";
+import { RelatedInfo } from "@/lib/supabase/queries/markets/priceHistory";
+
+type PriceHistory = Database["public"]["Tables"]["price_histories"]["Row"];
+type Color = Database["public"]["Enums"]["colors_enum"] | null;
 
 const BG_GRAY_900 = "rgb(17 24 39)";
 
@@ -70,19 +77,98 @@ function Legend() {
   );
 }
 
+type FormattedPriceData = {
+  name: string;
+  [key: string]: string | number;
+};
+
+function getUniqueIds(priceHistory: PriceHistory[]): Array<number> {
+  const uniqueIds = new Set<number>();
+  for (const price of priceHistory) {
+    uniqueIds.add(price.choice_market_id);
+  }
+  return Array.from(uniqueIds);
+}
+
+function formatPriceData(priceHistory: PriceHistory[]): FormattedPriceData[] {
+  // add types
+  const prices: FormattedPriceData[] = [];
+  let index = -1;
+  for (const price of priceHistory) {
+    // just get the date as a string
+    // const date = new Date(price.created_at);
+    // rdate.getDate();
+    if (index < 0 || prices[index].name !== price.created_at) {
+      index++;
+      const price_: FormattedPriceData = {
+        name: price.created_at,
+        [price.choice_market_id]: price.price,
+      };
+      prices.push(price_);
+    } else {
+      prices[index][price.choice_market_id] = price.price;
+    }
+  }
+  return prices;
+}
+
+type FormattedRelatedInfo = {
+  [id: number]: {
+    title: string;
+    card_title: string;
+    color: Color;
+  };
+};
+
+function formatRelatedInfo(relatedInfo: RelatedInfo[]) {
+  const relatedInfo_: FormattedRelatedInfo = {};
+  for (const info of relatedInfo) {
+    const { id, ...rest } = info;
+    relatedInfo_[id] = {
+      title: rest.title,
+      card_title: rest.sub_markets?.card_title || rest.title,
+      color: rest.sub_markets?.color || "primary",
+    };
+  }
+  return relatedInfo_;
+}
+
 export default function Chart({ slug }: { slug: string }) {
   const [choiceFilter, setChoiceFilter] = useState<string>("Yes");
   const [timeFilter, setTimeFilter] = useState<string>("All");
-  const [priceHistory, setPriceHistory] = useState<any[]>([]);
+  const [priceHistory, setPriceHistory] = useState<FormattedPriceData[]>([]);
+  const [relatedInfo, setRelatedInfo] = useState<FormattedRelatedInfo>({});
+  const [uniqueIds, setUniqueIds] = useState<number[]>([]);
 
   const formatTooltip = (value: number, name: string) => {
     return [formatDollarsWithCents(value), name];
   };
 
+  useEffect(() => {
+    const fetchAndSetAllPriceData = async () => {
+      const res = await fetch(`/api/priceHistory?slug=${slug}&timeFrame=all`);
+      const { priceHistory: rawPriceHistory, relatedInfo: rawRelatedInfo } =
+        await res.json();
+      const priceHistory = formatPriceData(rawPriceHistory);
+      const relatedInfo = formatRelatedInfo(rawRelatedInfo);
+      const uniqueIds = getUniqueIds(rawPriceHistory);
+      setPriceHistory(priceHistory);
+      setRelatedInfo(relatedInfo);
+      setUniqueIds(uniqueIds);
+    };
+    fetchAndSetAllPriceData();
+  }, [slug]);
+
   const handleTimeClick = async (time: { title: string; value: string }) => {
     setTimeFilter(time.title);
-    console.log("slug in react component", slug, "timeFrame", time.value);
-    await fetch(`/api/priceHistory?slug=${slug}&timeFrame=${time.value}`);
+    const res = await fetch(
+      `/api/priceHistory?slug=${slug}&timeFrame=${time.value}`
+    );
+    const rawPriceHistory = await res.json();
+    const priceHistory = formatPriceData(rawPriceHistory);
+    const uniqueIds = getUniqueIds(rawPriceHistory);
+    setPriceHistory(priceHistory);
+    setUniqueIds(uniqueIds);
   };
 
   return (
@@ -123,7 +209,7 @@ export default function Chart({ slug }: { slug: string }) {
         <ResponsiveContainer width="100%" height={400}>
           {/* adjust left margin to reveal first x-axis tick */}
           <LineChart
-            data={data}
+            data={priceHistory}
             margin={{ top: 5, right: 0, left: 25, bottom: 5 }}
           >
             <XAxis
@@ -142,10 +228,19 @@ export default function Chart({ slug }: { slug: string }) {
               contentStyle={{ color: "white", backgroundColor: BG_GRAY_900 }}
               formatter={formatTooltip}
             />
-            <Line type="monotone" dataKey="Ramasawamy" stroke="#6EFF97" />
-            <Line type="monotone" dataKey="Trump" stroke="#FF7B7B" />
-            <Line type="monotone" dataKey="Biden" stroke="#18A0FB" />
-            <Line type="monotone" dataKey="Newsom" stroke="#716EFF" />
+            {uniqueIds.map((id, index) => {
+              return (
+                <Line
+                  key={index}
+                  dot={false}
+                  type="monotone"
+                  dataKey={id}
+                  stroke={hexMap[relatedInfo[id].color as string]}
+                />
+              );
+            })}
+            {/*
+             */}
           </LineChart>
         </ResponsiveContainer>
       </div>

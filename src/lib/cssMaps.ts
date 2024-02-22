@@ -27,3 +27,21 @@ export const bgCssMap: Record<Color, string> = {
   gray: "bg-tally-gray",
   white: "bg-tally-white",
 };
+
+export const hexMap: Record<string, string> = {
+  background: "#0C0D0C",
+  layer1: "18181B",
+  layer2: "#232427",
+  layer3: "#515261",
+  primary: "#46FF9B",
+  primray2: "#16CB74",
+  red: "#FF6F6F",
+  orange: "#FB5C18",
+  yellow: "#FFF96F",
+  green: "#6EFF97",
+  blue: "#18A0FB",
+  purple: "#716EFF",
+  indigo: "#D96EFF",
+  gray: "#959997",
+  white: "#FFFFFF",
+};

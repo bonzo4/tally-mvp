@@ -95,9 +95,6 @@ function formatPriceData(priceHistory: PriceHistory[]): FormattedPriceData[] {
   const prices: FormattedPriceData[] = [];
   let index = -1;
   for (const price of priceHistory) {
-    // just get the date as a string
-    // const date = new Date(price.created_at);
-    // rdate.getDate();
     if (index < 0 || prices[index].name !== price.created_at) {
       index++;
       const price_: FormattedPriceData = {
@@ -164,10 +161,13 @@ export default function Chart({ slug }: { slug: string }) {
     const res = await fetch(
       `/api/priceHistory?slug=${slug}&timeFrame=${time.value}`
     );
-    const rawPriceHistory = await res.json();
+    const { priceHistory: rawPriceHistory, relatedInfo: rawRelatedInfo } =
+      await res.json();
     const priceHistory = formatPriceData(rawPriceHistory);
+    const relatedInfo = formatRelatedInfo(rawRelatedInfo);
     const uniqueIds = getUniqueIds(rawPriceHistory);
     setPriceHistory(priceHistory);
+    setRelatedInfo(relatedInfo);
     setUniqueIds(uniqueIds);
   };
 
@@ -239,8 +239,6 @@ export default function Chart({ slug }: { slug: string }) {
                 />
               );
             })}
-            {/*
-             */}
           </LineChart>
         </ResponsiveContainer>
       </div>

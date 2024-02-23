@@ -4,10 +4,10 @@ import { fetchQuery } from "../../fetch";
 
 type PriceHistory = Database["public"]["Tables"]["price_histories"]["Row"];
 
-type PriceHistory_ = PriceHistory & {
-  choice_markets: {
-    sub_market_id: number;
-  } | null;
+export type PriceHistory_ = PriceHistory & {
+  title: string;
+  card_title: string;
+  color: Color;
 };
 
 type PredictionMarket_ =
@@ -46,7 +46,7 @@ type GetPriceHistoryOptions = {
 async function getPriceHistoryQuery({
   supabase,
   options,
-}: GetPriceHistoryOptions): Promise<PostgrestResponse<PriceHistory>> {
+}: GetPriceHistoryOptions): Promise<PostgrestResponse<PriceHistory_>> {
   // Using slug of market, get all relevant choice market ids.
   const { data, error }: PostgrestResponse<PredictionMarket_> = await supabase
     .from("prediction_markets")
@@ -71,51 +71,13 @@ async function getPriceHistoryQuery({
   });
 }
 
-type GetRelatedInformationQueryOptions = {
-  choice_market_ids: number[];
-};
-
-type GetRelatedInformationOptions = {
-  supabase: SupabaseClient<Database>;
-  options: GetRelatedInformationQueryOptions;
-};
-
-async function getRelatedInformation({
-  supabase,
-  options,
-}: GetRelatedInformationOptions): Promise<PostgrestResponse<RelatedInfo>> {
-  return await supabase
-    .from("choice_markets")
-    .select("id, title, sub_markets(card_title, color)")
-    .in("id", options.choice_market_ids);
-}
-
-function getUniqueIds(priceHistory: PriceHistory[]): Array<number> {
-  const uniqueIds = new Set<number>();
-  for (const price of priceHistory) {
-    uniqueIds.add(price.choice_market_id);
-  }
-  return Array.from(uniqueIds);
-}
-
 export async function getPriceHistory({
   supabase,
   options,
 }: GetPriceHistoryOptions) {
-  const prices = await fetchQuery<PriceHistory, GetPriceHistoryQueryOptions>({
+  return await fetchQuery<PriceHistory_, GetPriceHistoryQueryOptions>({
     supabase: supabase,
     query: getPriceHistoryQuery,
     options: options,
   });
-  const choiceMarketIds = getUniqueIds(prices);
-  console.log("choiceMarketIds", choiceMarketIds);
-  const relatedInfo = await fetchQuery<
-    RelatedInfo,
-    GetRelatedInformationQueryOptions
-  >({
-    supabase: supabase,
-    query: getRelatedInformation,
-    options: { choice_market_ids: choiceMarketIds },
-  });
-  return { priceHistory: prices, relatedInfo };
 }

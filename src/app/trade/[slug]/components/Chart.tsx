@@ -11,21 +11,17 @@ import {
 } from "recharts";
 import { cn } from "@/lib/utils";
 
+import { Database } from "@/lib/supabase/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   FilterButtonPrimitive,
   FilterButton,
   FilterButtonProps,
 } from "@/components/FilterButton";
+import { PriceHistory_ as PriceHistory } from "@/lib/supabase/queries/markets/priceHistory";
 import { formatDollarsWithCents } from "@/lib/formats";
 import { hexMap } from "@/lib/cssMaps";
 
-import { Database } from "@/lib/supabase/types";
-import { RelatedInfo } from "@/lib/supabase/queries/markets/priceHistory";
-
-import { bgCssMap, bgHoverCssMap } from "@/lib/cssMaps";
-
-type PriceHistory = Database["public"]["Tables"]["price_histories"]["Row"];
 type Color = Database["public"]["Enums"]["colors_enum"] | null;
 
 const BG_GRAY_900 = "rgb(17 24 39)";
@@ -85,24 +81,19 @@ type FormattedPriceData = {
   [key: string]: string | number;
 };
 
-function getUniqueIds(priceHistory: PriceHistory[]): Array<number> {
-  const uniqueIds = new Set<number>();
-  for (const price of priceHistory) {
-    uniqueIds.add(price.choice_market_id);
-  }
-  return Array.from(uniqueIds);
-}
+type PricesByChoice = {
+  [key: string]: FormattedPriceData[];
+};
 
-function getUniqueChoices(relatedInfo: RelatedInfo[]): Array<string> {
+function getUniqueChoices(priceHistory: PriceHistory[]): Array<string> {
   const uniqueChoices = new Set<string>();
-  for (const info of relatedInfo) {
-    uniqueChoices.add(info.title);
+  for (const price of priceHistory) {
+    uniqueChoices.add(price.title);
   }
   return Array.from(uniqueChoices);
 }
 
 function formatPriceData(priceHistory: PriceHistory[]): FormattedPriceData[] {
-  // add types
   const prices: FormattedPriceData[] = [];
   let index = -1;
   for (const price of priceHistory) {
@@ -110,11 +101,11 @@ function formatPriceData(priceHistory: PriceHistory[]): FormattedPriceData[] {
       index++;
       const price_: FormattedPriceData = {
         name: price.created_at,
-        [price.choice_market_id]: price.price,
+        [price.card_title]: price.price,
       };
       prices.push(price_);
     } else {
-      prices[index][price.choice_market_id] = price.price;
+      prices[index][price.card_title] = price.price;
     }
   }
   return prices;
@@ -128,26 +119,25 @@ type FormattedRelatedInfo = {
   };
 };
 
-function formatRelatedInfo(relatedInfo: RelatedInfo[]) {
-  const relatedInfo_: FormattedRelatedInfo = {};
-  for (const info of relatedInfo) {
-    const { id, ...rest } = info;
-    relatedInfo_[id] = {
-      title: rest.title,
-      card_title: rest.sub_markets?.card_title || rest.title,
-      color: rest.sub_markets?.color || "primary",
+function formatRelatedInfo(priceHistory: PriceHistory[]) {
+  const relatedInfo: FormattedRelatedInfo = {};
+  for (const price of priceHistory) {
+    if (price.choice_market_id in relatedInfo) continue;
+    relatedInfo[price.choice_market_id] = {
+      title: price.title,
+      card_title: price.card_title,
+      color: price.color || "primary",
     };
   }
-  return relatedInfo_;
+  return relatedInfo;
 }
 
 export default function Chart({ slug }: { slug: string }) {
-  const [choiceFilter, setChoiceFilter] = useState<string>("Yes");
+  const [choices, setChoices] = useState<string[]>([]);
+  const [choiceFilter, setChoiceFilter] = useState<string>("");
   const [timeFilter, setTimeFilter] = useState<string>("All");
-  const [priceHistory, setPriceHistory] = useState<FormattedPriceData[]>([]);
+  const [priceHistory, setPriceHistory] = useState<PricesByChoice>({});
   const [relatedInfo, setRelatedInfo] = useState<FormattedRelatedInfo>({});
-  const [uniqueIds, setUniqueIds] = useState<number[]>([]);
-  const [uniqueChoices, setUniqueChoices] = useState<string[]>([]);
 
   const formatTooltip = (value: number, name: string) => {
     return [formatDollarsWithCents(value), name];
@@ -157,16 +147,22 @@ export default function Chart({ slug }: { slug: string }) {
     const res = await fetch(
       `/api/priceHistory?slug=${slug}&timeFrame=${timeFrame}`
     );
-    const { priceHistory: rawPriceHistory, relatedInfo: rawRelatedInfo } =
-      await res.json();
-    const priceHistory = formatPriceData(rawPriceHistory);
-    const relatedInfo = formatRelatedInfo(rawRelatedInfo);
-    const uniqueIds = getUniqueIds(rawPriceHistory);
-    const uniqueChoices = getUniqueChoices(rawRelatedInfo);
-    setPriceHistory(priceHistory);
+    const rawPriceHistory: PriceHistory[] = await res.json();
+
+    const choices = getUniqueChoices(rawPriceHistory);
+    setChoices(choices);
+    setChoiceFilter(choices[0]);
+
+    const priceByChoice: PricesByChoice = {};
+    for (const choice of choices) {
+      priceByChoice[choice] = formatPriceData(
+        rawPriceHistory.filter((price) => price.title === choice)
+      );
+    }
+    setPriceHistory(priceByChoice);
+
+    const relatedInfo = formatRelatedInfo(rawPriceHistory);
     setRelatedInfo(relatedInfo);
-    setUniqueIds(uniqueIds);
-    setUniqueChoices(uniqueChoices);
   };
 
   useEffect(() => {
@@ -187,7 +183,7 @@ export default function Chart({ slug }: { slug: string }) {
       </div>
       <div className="flex w-full flex-col justify-between space-y-4 md:flex-row md:space-y-0">
         <div className="flex justify-between space-x-2">
-          {uniqueChoices.map((choice, index) => (
+          {choices.map((choice, index) => (
             <FilterButtonChoice
               key={index}
               className="flex-grow"
@@ -213,7 +209,7 @@ export default function Chart({ slug }: { slug: string }) {
         <ResponsiveContainer width="100%" height={400}>
           {/* adjust left margin to reveal first x-axis tick */}
           <LineChart
-            data={priceHistory}
+            data={priceHistory[choiceFilter]}
             margin={{ top: 5, right: 0, left: 25, bottom: 5 }}
           >
             <XAxis
@@ -232,15 +228,15 @@ export default function Chart({ slug }: { slug: string }) {
               contentStyle={{ color: "white", backgroundColor: BG_GRAY_900 }}
               formatter={formatTooltip}
             />
-            {uniqueIds
-              .filter((id) => relatedInfo[id].title === choiceFilter)
-              .map((id, index) => (
+            {Object.entries(relatedInfo)
+              .filter(([id, info]) => info.title === choiceFilter)
+              .map(([id, info], index) => (
                 <Line
                   key={index}
                   dot={false}
                   type="monotone"
-                  dataKey={id}
-                  stroke={hexMap[relatedInfo[id].color as string]}
+                  dataKey={info.card_title}
+                  stroke={hexMap[info.color as string]}
                 />
               ))}
           </LineChart>

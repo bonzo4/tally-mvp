@@ -93,14 +93,42 @@ function getUniqueChoices(priceHistory: PriceHistory[]): Array<string> {
   return Array.from(uniqueChoices);
 }
 
-function formatPriceData(priceHistory: PriceHistory[]): FormattedPriceData[] {
+function getTime(isoString: string) {
+  const date = new Date(isoString);
+  // get time in local time zone
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
+
+function getDateTime(isoString: string) {
+  const date = new Date(isoString);
+  // get time in local time zone
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
+
+function formatPriceData(
+  priceHistory: PriceHistory[],
+  timeFilter: string
+): FormattedPriceData[] {
   const prices: FormattedPriceData[] = [];
   let index = -1;
+  console.log(timeFilter);
   for (const price of priceHistory) {
-    if (index < 0 || prices[index].name !== price.created_at) {
+    const time =
+      timeFilter === "1H" || timeFilter === "1D"
+        ? getTime(price.created_at)
+        : getDateTime(price.created_at);
+    if (index < 0 || prices[index].name !== time) {
       index++;
       const price_: FormattedPriceData = {
-        name: price.created_at,
+        name: time,
         [price.card_title]: price.price,
       };
       prices.push(price_);
@@ -156,7 +184,8 @@ export default function Chart({ slug }: { slug: string }) {
     const priceByChoice: PricesByChoice = {};
     for (const choice of choices) {
       priceByChoice[choice] = formatPriceData(
-        rawPriceHistory.filter((price) => price.title === choice)
+        rawPriceHistory.filter((price) => price.title === choice),
+        TIME_VALUES_MAP[timeFrame]
       );
     }
     setPriceHistory(priceByChoice);
@@ -246,12 +275,20 @@ export default function Chart({ slug }: { slug: string }) {
   );
 }
 
+const TIME_VALUES_MAP: Record<string, string> = {
+  "1 hour": "1H",
+  "1 day": "1D",
+  "1 week": "1W",
+  "1 month": "1M",
+  all: "All",
+};
+
 const TEST_TIME_FILTERS = [
-  { title: "1H", value: "1 hour" },
-  { title: "1D", value: "1 day" },
-  { title: "1W", value: "1 week" },
-  { title: "1M", value: "1 month" },
-  { title: "All", value: "all" },
+  { title: "1H", value: "1 hour", format: "time" },
+  { title: "1D", value: "1 day", format: "time" },
+  { title: "1W", value: "1 week", format: "datetime" },
+  { title: "1M", value: "1 month", format: "datetime" },
+  { title: "All", value: "all", format: "datetime" },
 ];
 
 const data = [

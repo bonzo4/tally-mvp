@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { cn } from "@/lib/utils";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,6 +23,8 @@ import { hexMap } from "@/lib/cssMaps";
 import { Database } from "@/lib/supabase/types";
 import { RelatedInfo } from "@/lib/supabase/queries/markets/priceHistory";
 
+import { bgCssMap, bgHoverCssMap } from "@/lib/cssMaps";
+
 type PriceHistory = Database["public"]["Tables"]["price_histories"]["Row"];
 type Color = Database["public"]["Enums"]["colors_enum"] | null;
 
@@ -30,25 +33,25 @@ const BG_GRAY_900 = "rgb(17 24 39)";
 function FilterButtonChoice(props: FilterButtonProps) {
   const { name, selected, className, ...rest } = props;
 
-  let color;
+  let bgCss;
   if (name === "Yes") {
-    color =
+    bgCss =
       name === selected
         ? "bg-tally-primary hover:bg-tally-primary/90 text-black"
         : "bg-zinc-800 hover:bg-tally-primary/20";
   } else if (name === "No") {
-    color =
+    bgCss =
       name === selected
         ? "bg-tally-red hover:bg-tally-red/90 text-black"
         : "bg-zinc-800 hover:bg-tally-red/20";
   } else if (name === "Maybe") {
-    color =
+    bgCss =
       name === selected
         ? "bg-orange-400 hover:bg-orange-400/90 text-black"
         : "bg-zinc-800";
   }
   return (
-    <FilterButtonPrimitive {...rest} className={`${color} ${className}`}>
+    <FilterButtonPrimitive {...rest} className={cn(bgCss, className)}>
       {name}
     </FilterButtonPrimitive>
   );
@@ -88,6 +91,14 @@ function getUniqueIds(priceHistory: PriceHistory[]): Array<number> {
     uniqueIds.add(price.choice_market_id);
   }
   return Array.from(uniqueIds);
+}
+
+function getUniqueChoices(relatedInfo: RelatedInfo[]): Array<string> {
+  const uniqueChoices = new Set<string>();
+  for (const info of relatedInfo) {
+    uniqueChoices.add(info.title);
+  }
+  return Array.from(uniqueChoices);
 }
 
 function formatPriceData(priceHistory: PriceHistory[]): FormattedPriceData[] {
@@ -136,39 +147,35 @@ export default function Chart({ slug }: { slug: string }) {
   const [priceHistory, setPriceHistory] = useState<FormattedPriceData[]>([]);
   const [relatedInfo, setRelatedInfo] = useState<FormattedRelatedInfo>({});
   const [uniqueIds, setUniqueIds] = useState<number[]>([]);
+  const [uniqueChoices, setUniqueChoices] = useState<string[]>([]);
 
   const formatTooltip = (value: number, name: string) => {
     return [formatDollarsWithCents(value), name];
   };
 
-  useEffect(() => {
-    const fetchAndSetAllPriceData = async () => {
-      const res = await fetch(`/api/priceHistory?slug=${slug}&timeFrame=all`);
-      const { priceHistory: rawPriceHistory, relatedInfo: rawRelatedInfo } =
-        await res.json();
-      const priceHistory = formatPriceData(rawPriceHistory);
-      const relatedInfo = formatRelatedInfo(rawRelatedInfo);
-      const uniqueIds = getUniqueIds(rawPriceHistory);
-      setPriceHistory(priceHistory);
-      setRelatedInfo(relatedInfo);
-      setUniqueIds(uniqueIds);
-    };
-    fetchAndSetAllPriceData();
-  }, [slug]);
-
-  const handleTimeClick = async (time: { title: string; value: string }) => {
-    setTimeFilter(time.title);
+  const fetchAndSetAllPriceData = async (slug: string, timeFrame: string) => {
     const res = await fetch(
-      `/api/priceHistory?slug=${slug}&timeFrame=${time.value}`
+      `/api/priceHistory?slug=${slug}&timeFrame=${timeFrame}`
     );
     const { priceHistory: rawPriceHistory, relatedInfo: rawRelatedInfo } =
       await res.json();
     const priceHistory = formatPriceData(rawPriceHistory);
     const relatedInfo = formatRelatedInfo(rawRelatedInfo);
     const uniqueIds = getUniqueIds(rawPriceHistory);
+    const uniqueChoices = getUniqueChoices(rawRelatedInfo);
     setPriceHistory(priceHistory);
     setRelatedInfo(relatedInfo);
     setUniqueIds(uniqueIds);
+    setUniqueChoices(uniqueChoices);
+  };
+
+  useEffect(() => {
+    fetchAndSetAllPriceData(slug, "all");
+  }, [slug]);
+
+  const handleTimeClick = async (time: { title: string; value: string }) => {
+    setTimeFilter(time.title);
+    fetchAndSetAllPriceData(slug, time.value);
   };
 
   return (
@@ -180,18 +187,15 @@ export default function Chart({ slug }: { slug: string }) {
       </div>
       <div className="flex w-full flex-col justify-between space-y-4 md:flex-row md:space-y-0">
         <div className="flex justify-between space-x-2">
-          <FilterButtonChoice
-            className="flex-grow"
-            onClick={() => setChoiceFilter("Yes")}
-            name={"Yes"}
-            selected={choiceFilter}
-          />
-          <FilterButtonChoice
-            className="flex-grow"
-            onClick={() => setChoiceFilter("No")}
-            name={"No"}
-            selected={choiceFilter}
-          />
+          {uniqueChoices.map((choice, index) => (
+            <FilterButtonChoice
+              key={index}
+              className="flex-grow"
+              onClick={() => setChoiceFilter(choice)}
+              name={choice}
+              selected={choiceFilter}
+            />
+          ))}
         </div>
         <div className="flex justify-between space-x-2">
           {TEST_TIME_FILTERS.map((time, index) => (
@@ -228,8 +232,9 @@ export default function Chart({ slug }: { slug: string }) {
               contentStyle={{ color: "white", backgroundColor: BG_GRAY_900 }}
               formatter={formatTooltip}
             />
-            {uniqueIds.map((id, index) => {
-              return (
+            {uniqueIds
+              .filter((id) => relatedInfo[id].title === choiceFilter)
+              .map((id, index) => (
                 <Line
                   key={index}
                   dot={false}
@@ -237,8 +242,7 @@ export default function Chart({ slug }: { slug: string }) {
                   dataKey={id}
                   stroke={hexMap[relatedInfo[id].color as string]}
                 />
-              );
-            })}
+              ))}
           </LineChart>
         </ResponsiveContainer>
       </div>

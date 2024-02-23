@@ -26,10 +26,12 @@ export async function GET(request: NextRequest) {
     if (!slug || !timeFrame || !isValidTimeFrame(timeFrame)) {
       throw new Error("Both slug and timeFrame are required.");
     }
+
     const resData = await getPriceHistory({
       supabase: supabase,
       options: { slug, timeFrame },
     });
+
     return NextResponse.json(resData, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

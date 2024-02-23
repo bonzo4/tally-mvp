@@ -233,7 +233,7 @@ export default function Chart({ slug }: { slug: string }) {
           ))}
         </div>
       </div>
-      <Legend />
+      {/* <Legend /> */}
       <div className="w-full">
         <ResponsiveContainer width="100%" height={400}>
           {/* adjust left margin to reveal first x-axis tick */}

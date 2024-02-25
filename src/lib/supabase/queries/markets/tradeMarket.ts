@@ -1,7 +1,24 @@
 import { Database } from "../../types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { fetchQuery } from "../../fetch";
-import { PredictionMarketsWithSubMarkets } from "./predictionMarkets";
+
+type PredictionMarket =
+  Database["public"]["Tables"]["prediction_markets"]["Row"];
+type SubMarket = Database["public"]["Tables"]["sub_markets"]["Row"];
+type ChoiceMarket = Database["public"]["Tables"]["choice_markets"]["Row"];
+type Holding = Database["public"]["Tables"]["holdings"]["Row"];
+
+export type ChoiceMarketWithHoldings = ChoiceMarket & {
+  holdings: Holding[];
+};
+
+export type SubMarketWithHoldings = SubMarket & {
+  choice_markets: ChoiceMarketWithHoldings[];
+};
+
+export type PredictionMarketWithHoldings = PredictionMarket & {
+  sub_markets: SubMarketWithHoldings[];
+};
 
 type GetTradeMarketsQueryOptions = {
   slug: string;
@@ -18,10 +35,17 @@ async function getTradeMarketsQuery({
 }: GetTradeMarketsOptions) {
   return await supabase
     .from("prediction_markets")
-    .select(
-      "*, sub_markets(*, choice_markets!choice_markets_sub_market_id_fkey(*))"
-    )
-    .eq("slug", options.slug);
+    .select("*, sub_markets(*, choice_markets(*, holdings(*)))")
+    .eq("slug", options.slug)
+    .order("order", { foreignTable: "sub_markets", ascending: true })
+    .order("order", {
+      foreignTable: "sub_markets.choice_markets",
+      ascending: true,
+    })
+    .order("created_at", {
+      foreignTable: "sub_markets.choice_markets",
+      ascending: true,
+    });
 }
 
 export async function getTradeMarkets({
@@ -29,7 +53,7 @@ export async function getTradeMarkets({
   options,
 }: GetTradeMarketsOptions) {
   return await fetchQuery<
-    PredictionMarketsWithSubMarkets,
+    PredictionMarketWithHoldings,
     GetTradeMarketsQueryOptions
   >({
     supabase: supabase,

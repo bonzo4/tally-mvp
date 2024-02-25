@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteSupabaseClient();
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
+  const redirectTo = searchParams.get("redirectTo") || "/";
 
   if (code) {
     await supabase.auth.exchangeCodeForSession(code);
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: wallet } = await supabase
-    .from("proxy_wallets")
+    .from("user_balances")
     .select("*")
     .eq("user_id", userDoc.id)
     .single();
@@ -38,7 +39,7 @@ export async function GET(req: NextRequest) {
   if (!wallet) {
     const walletKeys = createWallet();
 
-    const { error } = await supabase.from("proxy_wallets").insert({
+    const { error } = await supabase.from("user_balances").insert({
       user_id: userDoc.id,
       encrypted_secret_key: walletKeys.encryptedSecretKey,
       public_key: walletKeys.publicKeyString,
@@ -50,5 +51,5 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL("/", req.url));
+  return NextResponse.redirect(new URL(redirectTo, req.url));
 }

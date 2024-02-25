@@ -1,8 +1,19 @@
-export function convertDollarsToCents(dollars: number): string {
+function formatCentsPrimitive(dollars: number): string {
   const valueFormatted = new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 0,
   }).format(dollars * 100);
   return `${valueFormatted}¢`;
+}
+
+export function formatCents(dollars: number): string {
+  if (dollars === 0) return formatCentsPrimitive(dollars);
+  if (dollars < 0.01) {
+    return "<1¢";
+  }
+  if (dollars > 0.99 && dollars < 1) {
+    return ">99¢";
+  }
+  return formatCentsPrimitive(dollars);
 }
 
 export function convertNumberToDollars(value: number): string {
@@ -78,4 +89,19 @@ export function formatIsoAsDateWithTime(isoString: string) {
   const year = date.getFullYear();
   const time = formatAMPM(date);
   return `${appendOrdinalSuffixes(day)} ${month} ${year} ${time}`;
+}
+
+export function formatIsoAsDateWithoutTime(isoString: string) {
+  const date = new Date(isoString);
+  const day = date.getDate();
+  const month = date.toLocaleString("default", { month: "short" });
+  const year = date.getFullYear();
+  return `${appendOrdinalSuffixes(day)} ${month} ${year}`;
+}
+
+export function formatPercentageWithOneDecimal(decimal: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "percent",
+    maximumFractionDigits: 1,
+  }).format(decimal);
 }

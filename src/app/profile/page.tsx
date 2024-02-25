@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getFairLaunchHistory } from "@/lib/supabase/queries/fairLaunchHistory";
 import { getHoldings, Holdings } from "@/lib/supabase/queries/holdings";
-import { getProxyWallet } from "@/lib/supabase/queries/proxyWallet";
+import { getUserBalance } from "@/lib/supabase/queries/userBalance";
 import { getRankByVolume } from "@/lib/supabase/queries/rank/volume";
 import { getTradeHistory } from "@/lib/supabase/queries/tradeHistory";
 import { getUser } from "@/lib/supabase/queries/user";
@@ -73,7 +73,7 @@ export default async function Profile() {
     options: { userId: authUser.id },
   });
 
-  const proxyWallet = await getProxyWallet({
+  const userBalances = await getUserBalance({
     supabase: supabase,
     options: { userId: user.id },
   });
@@ -98,7 +98,7 @@ export default async function Profile() {
     options: { userId: user.id },
   });
 
-  const balance = proxyWallet.unredeemable_balance + proxyWallet.usdc_balance;
+  const balance = userBalances.unredeemable_balance + userBalances.usdc_balance;
   const volume = holdings.reduce((acc, holding) => {
     return acc + holding.total_sell_value + holding.total_sell_value;
   }, 0);

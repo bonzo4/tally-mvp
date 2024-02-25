@@ -37,6 +37,7 @@ export default function Deposit() {
             colors: {
               primaryButtonBackground: "46FF9B",
               primaryButtonText: "FFFFFF",
+              primaryButtonBackgroundHover: "46FF9B",
             },
           },
           amount: amount,

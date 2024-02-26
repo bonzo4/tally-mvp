@@ -115,7 +115,7 @@ export default async function Profile() {
             <DisplayPicture image={user.icon} />
             <Overview user={user} />
           </div>
-          <Account balance={balance} portfolio={portfolio} />
+          <Account balance={balance} portfolio={portfolio} userId={user.id} />
         </div>
         <Rankings
           portfolio={portfolio}

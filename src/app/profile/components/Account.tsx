@@ -1,13 +1,15 @@
-import { Button } from "@/components/ui/button";
 import { formatDollarsWithCents } from "@/lib/formats";
 import DepositDialog from "./DepositDialog";
+import WithdrawDialog from "./WithdrawDialog";
 
 export default function Account({
   balance,
   portfolio,
+  userId,
 }: {
   balance: number;
   portfolio: number;
+  userId: number;
 }) {
   return (
     <div className="flex h-full w-full flex-col justify-between space-y-4 rounded-2xl bg-zinc-900 p-6 lg:w-[420px]">
@@ -27,10 +29,8 @@ export default function Account({
         </div>
       </div>
       <div className="flex justify-evenly space-x-2">
-        <Button className="w-full border border-tally-primary bg-transparent text-tally-primary hover:bg-tally-primary/10">
-          Withdraw
-        </Button>
-        <DepositDialog />
+        <WithdrawDialog userId={userId} />
+        <DepositDialog userId={userId} />
       </div>
     </div>
   );

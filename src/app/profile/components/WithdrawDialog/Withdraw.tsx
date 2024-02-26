@@ -4,11 +4,11 @@ import { ChangeEvent, useState } from "react";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type DepositProps = {
+type WithdrawProps = {
   userId: number;
 };
 
-export default function Deposit({ userId }: DepositProps) {
+export default function Withdraw({ userId }: WithdrawProps) {
   const [amount, setAmount] = useState("5");
 
   return (

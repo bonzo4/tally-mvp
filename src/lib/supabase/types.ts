@@ -231,31 +231,28 @@ export type Database = {
       };
       deposits: {
         Row: {
+          balance_id: number;
           created_at: string;
           id: number;
           new_usdc_balance: number;
-          payment_type: string;
           usdc_amount_received: number;
           user_id: number;
-          wallet_id: number;
         };
         Insert: {
+          balance_id: number;
           created_at?: string;
           id?: number;
           new_usdc_balance: number;
-          payment_type: string;
           usdc_amount_received: number;
           user_id: number;
-          wallet_id: number;
         };
         Update: {
+          balance_id?: number;
           created_at?: string;
           id?: number;
           new_usdc_balance?: number;
-          payment_type?: string;
           usdc_amount_received?: number;
           user_id?: number;
-          wallet_id?: number;
         };
         Relationships: [
           {
@@ -266,8 +263,8 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "deposits_wallet_id_fkey";
-            columns: ["wallet_id"];
+            foreignKeyName: "public_deposits_balance_id_fkey";
+            columns: ["balance_id"];
             isOneToOne: false;
             referencedRelation: "user_balances";
             referencedColumns: ["id"];
@@ -1089,7 +1086,7 @@ export type Database = {
       user_balances: {
         Row: {
           created_at: string;
-          encrypted_secret_key: string;
+          has_first_deposit: boolean;
           id: number;
           public_key: string;
           unredeemable_balance: number;
@@ -1098,7 +1095,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
-          encrypted_secret_key: string;
+          has_first_deposit?: boolean;
           id?: number;
           public_key: string;
           unredeemable_balance?: number;
@@ -1107,7 +1104,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
-          encrypted_secret_key?: string;
+          has_first_deposit?: boolean;
           id?: number;
           public_key?: string;
           unredeemable_balance?: number;
@@ -1254,6 +1251,9 @@ export type Database = {
           created_at: string;
           choice_market_id: number;
           price: number;
+          title: string;
+          card_title: string;
+          color: Database["public"]["Enums"]["colors_enum"];
         }[];
       };
       handle_prediction_market_search: {

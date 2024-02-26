@@ -41,7 +41,6 @@ export async function GET(req: NextRequest) {
 
     const { error } = await supabase.from("user_balances").insert({
       user_id: userDoc.id,
-      encrypted_secret_key: walletKeys.encryptedSecretKey,
       public_key: walletKeys.publicKeyString,
       unredeemable_balance: 5,
     });

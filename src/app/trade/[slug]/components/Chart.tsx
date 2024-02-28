@@ -86,11 +86,12 @@ type PricesByChoice = {
 };
 
 function getUniqueChoices(priceHistory: PriceHistory[]): Array<string> {
-  const uniqueChoices = new Set<string>();
-  for (const price of priceHistory) {
-    uniqueChoices.add(price.title);
-  }
-  return Array.from(uniqueChoices);
+  // const uniqueChoices = new Set<string>();
+  // for (const price of priceHistory) {
+  //   uniqueChoices.add(price.title);
+  // }
+  // return Array.from(uniqueChoices);
+  return ["Yes", "No"];
 }
 
 function getTime(isoString: string) {

@@ -33,8 +33,6 @@ type TimeMap = {
 
 type FormattedPriceData = {
   name: string;
-  date: string;
-  time: string;
   [key: string]: string | number;
 };
 type FormattedRelatedInfo = {
@@ -160,18 +158,11 @@ function formatPriceData(
 ): FormattedPriceData[] {
   const prices: FormattedPriceData[] = [];
   let index = -1;
-  console.log(timeFilter);
   for (const price of priceHistory) {
-    // const time =
-    //   timeFilter === "1H" || timeFilter === "1D"
-    //     ? getTime(price.created_at)
-    //     : getDateTime(price.created_at);
     if (index < 0 || prices[index].name !== getDateTime(price.created_at)) {
       index++;
       const price_: FormattedPriceData = {
         name: getDateTime(price.created_at),
-        date: getDate(price.created_at),
-        time: getTime(price.created_at),
         [price.card_title]: price.price,
       };
       prices.push(price_);
@@ -278,7 +269,14 @@ export default function Chart({ slug }: { slug: string }) {
           >
             <XAxis
               axisLine={false}
-              dataKey={"name"}
+              dataKey="name"
+              tickFormatter={(value) => {
+                if (timeFilter === "1H" || timeFilter === "1D") {
+                  return getTime(value);
+                } else {
+                  return getDate(value);
+                }
+              }}
               tickLine={false}
               tickMargin={15}
             />
@@ -289,6 +287,7 @@ export default function Chart({ slug }: { slug: string }) {
               tickFormatter={formatDollarsWithCents}
             />
             <Tooltip
+              label="name"
               contentStyle={{ color: "white", backgroundColor: BG_GRAY_900 }}
               formatter={formatTooltip}
             />

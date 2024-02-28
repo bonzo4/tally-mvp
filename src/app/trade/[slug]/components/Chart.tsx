@@ -24,7 +24,47 @@ import { hexMap } from "@/lib/cssMaps";
 
 type Color = Database["public"]["Enums"]["colors_enum"] | null;
 
+type TimeFilters = "1H" | "1D" | "1W" | "1M" | "All";
+type TimeValue = "1 hour" | "1 day" | "1 week" | "1 month" | "all";
+type TimeMap = {
+  title: TimeFilters;
+  value: TimeValue;
+};
+
+type FormattedPriceData = {
+  name: string;
+  date: string;
+  time: string;
+  [key: string]: string | number;
+};
+type FormattedRelatedInfo = {
+  [id: number]: {
+    title: string;
+    card_title: string;
+    color: Color;
+  };
+};
+type PricesByChoice = {
+  [key: string]: FormattedPriceData[];
+};
+
 const BG_GRAY_900 = "rgb(17 24 39)";
+
+const TIME_VALUES_MAP: Record<string, string> = {
+  "1 hour": "1H",
+  "1 day": "1D",
+  "1 week": "1W",
+  "1 month": "1M",
+  all: "All",
+};
+
+const timeFilters: Array<TimeMap> = [
+  { title: "1H", value: "1 hour" },
+  { title: "1D", value: "1 day" },
+  { title: "1W", value: "1 week" },
+  { title: "1M", value: "1 month" },
+  { title: "All", value: "all" },
+];
 
 function FilterButtonChoice(props: FilterButtonProps) {
   const { name, selected, className, ...rest } = props;
@@ -76,15 +116,6 @@ function Legend() {
   );
 }
 
-type FormattedPriceData = {
-  name: string;
-  [key: string]: string | number;
-};
-
-type PricesByChoice = {
-  [key: string]: FormattedPriceData[];
-};
-
 function getUniqueChoices(priceHistory: PriceHistory[]): Array<string> {
   // const uniqueChoices = new Set<string>();
   // for (const price of priceHistory) {
@@ -100,6 +131,15 @@ function getTime(isoString: string) {
   return date.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "numeric",
+  });
+}
+
+function getDate(isoString: string) {
+  const date = new Date(isoString);
+  // get time in local time zone
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
   });
 }
 
@@ -122,14 +162,16 @@ function formatPriceData(
   let index = -1;
   console.log(timeFilter);
   for (const price of priceHistory) {
-    const time =
-      timeFilter === "1H" || timeFilter === "1D"
-        ? getTime(price.created_at)
-        : getDateTime(price.created_at);
-    if (index < 0 || prices[index].name !== time) {
+    // const time =
+    //   timeFilter === "1H" || timeFilter === "1D"
+    //     ? getTime(price.created_at)
+    //     : getDateTime(price.created_at);
+    if (index < 0 || prices[index].name !== getDateTime(price.created_at)) {
       index++;
       const price_: FormattedPriceData = {
-        name: time,
+        name: getDateTime(price.created_at),
+        date: getDate(price.created_at),
+        time: getTime(price.created_at),
         [price.card_title]: price.price,
       };
       prices.push(price_);
@@ -139,14 +181,6 @@ function formatPriceData(
   }
   return prices;
 }
-
-type FormattedRelatedInfo = {
-  [id: number]: {
-    title: string;
-    card_title: string;
-    color: Color;
-  };
-};
 
 function formatRelatedInfo(priceHistory: PriceHistory[]) {
   const relatedInfo: FormattedRelatedInfo = {};
@@ -164,7 +198,7 @@ function formatRelatedInfo(priceHistory: PriceHistory[]) {
 export default function Chart({ slug }: { slug: string }) {
   const [choices, setChoices] = useState<string[]>([]);
   const [choiceFilter, setChoiceFilter] = useState<string>("");
-  const [timeFilter, setTimeFilter] = useState<string>("All");
+  const [timeFilter, setTimeFilter] = useState<TimeFilters>("All");
   const [priceHistory, setPriceHistory] = useState<PricesByChoice>({});
   const [relatedInfo, setRelatedInfo] = useState<FormattedRelatedInfo>({});
 
@@ -199,7 +233,7 @@ export default function Chart({ slug }: { slug: string }) {
     fetchAndSetAllPriceData(slug, "all");
   }, [slug]);
 
-  const handleTimeClick = async (time: { title: string; value: string }) => {
+  const handleTimeClick = async (time: TimeMap) => {
     setTimeFilter(time.title);
     fetchAndSetAllPriceData(slug, time.value);
   };
@@ -224,7 +258,7 @@ export default function Chart({ slug }: { slug: string }) {
           ))}
         </div>
         <div className="flex justify-between space-x-2">
-          {TEST_TIME_FILTERS.map((time, index) => (
+          {timeFilters.map((time, index) => (
             <FilterButton
               key={index}
               name={time.title}
@@ -244,7 +278,7 @@ export default function Chart({ slug }: { slug: string }) {
           >
             <XAxis
               axisLine={false}
-              dataKey="name"
+              dataKey={"name"}
               tickLine={false}
               tickMargin={15}
             />
@@ -275,69 +309,3 @@ export default function Chart({ slug }: { slug: string }) {
     </div>
   );
 }
-
-const TIME_VALUES_MAP: Record<string, string> = {
-  "1 hour": "1H",
-  "1 day": "1D",
-  "1 week": "1W",
-  "1 month": "1M",
-  all: "All",
-};
-
-const TEST_TIME_FILTERS = [
-  { title: "1H", value: "1 hour", format: "time" },
-  { title: "1D", value: "1 day", format: "time" },
-  { title: "1W", value: "1 week", format: "datetime" },
-  { title: "1M", value: "1 month", format: "datetime" },
-  { title: "All", value: "all", format: "datetime" },
-];
-
-const data = [
-  {
-    name: "Dec 13",
-    Trump: 0.4,
-    Ramasawamy: 0.24,
-    Biden: 0.24,
-  },
-  {
-    name: "Dec 14",
-    Trump: 0.3,
-    Ramasawamy: 0.1398,
-    Biden: 0.221,
-  },
-  {
-    name: "Dec 15",
-    Trump: 0.2,
-    Ramasawamy: 0.98,
-    Biden: 0.229,
-    Newsom: 0.091,
-  },
-  {
-    name: "Dec 16",
-    Trump: 0.278,
-    Ramasawamy: 0.3908,
-    Biden: 0.2,
-    Newsom: 0.111,
-  },
-  {
-    name: "Dec 17",
-    Trump: 0.189,
-    Ramasawamy: 0.48,
-    Biden: 0.2181,
-    Newsom: 0.076,
-  },
-  {
-    name: "Dec 18",
-    Trump: 0.239,
-    Ramasawamy: 0.38,
-    Biden: 0.25,
-    Newsom: 0.086,
-  },
-  {
-    name: "Dec 19",
-    Trump: 0.349,
-    Ramasawamy: 0.43,
-    Biden: 0.21,
-    Newsom: 0.163,
-  },
-];

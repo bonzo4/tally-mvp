@@ -259,13 +259,12 @@ export default function Chart({ slug }: { slug: string }) {
           ))}
         </div>
       </div>
-      {/* <Legend /> */}
       <div className="w-full">
         <ResponsiveContainer width="100%" height={400}>
           {/* adjust left margin to reveal first x-axis tick */}
           <LineChart
             data={priceHistory[choiceFilter]}
-            margin={{ top: 5, right: 0, left: 25, bottom: 5 }}
+            margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
           >
             <XAxis
               axisLine={false}

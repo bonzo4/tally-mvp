@@ -1,5 +1,5 @@
 import { Database } from "../../types";
-import { SupabaseClient } from "@supabase/supabase-js";
+import { PostgrestResponse, SupabaseClient } from "@supabase/supabase-js";
 import { fetchQuery } from "../../fetch";
 
 type PredictionMarket =
@@ -32,7 +32,9 @@ type GetTradeMarketsOptions = {
 async function getTradeMarketsQuery({
   supabase,
   options,
-}: GetTradeMarketsOptions) {
+}: GetTradeMarketsOptions): Promise<
+  PostgrestResponse<PredictionMarketWithHoldings>
+> {
   return await supabase
     .from("prediction_markets")
     .select("*, sub_markets(*, choice_markets(*, holdings(*)))")

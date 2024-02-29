@@ -1254,6 +1254,9 @@ export type Database = {
           created_at: string
           choice_market_id: number
           price: number
+          title: string
+          card_title: string
+          color: Database["public"]["Enums"]["colors_enum"]
         }[]
       }
       handle_prediction_market_search: {

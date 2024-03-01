@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useFormState } from "react-dom";
+import { Database } from "@/lib/supabase/types";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
-import { formatDollarsWithoutCents } from "@/lib/formats";
 import { cn } from "@/lib/utils";
 
-import { FilterButton } from "@/components/FilterButton";
 import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
-import { Database } from "@/lib/supabase/types";
+import { FilterButton } from "@/components/FilterButton";
+import { formatDollarsWithoutCents } from "@/lib/formats";
+import { submitFairLaunch } from "@/lib/api/actions/submitFairLaunch";
 import { textCssMap } from "@/lib/cssMaps";
 
 type Color = Database["public"]["Enums"]["colors_enum"];
@@ -47,8 +49,18 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
   const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
   const textCss = textCssMap[color as keyof typeof textCssMap];
 
+  const [formState, formAction] = useFormState<any, FormData>(
+    submitFairLaunch.bind(null, choice.id),
+    {}
+  );
+
+  useEffect(() => {
+    console.log(formState);
+  }, [formState]);
+
   return (
-    <div
+    <form
+      action={(payload) => formAction(payload)}
       className={cn(
         borderCss,
         "flex flex-col space-y-4 rounded-2xl border-2 bg-black p-4"
@@ -65,6 +77,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
       </div>
       <div className="flex space-x-2">
         <Input
+          name="amount"
           className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
           placeholder="$0"
         />
@@ -82,7 +95,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
           <div className="text-white">$0 (0%)</div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 

@@ -128,7 +128,30 @@ function validateFormData(formData: FormData) {
   }
 }
 
+async function validateTimeToSubmitFairLaunch(
+  supabase: SupabaseClient,
+  choice_market_id: number
+) {
+  try {
+    const now = new Date().toISOString();
+    const { data, error } = await supabase
+      .from("choice_markets")
+      .select("*, sub_markets(fair_launch_end)")
+      .eq("id", choice_market_id);
+    if (error) {
+      throw error;
+    }
+    const choice_market = data[0];
+    if (now > choice_market.sub_markets.fair_launch_end) {
+      throw new Error("Fair launch as ended.");
+    }
+  } catch (error) {
+    return fromErrorToFormState(error);
+  }
+}
+
 export async function validateFairLaunch(
+  choice_market_id: number,
   prevState: any,
   formData: FormData
 ): Promise<FairLaunchUseFormState> {
@@ -140,6 +163,9 @@ export async function validateFairLaunch(
 
     // check if form is valid
     const amount = validateFormData(formData) as number;
+
+    // check that user it's not too late to submit fair launch order
+    await validateTimeToSubmitFairLaunch(supabase, choice_market_id);
 
     await checkSufficientFunds({
       supabase,
@@ -181,6 +207,9 @@ export async function submitFairLaunch(
 
     // check if form is valid
     const amount = validateFormData(formData) as number;
+
+    // check that user it's not too late to submit fair launch order
+    await validateTimeToSubmitFairLaunch(supabase, choice_market_id);
 
     await checkSufficientFunds({
       supabase,

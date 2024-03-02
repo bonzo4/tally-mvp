@@ -12,8 +12,14 @@ import { cn } from "@/lib/utils";
 import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
 import { FilterButton } from "@/components/FilterButton";
 import { formatDollarsWithoutCents } from "@/lib/formats";
-import { submitFairLaunch } from "@/lib/api/actions/submitFairLaunch";
+import {
+  validateFairLaunch,
+  submitFairLaunch,
+  FairLaunchEstimate,
+  FairLaunchUseFormState,
+} from "@/lib/api/actions/submitFairLaunch";
 import { textCssMap } from "@/lib/cssMaps";
+import { FairLaunchConfirmation } from "./Popup";
 
 type Color = Database["public"]["Enums"]["colors_enum"];
 
@@ -43,24 +49,43 @@ const buttonCssMap: Record<Color, string> = {
   white: "bg-tally-white hover:bg-tally-white/90",
 };
 
+type FairLaunchFormState = {
+  amount: number;
+};
+
 function OrderCard({ choice }: { choice: ChoiceMarket }) {
   const color = choice.color || "primary";
   const borderCss = borderCssMap[color as keyof typeof borderCssMap];
   const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
   const textCss = textCssMap[color as keyof typeof textCssMap];
 
-  const [formState, formAction] = useFormState<any, FormData>(
-    submitFairLaunch.bind(null, choice.id),
-    {}
-  );
+  const [validateFormState, validateFormAction] = useFormState<
+    FairLaunchUseFormState,
+    FormData
+  >(validateFairLaunch.bind(null, choice.id), null);
+
+  const [submitFormState, submitFormAction] = useFormState<
+    FairLaunchUseFormState,
+    FormData
+  >(submitFairLaunch.bind(null, choice.id), null);
+
+  const [estimate, setEstimate] = useState<FairLaunchEstimate | null>(null);
 
   useEffect(() => {
-    console.log(formState);
-  }, [formState]);
+    console.log("Validate Form State", validateFormState);
+  }, [validateFormState]);
+
+  useEffect(() => {
+    if (validateFormState?.status === "success") {
+      setEstimate(validateFormState.estimate);
+      console.log("Estimate", validateFormState.estimate);
+    }
+  }, [validateFormState]);
 
   return (
     <form
-      action={(payload) => formAction(payload)}
+      id={`fair-launch-form-${choice.id}`}
+      action={(payload) => submitFormAction(payload)}
       className={cn(
         borderCss,
         "flex flex-col space-y-4 rounded-2xl border-2 bg-black p-4"
@@ -81,9 +106,27 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
           className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
           placeholder="$0"
         />
-        <Button className={cn(buttonCss, "text-black hover:text-black")}>
-          Buy
-        </Button>
+        <FairLaunchConfirmation
+          className={cn(borderCss)}
+          estimate={estimate}
+          trigger={
+            <Button
+              formAction={(payload) => validateFormAction(payload)}
+              className={cn(buttonCss, "text-black hover:text-black")}
+            >
+              Buy
+            </Button>
+          }
+          submit={
+            <Button
+              type="submit"
+              form={`fair-launch-form-${choice.id}`}
+              className={cn(buttonCss, "text-black hover:text-black")}
+            >
+              Submit
+            </Button>
+          }
+        />
       </div>
       <div className="flex flex-col space-y-1">
         <div className="flex justify-between">
@@ -141,12 +184,11 @@ function OrderCardMulti({ choice }: { choice: ChoiceMarket }) {
       </div>
       <div className="flex flex-shrink-0 flex-col justify-between">
         <div className="flex space-x-2">
-          <Input
-            className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray xl:w-[251px]"
-            placeholder="$0"
-          />
-          <Button className={cn(buttonCss, "text-black hover:text-black")}>
-            Buy
+          <Button
+            type="submit"
+            className={cn(buttonCss, "text-black hover:text-black")}
+          >
+            Submit
           </Button>
         </div>
         <div className="flex items-end justify-between">

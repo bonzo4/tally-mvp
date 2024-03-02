@@ -11,6 +11,16 @@ import { FEE_RATE } from "@/lib/constants";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 
+export type FairLaunchEstimate = {
+  subMarketTitle: string;
+  choiceMarketTitle: string;
+  choiceMarketId: number;
+  avgPrice: number;
+  cumulativeDollars: number;
+  cumulativeShares: number;
+  fees: number;
+};
+
 export type FairLaunchErrorMessages = {
   radio: string;
   text: string;
@@ -24,6 +34,7 @@ export type FairLaunchUseFormState =
   | {
       status: "success";
       message: string;
+      estimate: FairLaunchEstimate;
     }
   | {
       status: "error";
@@ -150,6 +161,20 @@ async function validateTimeToSubmitFairLaunch(
   }
 }
 
+async function getRelatedInfo(
+  supabase: SupabaseClient,
+  choice_market_id: number
+) {
+  const { data, error } = await supabase
+    .from("choice_markets")
+    .select("title, sub_markets(card_title)")
+    .eq("id", choice_market_id);
+  if (error) {
+    throw error;
+  }
+  return data[0];
+}
+
 export async function validateFairLaunch(
   choice_market_id: number,
   prevState: any,
@@ -173,9 +198,23 @@ export async function validateFairLaunch(
       amount: amount,
     });
 
+    // get information submarket information
+    const relatedInfo = await getRelatedInfo(supabase, choice_market_id);
+
+    const estimate: FairLaunchEstimate = {
+      choiceMarketTitle: relatedInfo.title,
+      subMarketTitle: relatedInfo.sub_markets.card_title,
+      choiceMarketId: choice_market_id,
+      cumulativeDollars: amount,
+      cumulativeShares: amount * 2,
+      avgPrice: 0.5,
+      fees: amount * FEE_RATE,
+    };
+
     return {
       status: "success",
       message: "Order validated successfully.",
+      estimate: estimate,
     };
   } catch (error: any) {
     if (error instanceof FormError) {
@@ -235,7 +274,6 @@ export async function submitFairLaunch(
       .select();
 
     // TODO: Handle error if smart contract fails and redirect appropriately
-
     if (error) {
       throw error;
     }

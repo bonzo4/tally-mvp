@@ -1,16 +1,18 @@
 import Image from "next/image";
-
 import { Badge } from "@/components/ui/badge";
-import { ResultsDesktop, ResultsMobile } from "./components/ResultsCards";
+
+import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
+import { getFairLaunch } from "@/lib/api/data/markets/fairLaunch";
+import { formatDollarsWithoutCents } from "@/lib/formats";
+
 import Countdown from "./components/Countdown";
 import Faq from "./components/Faq";
 import { OrderDesktop, OrderMobile } from "./components/OrderCards";
-import { SubMarketWithChoiceMarkets } from "@/app/api/fair-launch/[slug]/route";
-import TradePhase from "./components/TradePhase";
+
 import FreezePhase from "./components/FreezePhase";
 import ResolutionPhase from "./components/ResolutionPhase";
-import { getFairLaunch } from "@/lib/api/data/markets/fairLaunch";
-import { formatDollarsWithoutCents } from "@/lib/formats";
+import { ResultsDesktop, ResultsMobile } from "./components/ResultsCards";
+import TradePhase from "./components/TradePhase";
 
 function calculatePeriod(market: SubMarketWithChoiceMarkets) {
   const now = new Date().toISOString();

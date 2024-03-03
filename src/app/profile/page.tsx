@@ -27,7 +27,7 @@ function countUniqueSubMarkets(arr: Holdings[]) {
 }
 
 function countUniqueFairLaunches(arr: Holdings[]) {
-  arr = arr.filter((holding) => holding.participated_in_fair_launch);
+  arr = arr.filter((holding) => holding.fair_launch_shares);
 
   let mapObj = new Map();
 

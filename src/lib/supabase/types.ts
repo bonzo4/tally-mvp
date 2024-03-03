@@ -276,30 +276,33 @@ export type Database = {
           avg_share_price: number;
           choice_market_id: number;
           created_at: string;
+          fees: number;
           id: number;
-          incoming_usdc: number;
-          new_usdc_balance: number;
           shares: number;
+          status: Database["public"]["Enums"]["trade_status"];
+          total_amount: number;
           user_id: number;
         };
         Insert: {
           avg_share_price: number;
           choice_market_id: number;
           created_at?: string;
+          fees?: number;
           id?: number;
-          incoming_usdc: number;
-          new_usdc_balance: number;
           shares: number;
+          status?: Database["public"]["Enums"]["trade_status"];
+          total_amount?: number;
           user_id: number;
         };
         Update: {
           avg_share_price?: number;
           choice_market_id?: number;
           created_at?: string;
+          fees?: number;
           id?: number;
-          incoming_usdc?: number;
-          new_usdc_balance?: number;
           shares?: number;
+          status?: Database["public"]["Enums"]["trade_status"];
+          total_amount?: number;
           user_id?: number;
         };
         Relationships: [
@@ -323,8 +326,8 @@ export type Database = {
         Row: {
           choice_market_id: number;
           created_at: string;
+          fair_launch_shares: number;
           id: number;
-          participated_in_fair_launch: boolean;
           shares: number;
           shares_bought: number;
           shares_sold: number;
@@ -336,8 +339,8 @@ export type Database = {
         Insert: {
           choice_market_id: number;
           created_at?: string;
+          fair_launch_shares?: number;
           id?: number;
-          participated_in_fair_launch?: boolean;
           shares?: number;
           shares_bought?: number;
           shares_sold?: number;
@@ -349,8 +352,8 @@ export type Database = {
         Update: {
           choice_market_id?: number;
           created_at?: string;
+          fair_launch_shares?: number;
           id?: number;
-          participated_in_fair_launch?: boolean;
           shares?: number;
           shares_bought?: number;
           shares_sold?: number;

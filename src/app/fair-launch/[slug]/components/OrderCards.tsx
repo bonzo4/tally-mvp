@@ -58,6 +58,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
   const borderCss = borderCssMap[color as keyof typeof borderCssMap];
   const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
   const textCss = textCssMap[color as keyof typeof textCssMap];
+  const [amount, setAmount] = useState<number>(0);
 
   const [validateFormState, validateFormAction] = useFormState<
     FairLaunchUseFormState,
@@ -103,6 +104,8 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
       <div className="flex space-x-2">
         <Input
           name="amount"
+          value={amount ? amount : ""}
+          onChange={(e) => setAmount(Number(e.target.value))}
           className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
           placeholder="$0"
         />
@@ -131,11 +134,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
       <div className="flex flex-col space-y-1">
         <div className="flex justify-between">
           <div className="text-sm text-tally-gray">Shares</div>
-          <div className="text-white">0</div>
-        </div>
-        <div className="flex justify-between">
-          <div className="text-sm text-tally-gray">Potential Return</div>
-          <div className="text-white">$0 (0%)</div>
+          <div className="text-white">{amount * 2}</div>
         </div>
       </div>
     </form>

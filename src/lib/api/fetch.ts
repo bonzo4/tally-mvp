@@ -1,18 +1,26 @@
 "use server";
 
-import { cache } from "react";
+type RequestCache =
+  | "default"
+  | "force-cache"
+  | "no-cache"
+  | "no-store"
+  | "only-if-cached"
+  | "reload";
 
 export type FetchDataProps<T, Options> = {
   url: string;
   options: Options;
+  cache?: RequestCache;
 };
 
 export async function fetchData<T, Options>({
   url,
   options,
+  cache = "no-store",
 }: FetchDataProps<T, Options>): Promise<T | null> {
-  return cache(async (url: string, options: Options) => {
-    const res = await fetch(url);
+  return (async (url: string, options: Options) => {
+    const res = await fetch(url, { cache: cache as RequestCache });
 
     if (res.status !== 200) {
       const data = await res.json();

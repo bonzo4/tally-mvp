@@ -201,14 +201,17 @@ export async function validateFairLaunch(
     // get information submarket information
     const relatedInfo = await getRelatedInfo(supabase, choice_market_id);
 
+    const fees = amount * FEE_RATE;
+    const amountPostFees = amount - fees;
+
     const estimate: FairLaunchEstimate = {
       choiceMarketTitle: relatedInfo.title,
       subMarketTitle: relatedInfo.sub_markets.card_title,
       choiceMarketId: choice_market_id,
-      cumulativeDollars: amount,
-      cumulativeShares: amount * 2,
+      cumulativeDollars: amountPostFees,
+      cumulativeShares: amountPostFees * 2,
       avgPrice: 0.5,
-      fees: amount * FEE_RATE,
+      fees: fees,
     };
 
     return {
@@ -256,16 +259,19 @@ export async function submitFairLaunch(
       amount: amount,
     });
 
+    const fees = amount * FEE_RATE;
+    const amountPostFees = amount - fees;
+
     const txns = [];
 
     txns.push({
       user_id: user.id,
       choice_market_id: choice_market_id,
-      total_amount: amount,
-      shares: amount * 2,
+      total_amount: amountPostFees,
+      shares: amountPostFees * 2,
       avg_share_price: 0.5,
       status: "CONFIRMED" as trade_status,
-      fees: amount * FEE_RATE,
+      fees: fees,
     });
 
     const { data: data, error: error } = await supabase

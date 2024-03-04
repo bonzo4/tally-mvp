@@ -19,7 +19,7 @@ import {
 
 import {
   formatDollarsWithCents,
-  formatNumberWithCommasNoDecimals,
+  formatNumberWithCommas,
   formatPercentageWithOneDecimal,
 } from "@/lib/formats";
 import {
@@ -34,9 +34,7 @@ function EstimateLineItem({ txn }: { txn: FairLaunchEstimate }) {
     <TableRow className="border-0 hover:bg-tally-background">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
       <TableCell>{txn.choiceMarketTitle}</TableCell>
-      <TableCell>
-        {formatNumberWithCommasNoDecimals(txn.cumulativeShares)}
-      </TableCell>
+      <TableCell>{formatNumberWithCommas(txn.cumulativeShares, 2)}</TableCell>
       <TableCell>{formatDollarsWithCents(txn.avgPrice)}</TableCell>
       <TableCell className="text-right">
         {formatDollarsWithCents(txn.cumulativeDollars)}

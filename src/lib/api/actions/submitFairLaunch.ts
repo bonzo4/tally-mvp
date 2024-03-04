@@ -21,32 +21,28 @@ export type FairLaunchEstimate = {
   fees: number;
 };
 
-export type FairLaunchErrorMessages = {
-  radio: string;
-  text: string;
+type FieldErrors = {
+  [key: string]: string;
 };
 
-type FairLaunchErrors = {
-  [key: number]: FairLaunchErrorMessages;
+type FairLaunchSuccess = {
+  status: "success";
+  message: string;
+  estimate: FairLaunchEstimate;
 };
 
-export type FairLaunchUseFormState =
-  | {
-      status: "success";
-      message: string;
-      estimate: FairLaunchEstimate;
-    }
-  | {
-      status: "error";
-      message: string;
-      errors: FairLaunchErrors;
-    }
-  | null;
+export type FairLaunchError = {
+  status: "error";
+  message: string;
+  errors: FieldErrors;
+};
+
+export type FairLaunchUseFormState = FairLaunchSuccess | FairLaunchError | null;
 
 class FormError extends Error {
-  errors: FairLaunchErrors;
+  errors: FieldErrors;
 
-  constructor(errors: FairLaunchErrors) {
+  constructor(errors: FieldErrors) {
     super("Form validation failed.");
     this.errors = errors;
   }
@@ -108,24 +104,27 @@ function fromErrorToFormState(error: unknown) {
   if (error instanceof ZodError) {
     return {
       message: error.errors[0].message,
+      fieldErrors: error.flatten().fieldErrors,
     };
     // if another error instance, return error message
     // e.g. database error
   } else if (error instanceof Error) {
     return {
       message: error.message,
+      fieldErrors: {},
     };
     // if not an error instance but something else crashed
     // return generic error message
   } else {
     return {
       message: "An unknown error occurred",
+      fieldErrors: {},
     };
   }
 }
 
 const fairLaunchSchema = z.object({
-  amount: z.coerce.number(),
+  amount: z.coerce.number().gt(0),
 });
 
 function validateFormData(formData: FormData) {
@@ -135,7 +134,7 @@ function validateFormData(formData: FormData) {
     });
     return amount;
   } catch (error) {
-    return fromErrorToFormState(error);
+    throw fromErrorToFormState(error);
   }
 }
 
@@ -161,6 +160,8 @@ async function validateTimeToSubmitFairLaunch(
   }
 }
 
+// TODO: Figure out why Typescript thinks the return data type is
+// { card_title: string; }[], when we know it's not an array.
 async function getRelatedInfo(
   supabase: SupabaseClient,
   choice_market_id: number
@@ -172,7 +173,10 @@ async function getRelatedInfo(
   if (error) {
     throw error;
   }
-  return data[0];
+  return data[0] as unknown as {
+    title: string;
+    sub_markets: { card_title: string };
+  };
 }
 
 export async function validateFairLaunch(
@@ -203,6 +207,7 @@ export async function validateFairLaunch(
 
     const fees = amount * FEE_RATE;
     const amountPostFees = amount - fees;
+    console.log("relatedInfo", relatedInfo);
 
     const estimate: FairLaunchEstimate = {
       choiceMarketTitle: relatedInfo.title,
@@ -220,18 +225,10 @@ export async function validateFairLaunch(
       estimate: estimate,
     };
   } catch (error: any) {
-    if (error instanceof FormError) {
-      const useFormState: FairLaunchUseFormState = {
-        status: "error",
-        message: "Form validation failed.",
-        errors: error.errors,
-      };
-      return useFormState;
-    }
     return {
       status: "error",
       message: error.message,
-      errors: {},
+      errors: error.fieldErrors || {},
     };
   }
 }

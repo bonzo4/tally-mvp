@@ -22,12 +22,8 @@ import {
   formatNumberWithCommas,
   formatPercentageWithOneDecimal,
 } from "@/lib/formats";
-import {
-  FairLaunchEstimate,
-  FairLaunchUseFormState,
-} from "@/lib/api/actions/submitFairLaunch";
+import { FairLaunchEstimate } from "@/lib/api/actions/submitFairLaunch";
 import { FEE_RATE } from "@/lib/constants";
-import { Estimate } from "@/app/api/estimateBuy/route";
 
 function EstimateLineItem({ txn }: { txn: FairLaunchEstimate }) {
   return (

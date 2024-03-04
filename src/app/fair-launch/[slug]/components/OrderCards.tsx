@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
+import { Input as InputPrimitive, InputProps } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
@@ -17,6 +17,7 @@ import {
   submitFairLaunch,
   FairLaunchEstimate,
   FairLaunchUseFormState,
+  FairLaunchError,
 } from "@/lib/api/actions/submitFairLaunch";
 import { textCssMap } from "@/lib/cssMaps";
 import { FairLaunchConfirmation } from "./Popup";
@@ -49,16 +50,51 @@ const buttonCssMap: Record<Color, string> = {
   white: "bg-tally-white hover:bg-tally-white/90",
 };
 
-type FairLaunchFormState = {
-  amount: number;
+export function isFairLaunchError(
+  state: FairLaunchUseFormState
+): state is FairLaunchError {
+  return state ? state.status === "error" : false;
+}
+
+type InputWithErrorProps = InputProps & {
+  validateFormState: FairLaunchUseFormState;
 };
+
+function Input(props: InputWithErrorProps) {
+  let isError: boolean = false;
+  let errorMessage: string = "";
+  if (
+    props.name &&
+    props.validateFormState?.status === "error" &&
+    props.validateFormState?.errors[props.name]
+  ) {
+    isError = true;
+    errorMessage = props.validateFormState.errors[props.name];
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      <InputPrimitive
+        name={props.name}
+        value={props.value}
+        onChange={props.onChange}
+        className={cn(
+          isError ? "border border-tally-red" : "border-0",
+          "bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
+        )}
+        placeholder={props.placeholder}
+      />
+
+      {isError && <div className="text-sm text-tally-red">{errorMessage}</div>}
+    </div>
+  );
+}
 
 function OrderCard({ choice }: { choice: ChoiceMarket }) {
   const color = choice.color || "primary";
   const borderCss = borderCssMap[color as keyof typeof borderCssMap];
   const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
   const textCss = textCssMap[color as keyof typeof textCssMap];
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("");
 
   const [validateFormState, validateFormAction] = useFormState<
     FairLaunchUseFormState,
@@ -79,7 +115,6 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
   useEffect(() => {
     if (validateFormState?.status === "success") {
       setEstimate(validateFormState.estimate);
-      console.log("Estimate", validateFormState.estimate);
     }
   }, [validateFormState]);
 
@@ -102,13 +137,16 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
         )}`}</div>
       </div>
       <div className="flex space-x-2">
-        <Input
-          name="amount"
-          value={amount ? amount : ""}
-          onChange={(e) => setAmount(Number(e.target.value))}
-          className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
-          placeholder="$0"
-        />
+        <div className="flex flex-col">
+          <Input
+            name="amount"
+            value={amount ? amount : ""}
+            onChange={(e) => setAmount(e.target.value)}
+            className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
+            placeholder="$0"
+            validateFormState={validateFormState}
+          />
+        </div>
         <FairLaunchConfirmation
           className={cn(borderCss)}
           estimate={estimate}
@@ -134,7 +172,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
       <div className="flex flex-col space-y-1">
         <div className="flex justify-between">
           <div className="text-sm text-tally-gray">Shares</div>
-          <div className="text-white">{amount * 2}</div>
+          <div className="text-white">{Number(amount) * 2}</div>
         </div>
       </div>
     </form>

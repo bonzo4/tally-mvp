@@ -155,7 +155,7 @@ async function checkSufficientFunds({
     return acc + Number(data?.amount);
   }, 0);
 
-  if (userBalance < totalAmount * (1 + FEE_RATE)) {
+  if (userBalance < totalAmount) {
     throw new Error("Insufficient balance");
   }
 }

@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 
 import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
 import { FilterButton } from "@/components/FilterButton";
-import { formatDollarsWithoutCents } from "@/lib/formats";
 import {
   validateFairLaunch,
   submitFairLaunch,

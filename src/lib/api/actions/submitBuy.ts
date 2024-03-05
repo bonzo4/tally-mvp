@@ -7,7 +7,6 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { Database } from "@/lib/supabase/types";
 import { Estimate } from "@/app/api/estimateBuy/route";
-import { FEE_RATE } from "@/lib/constants";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];

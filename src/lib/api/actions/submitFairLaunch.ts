@@ -21,8 +21,9 @@ export type FairLaunchEstimate = {
   fees: number;
 };
 
+// Note: This is mean to work with zods fielErrors type
 type FieldErrors = {
-  [key: string]: string;
+  [key: string | number | symbol]: string[] | undefined;
 };
 
 type FairLaunchSuccess = {
@@ -40,11 +41,11 @@ export type FairLaunchError = {
 export type FairLaunchUseFormState = FairLaunchSuccess | FairLaunchError | null;
 
 class FormError extends Error {
-  fieldErrors: FieldErrors;
+  errors: FieldErrors;
 
   constructor(fieldErrors: FieldErrors) {
     super("Form validation failed.");
-    this.fieldErrors = fieldErrors;
+    this.errors = fieldErrors;
   }
 }
 
@@ -58,23 +59,27 @@ function fromErrorToFormState(error: unknown) {
   // if validation error with Zod, return first error message
   if (error instanceof ZodError) {
     return {
+      status: "error" as const,
       message: error.errors[0].message,
-      fieldErrors: error.flatten().fieldErrors,
+      errors: error.flatten().fieldErrors,
     };
   } else if (error instanceof FormError) {
     return {
+      status: "error" as const,
       message: error.message,
-      fieldErrors: error.fieldErrors,
+      errors: error.errors,
     };
   } else if (error instanceof Error) {
     return {
+      status: "error" as const,
       message: error.message,
-      fieldErrors: {},
+      errors: {} as FieldErrors,
     };
   } else {
     return {
+      status: "error" as const,
       message: "An unknown error occurred",
-      fieldErrors: {},
+      errors: {} as FieldErrors,
     };
   }
 }
@@ -85,7 +90,7 @@ async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
   } = await supabase.auth.getUser();
 
   if (!authUser) {
-    throw new FormError({ amount: "Please login before submitting order." });
+    throw new FormError({ amount: ["Please login before submitting order."] });
   }
   const user = authUser
     ? await getUser({
@@ -95,7 +100,7 @@ async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
     : null;
 
   if (!user) {
-    throw Error("AuthError: User is not authenticated.");
+    throw new FormError({ amount: ["AuthError: User is not authenticated."] });
   }
   return user;
 }
@@ -105,14 +110,10 @@ const fairLaunchSchema = z.object({
 });
 
 function validateFormData(formData: FormData) {
-  try {
-    const { amount } = fairLaunchSchema.parse({
-      amount: formData.get("amount"),
-    });
-    return amount;
-  } catch (error) {
-    throw fromErrorToFormState(error);
-  }
+  const { amount } = fairLaunchSchema.parse({
+    amount: formData.get("amount"),
+  });
+  return amount;
 }
 
 async function checkSufficientFunds({
@@ -129,13 +130,13 @@ async function checkSufficientFunds({
     .select()
     .eq("user_id", userId);
   if (!balancesData) {
-    throw new FormError({ amount: "Insufficient balance" });
+    throw new FormError({ amount: ["Insufficient balance"] });
   }
   const userBalance =
     balancesData[0].usdc_balance + balancesData[0].unredeemable_balance;
   const totalAmount = amount;
   if (userBalance < totalAmount) {
-    throw new FormError({ amount: "Insufficient balance" });
+    throw new FormError({ amount: ["Insufficient balance"] });
   }
 }
 
@@ -143,21 +144,17 @@ async function validateTimeToSubmitFairLaunch(
   supabase: SupabaseClient,
   choice_market_id: number
 ) {
-  try {
-    const now = new Date().toISOString();
-    const { data, error } = await supabase
-      .from("choice_markets")
-      .select("*, sub_markets(fair_launch_end)")
-      .eq("id", choice_market_id);
-    if (error) {
-      throw error;
-    }
-    const choice_market = data[0];
-    if (now > choice_market.sub_markets.fair_launch_end) {
-      throw new Error("Fair launch as ended.");
-    }
-  } catch (error) {
-    return fromErrorToFormState(error);
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("choice_markets")
+    .select("*, sub_markets(fair_launch_end)")
+    .eq("id", choice_market_id);
+  if (error) {
+    throw error;
+  }
+  const choice_market = data[0];
+  if (now > choice_market.sub_markets.fair_launch_end) {
+    throw new FormError({ amount: ["Fair launch has ended."] });
   }
 }
 
@@ -226,11 +223,7 @@ export async function validateFairLaunch(
       estimate: estimate,
     };
   } catch (error: any) {
-    return {
-      status: "error",
-      message: error.message,
-      errors: error.fieldErrors || {},
-    };
+    return fromErrorToFormState(error);
   }
 }
 
@@ -282,19 +275,7 @@ export async function submitFairLaunch(
       throw error;
     }
   } catch (error: any) {
-    if (error instanceof FormError) {
-      const useFormState: FairLaunchUseFormState = {
-        status: "error",
-        message: "Form validation failed.",
-        errors: error.errors,
-      };
-      return useFormState;
-    }
-    return {
-      status: "error",
-      message: error.message,
-      errors: {},
-    };
+    return fromErrorToFormState(error);
   }
   redirect("/profile");
 }

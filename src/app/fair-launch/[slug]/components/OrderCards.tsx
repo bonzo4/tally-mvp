@@ -62,14 +62,14 @@ type InputWithErrorProps = InputProps & {
 
 function Input(props: InputWithErrorProps) {
   let isError: boolean = false;
-  let errorMessage: string = "";
+  let errorMessage: string[] = [];
   if (
     props.name &&
     props.validateFormState?.status === "error" &&
     props.validateFormState?.errors[props.name]
   ) {
     isError = true;
-    errorMessage = props.validateFormState.errors[props.name];
+    errorMessage = props.validateFormState.errors[props.name] || [];
   }
   return (
     <div className="flex flex-col gap-2">
@@ -84,7 +84,12 @@ function Input(props: InputWithErrorProps) {
         placeholder={props.placeholder}
       />
 
-      {isError && <div className="text-sm text-tally-red">{errorMessage}</div>}
+      {isError &&
+        errorMessage.map((msg, index) => (
+          <div key={index} className="text-sm text-tally-red">
+            {msg}
+          </div>
+        ))}
     </div>
   );
 }

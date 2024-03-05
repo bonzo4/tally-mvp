@@ -7,7 +7,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { Database } from "@/lib/supabase/types";
-import { FEE_RATE } from "@/lib/constants";
+import { FAIR_LAUNCH_FEE_RATE } from "@/lib/constants";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 
@@ -19,6 +19,7 @@ export type FairLaunchEstimate = {
   cumulativeDollars: number;
   cumulativeShares: number;
   fees: number;
+  totalDollars: number;
 };
 
 // Note: This is mean to work with zods fielErrors type
@@ -116,6 +117,14 @@ function validateFormData(formData: FormData) {
   return amount;
 }
 
+function calculateSpend(amount: number) {
+  return {
+    totalAmount: amount,
+    amountForShares: amount * (1 - FAIR_LAUNCH_FEE_RATE),
+    fees: amount * FAIR_LAUNCH_FEE_RATE,
+  };
+}
+
 async function checkSufficientFunds({
   supabase,
   userId,
@@ -150,7 +159,7 @@ async function validateTimeToSubmitFairLaunch(
     .select("*, sub_markets(fair_launch_end)")
     .eq("id", choice_market_id);
   if (error) {
-    throw error;
+    throw new FormError({ amount: ["Unexpected error."] });
   }
   const choice_market = data[0];
   if (now > choice_market.sub_markets.fair_launch_end) {
@@ -191,30 +200,30 @@ export async function validateFairLaunch(
     // check if form is valid
     const amount = validateFormData(formData) as number;
 
+    // calculate spend
+    const { totalAmount, amountForShares, fees } = calculateSpend(amount);
+
     // check that user it's not too late to submit fair launch order
     await validateTimeToSubmitFairLaunch(supabase, choice_market_id);
 
     await checkSufficientFunds({
       supabase,
       userId: user.id,
-      amount: amount,
+      amount: totalAmount,
     });
 
     // get information submarket information
     const relatedInfo = await getRelatedInfo(supabase, choice_market_id);
 
-    const fees = amount * FEE_RATE;
-    const amountPostFees = amount - fees;
-    console.log("relatedInfo", relatedInfo);
-
     const estimate: FairLaunchEstimate = {
       choiceMarketTitle: relatedInfo.title,
       subMarketTitle: relatedInfo.sub_markets.card_title,
       choiceMarketId: choice_market_id,
-      cumulativeDollars: amountPostFees,
-      cumulativeShares: amountPostFees * 2,
+      cumulativeDollars: amountForShares,
+      cumulativeShares: amountForShares * 2,
       avgPrice: 0.5,
       fees: fees,
+      totalDollars: totalAmount,
     };
 
     return {
@@ -241,6 +250,9 @@ export async function submitFairLaunch(
     // check if form is valid
     const amount = validateFormData(formData) as number;
 
+    // calculate spend
+    const { totalAmount, amountForShares, fees } = calculateSpend(amount);
+
     // check that user it's not too late to submit fair launch order
     await validateTimeToSubmitFairLaunch(supabase, choice_market_id);
 
@@ -250,16 +262,13 @@ export async function submitFairLaunch(
       amount: amount,
     });
 
-    const fees = amount * FEE_RATE;
-    const amountPostFees = amount - fees;
-
     const txns = [];
 
     txns.push({
       user_id: user.id,
       choice_market_id: choice_market_id,
-      total_amount: amountPostFees,
-      shares: amountPostFees * 2,
+      total_amount: amountForShares,
+      shares: amountForShares * 2,
       avg_share_price: 0.5,
       status: "CONFIRMED" as trade_status,
       fees: fees,

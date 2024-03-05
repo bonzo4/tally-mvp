@@ -23,7 +23,7 @@ import {
   formatPercentageWithOneDecimal,
 } from "@/lib/formats";
 import { FairLaunchEstimate } from "@/lib/api/actions/submitFairLaunch";
-import { FEE_RATE } from "@/lib/constants";
+import { FAIR_LAUNCH_FEE_RATE } from "@/lib/constants";
 
 function EstimateLineItem({ txn }: { txn: FairLaunchEstimate }) {
   return (
@@ -54,10 +54,6 @@ function ReceiptEstimate({
   estimate: FairLaunchEstimate;
   tradeSide: "BUY" | "SELL";
 }) {
-  const subtotal = estimate?.cumulativeDollars || 0;
-  const fees = subtotal * FEE_RATE;
-  const total = subtotal && fees ? subtotal + fees : 0;
-
   return (
     <Table>
       <TableHeader>
@@ -78,24 +74,24 @@ function ReceiptEstimate({
             Subtotal
           </TableCell>
           <TableCell className="px-4 py-2 text-right">
-            {subtotal
-              ? formatDollarsWithCents(subtotal)
-              : formatDollarsWithCents(0)}
+            {formatDollarsWithCents(estimate.cumulativeDollars)}
           </TableCell>
         </TableRow>
         <TableRow className="bg-tally-background text-tally-gray hover:bg-tally-background">
           <TableCell
             className="px-4 py-2"
             colSpan={4}
-          >{`Fees (${formatPercentageWithOneDecimal(FEE_RATE)})`}</TableCell>
+          >{`Fees (${formatPercentageWithOneDecimal(
+            FAIR_LAUNCH_FEE_RATE
+          )})`}</TableCell>
           <TableCell className="px-4 py-2 text-right">
-            {fees ? formatDollarsWithCents(fees) : formatDollarsWithCents(0)}
+            {formatDollarsWithCents(estimate.fees)}
           </TableCell>
         </TableRow>
         <TableRow className="border-t border-white bg-tally-background hover:bg-tally-background">
           <TableCell colSpan={4}>Total</TableCell>
           <TableCell className="text-right">
-            {total ? formatDollarsWithCents(total) : formatDollarsWithCents(0)}
+            {formatDollarsWithCents(estimate.totalDollars)}
           </TableCell>
         </TableRow>
       </TableFooter>
@@ -152,9 +148,6 @@ export function FairLaunchConfirmation({
     })();
   }, []);
 
-  const subtotal = estimate?.cumulativeDollars || 0;
-  const fees = subtotal * FEE_RATE;
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {trigger}
@@ -172,7 +165,7 @@ export function FairLaunchConfirmation({
           </DialogHeader>
           <ReceiptEstimate estimate={estimate} tradeSide="BUY" />
           <BalanceDelta
-            total={subtotal && fees ? subtotal + fees : 0}
+            total={estimate.totalDollars}
             balance={balance ? balance : 0}
             tradeSide="BUY"
           />

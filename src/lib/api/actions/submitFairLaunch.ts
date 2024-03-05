@@ -40,11 +40,11 @@ export type FairLaunchError = {
 export type FairLaunchUseFormState = FairLaunchSuccess | FairLaunchError | null;
 
 class FormError extends Error {
-  errors: FieldErrors;
+  fieldErrors: FieldErrors;
 
-  constructor(errors: FieldErrors) {
+  constructor(fieldErrors: FieldErrors) {
     super("Form validation failed.");
-    this.errors = errors;
+    this.fieldErrors = fieldErrors;
   }
 }
 
@@ -53,6 +53,31 @@ type FormattedFairLaunchFormData = {
   choice_market_id: string;
   amount: number;
 };
+
+function fromErrorToFormState(error: unknown) {
+  // if validation error with Zod, return first error message
+  if (error instanceof ZodError) {
+    return {
+      message: error.errors[0].message,
+      fieldErrors: error.flatten().fieldErrors,
+    };
+  } else if (error instanceof FormError) {
+    return {
+      message: error.message,
+      fieldErrors: error.fieldErrors,
+    };
+  } else if (error instanceof Error) {
+    return {
+      message: error.message,
+      fieldErrors: {},
+    };
+  } else {
+    return {
+      message: "An unknown error occurred",
+      fieldErrors: {},
+    };
+  }
+}
 
 async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
   const {
@@ -75,6 +100,21 @@ async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
   return user;
 }
 
+const fairLaunchSchema = z.object({
+  amount: z.coerce.number().gt(0),
+});
+
+function validateFormData(formData: FormData) {
+  try {
+    const { amount } = fairLaunchSchema.parse({
+      amount: formData.get("amount"),
+    });
+    return amount;
+  } catch (error) {
+    throw fromErrorToFormState(error);
+  }
+}
+
 async function checkSufficientFunds({
   supabase,
   userId,
@@ -89,52 +129,13 @@ async function checkSufficientFunds({
     .select()
     .eq("user_id", userId);
   if (!balancesData) {
-    throw new Error("Insufficient balance");
+    throw new FormError({ amount: "Insufficient balance" });
   }
   const userBalance =
     balancesData[0].usdc_balance + balancesData[0].unredeemable_balance;
   const totalAmount = amount;
-  if (userBalance < totalAmount * (1 + FEE_RATE)) {
-    throw new Error("Insufficient balance");
-  }
-}
-
-function fromErrorToFormState(error: unknown) {
-  // if validation error with Zod, return first error message
-  if (error instanceof ZodError) {
-    return {
-      message: error.errors[0].message,
-      fieldErrors: error.flatten().fieldErrors,
-    };
-    // if another error instance, return error message
-    // e.g. database error
-  } else if (error instanceof Error) {
-    return {
-      message: error.message,
-      fieldErrors: {},
-    };
-    // if not an error instance but something else crashed
-    // return generic error message
-  } else {
-    return {
-      message: "An unknown error occurred",
-      fieldErrors: {},
-    };
-  }
-}
-
-const fairLaunchSchema = z.object({
-  amount: z.coerce.number().gt(0),
-});
-
-function validateFormData(formData: FormData) {
-  try {
-    const { amount } = fairLaunchSchema.parse({
-      amount: formData.get("amount"),
-    });
-    return amount;
-  } catch (error) {
-    throw fromErrorToFormState(error);
+  if (userBalance < totalAmount) {
+    throw new FormError({ amount: "Insufficient balance" });
   }
 }
 

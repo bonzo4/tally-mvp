@@ -85,7 +85,7 @@ async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
   } = await supabase.auth.getUser();
 
   if (!authUser) {
-    throw Error("AuthError: User is not authenticated.");
+    throw new FormError({ amount: "Please login before submitting order." });
   }
   const user = authUser
     ? await getUser({
@@ -95,7 +95,7 @@ async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
     : null;
 
   if (!user) {
-    throw Error("AuthError: User could not be found.");
+    throw Error("AuthError: User is not authenticated.");
   }
   return user;
 }

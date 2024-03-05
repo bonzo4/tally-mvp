@@ -89,7 +89,13 @@ function Input(props: InputWithErrorProps) {
   );
 }
 
-function OrderCard({ choice }: { choice: ChoiceMarket }) {
+function OrderCard({
+  choice,
+  formId,
+}: {
+  choice: ChoiceMarket;
+  formId: string;
+}) {
   const color = choice.color || "primary";
   const borderCss = borderCssMap[color as keyof typeof borderCssMap];
   const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
@@ -120,7 +126,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
 
   return (
     <form
-      id={`fair-launch-form-${choice.id}`}
+      id={formId}
       action={(payload) => submitFormAction(payload)}
       className={cn(
         borderCss,
@@ -132,12 +138,9 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
           <div className="text-4xl font-bold text-white">{choice.title}</div>
           <div className={cn(textCss, "text-2xl")}>$.50</div>
         </div>
-        <div className="text-sm text-tally-gray">{`Total Pot: ${formatDollarsWithoutCents(
-          choice.total_pot
-        )}`}</div>
       </div>
       <div className="flex space-x-2">
-        <div className="flex flex-col">
+        <div className="flex w-full flex-col">
           <Input
             name="amount"
             value={amount ? amount : ""}
@@ -161,7 +164,7 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
           submit={
             <Button
               type="submit"
-              form={`fair-launch-form-${choice.id}`}
+              form={formId}
               className={cn(buttonCss, "text-black hover:text-black")}
             >
               Submit
@@ -212,14 +215,8 @@ function OrderCardMulti({ choice }: { choice: ChoiceMarket }) {
               </div>
               <div className={cn(textCss, "text-lg")}>$.50</div>
             </div>
-            <div className="mt-2 text-sm text-tally-gray lg:hidden">{`Total Pot: ${formatDollarsWithoutCents(
-              choice.total_pot
-            )}`}</div>
           </div>
         </div>
-        <div className="mt-2 hidden text-sm text-tally-gray lg:flex">{`Total Pot: ${formatDollarsWithoutCents(
-          choice.total_pot
-        )}`}</div>
       </div>
       <div className="flex flex-shrink-0 flex-col justify-between">
         <div className="flex space-x-2">
@@ -266,7 +263,13 @@ export function OrderMobile({ choices }: { choices: ChoiceMarket[] }) {
           ))}
         </div>
         {choices
-          .map((choice, index) => <OrderCard key={index} choice={choice} />)
+          .map((choice, index) => (
+            <OrderCard
+              key={index}
+              choice={choice}
+              formId={`fair-launch-form-${choice.id}-mobile`}
+            />
+          ))
           .filter((choice) => choice.props.choice.title === selected)}
       </div>
     );
@@ -287,7 +290,11 @@ export function OrderDesktop({ choices }: { choices: ChoiceMarket[] }) {
     return (
       <div className="hidden space-x-6 lg:flex">
         {choices.map((choice, index) => (
-          <OrderCard key={index} choice={choice} />
+          <OrderCard
+            key={index}
+            choice={choice}
+            formId={`fair-launch-form-${choice.id}-desktop`}
+          />
         ))}
       </div>
     );

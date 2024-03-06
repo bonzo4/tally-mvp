@@ -27,7 +27,7 @@ function countUniqueSubMarkets(arr: Holdings[]) {
 }
 
 function countUniqueFairLaunches(arr: Holdings[]) {
-  arr = arr.filter((holding) => holding.participated_in_fair_launch);
+  arr = arr.filter((holding) => holding.fair_launch_shares);
 
   let mapObj = new Map();
 
@@ -115,7 +115,7 @@ export default async function Profile() {
             <DisplayPicture image={user.icon} />
             <Overview user={user} />
           </div>
-          <Account balance={balance} portfolio={portfolio} />
+          <Account balance={balance} portfolio={portfolio} userId={user.id} />
         </div>
         <Rankings
           portfolio={portfolio}

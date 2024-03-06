@@ -8,6 +8,16 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { Database } from "@/lib/supabase/types";
 import { FAIR_LAUNCH_FEE_RATE } from "@/lib/constants";
+import { getTallyClob } from "@/lib/solana/program";
+import { getManagerKeyPair } from "@/lib/solana/wallet";
+import {
+  getMarketPDA,
+  getMarketPortfolioPDA,
+  getUserPDA,
+} from "@/lib/solana/pdas";
+import { PublicKey } from "@solana/web3.js";
+import { BN } from "@coral-xyz/anchor";
+import { sendTransactions } from "@/lib/solana/transaction";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 
@@ -130,7 +140,7 @@ async function checkSufficientFunds({
   userId,
   amount,
 }: {
-  supabase: SupabaseClient;
+  supabase: SupabaseClient<Database>;
   userId: number;
   amount: number;
 }) {
@@ -147,6 +157,8 @@ async function checkSufficientFunds({
   if (userBalance < totalAmount) {
     throw new FormError({ amount: ["Insufficient balance"] });
   }
+
+  return balancesData[0];
 }
 
 async function validateTimeToSubmitFairLaunch(
@@ -237,6 +249,7 @@ export async function validateFairLaunch(
 }
 
 export async function submitFairLaunch(
+  sub_market_id: number,
   choice_market_id: number,
   formState: any,
   formData: FormData
@@ -256,10 +269,43 @@ export async function submitFairLaunch(
     // check that user it's not too late to submit fair launch order
     await validateTimeToSubmitFairLaunch(supabase, choice_market_id);
 
-    await checkSufficientFunds({
+    const balanceData = await checkSufficientFunds({
       supabase,
       userId: user.id,
       amount: amount,
+    });
+
+    const { data: subMarketData, error: subMarketError } = await supabase
+      .from("sub_market_id")
+      .select("prediction_market_id")
+      .eq("id", sub_market_id)
+      .single();
+
+    if (subMarketError) throw subMarketError;
+
+    const { data: predictionMarketData, error: predictionMarketDataError } =
+      await supabase
+        .from("prediction_markets")
+        .select("public_key")
+        .eq("id", subMarketData.prediction_market_id)
+        .single();
+
+    if (predictionMarketDataError) throw predictionMarketDataError;
+    if (!predictionMarketData.public_key)
+      throw new Error("No public key found.");
+
+    const fairLaunchOrder = {
+      subMarketId: sub_market_id,
+      choiceId: choice_market_id,
+      amount: amount,
+      requestedPricePerShare: 0.5,
+    };
+
+    // TODO: submit transaction to smart contract
+    await submitToSmartContract({
+      userWallet: balanceData.public_key,
+      marketKey: predictionMarketData.public_key,
+      fairLaunchOrders: [fairLaunchOrder],
     });
 
     const txns = [];
@@ -287,4 +333,58 @@ export async function submitFairLaunch(
     return fromErrorToFormState(error);
   }
   redirect("/profile");
+}
+
+type SubmitToSmartContractOptions = {
+  userWallet: string;
+  marketKey: string;
+  fairLaunchOrders: {
+    subMarketId: number;
+    choiceId: number;
+    amount: number;
+    requestedPricePerShare: number;
+  }[];
+};
+
+async function submitToSmartContract({
+  marketKey,
+  userWallet,
+  fairLaunchOrders,
+}: SubmitToSmartContractOptions) {
+  const program = getTallyClob();
+  const managerWallet = getManagerKeyPair();
+  const userPDA = getUserPDA(new PublicKey(userWallet), program);
+  const marketPDA = getMarketPDA(new PublicKey(marketKey), program);
+  const marketPortfolioPDA = getMarketPortfolioPDA(marketPDA, userPDA, program);
+
+  const orders = fairLaunchOrders.map((order) => ({
+    subMarketId: new BN(order.subMarketId),
+    choiceId: new BN(order.choiceId),
+    amount: new BN(order.amount * Math.pow(10, 9)),
+    requestedPricePerShare: 0.5,
+  }));
+
+  const bulkBuyTx = await program.methods
+    .fairLaunchOrder(orders)
+    .signers([managerWallet])
+    .accounts({
+      user: userPDA,
+      market: marketPDA,
+      marketPortfolio: marketPortfolioPDA,
+      signer: managerWallet.publicKey,
+    })
+    .instruction();
+
+  await sendTransactions({
+    connection: program.provider.connection,
+    transactions: [bulkBuyTx],
+    signer: managerWallet,
+  }).catch((err) => {
+    throw new Error(err);
+  });
+
+  return {
+    data: true,
+    error: false,
+  };
 }

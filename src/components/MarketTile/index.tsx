@@ -13,6 +13,7 @@ export interface MarketTileProps extends React.HTMLAttributes<HTMLDivElement> {
   image: string;
   totalPot: number;
   totalComments: number;
+  slug: string;
   subMarkets: {
     icon: string;
     title: string;
@@ -30,6 +31,7 @@ export default function MarketTile({
   totalPot,
   totalComments,
   subMarkets,
+  slug,
   ...restProps
 }: MarketTileProps) {
   const [expand, setExpand] = useState(false);
@@ -44,7 +46,7 @@ export default function MarketTile({
 
   return (
     <div {...restProps}>
-      <Link href="/markets/1">
+      <Link href={`/trade/${slug}`}>
         <div className={marketStyle}>
           <Image
             src={image}

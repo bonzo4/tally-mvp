@@ -86,7 +86,7 @@ function BuySubMarket({
                   className="h-[40px] w-full"
                   choiceMarket={choiceMarket}
                   sharePrice={sharePrice}
-                  checked={formState.choiceMarketTitle === choiceMarket.title}
+                  checked={formState.choiceMarketId === choiceMarket.id}
                   onChange={(e) =>
                     handleRadioButtonChange({
                       choiceMarketTitle: choiceMarket.title,
@@ -133,9 +133,10 @@ function LoginButton({ slug }: { slug: string }) {
 // The index and subMarketTitle don't change with user input,
 // but we want to pass this data to the Summary component.
 export type BuyFormState = {
+  subMarketId: number;
   subMarketTitle: string;
-  choiceMarketTitle: string;
   choiceMarketId: number;
+  choiceMarketTitle: string;
   sharePrice: number;
   amount: number;
 };
@@ -156,8 +157,7 @@ export default function BuyCard({
 
   const [formState, setFormState] = useState<BuyFormState[]>(
     Array(subMarkets.length).fill({
-      subMarketTitle: "",
-      choiceMarketTitle: "",
+      subMarketId: 0,
       choiceMarketId: 0,
       sharePrice: 0,
       amount: "",
@@ -171,7 +171,7 @@ export default function BuyCard({
   // The sharePrice and choiceMarketTitle change whenever user selects a different option.
   // The index and subMarketTitle are closures and don't need to change.
   const handleRadioButtonChange =
-    (index: number, subMarketTitle: string) =>
+    (index: number, subMarketId: number, subMarketTitle: string) =>
     ({
       choiceMarketTitle,
       choiceMarketId,
@@ -184,10 +184,11 @@ export default function BuyCard({
       setFormState([
         ...formState.slice(0, index),
         {
-          choiceMarketTitle: choiceMarketTitle,
-          choiceMarketId: choiceMarketId,
-          subMarketTitle: subMarketTitle,
-          sharePrice: sharePrice,
+          choiceMarketId,
+          choiceMarketTitle,
+          subMarketId,
+          subMarketTitle,
+          sharePrice,
           amount: formState[index].amount,
         },
         ...formState.slice(index + 1),
@@ -196,13 +197,15 @@ export default function BuyCard({
 
   // The amount changes whenever user types in a different amount.
   const handleAmountChange =
-    (index: number, subMarketTitle: string) => (amount: number) => {
+    (index: number, subMarketId: number, subMarketTitle: string) =>
+    (amount: number) => {
       setFormState([
         ...formState.slice(0, index),
         {
-          choiceMarketTitle: formState[index].choiceMarketTitle,
           choiceMarketId: formState[index].choiceMarketId,
-          subMarketTitle: subMarketTitle,
+          choiceMarketTitle: formState[index].choiceMarketTitle,
+          subMarketId,
+          subMarketTitle,
           sharePrice: formState[index].sharePrice || 0,
           amount: amount,
         },
@@ -226,11 +229,13 @@ export default function BuyCard({
               }
               handleRadioButtonChange={handleRadioButtonChange(
                 index,
-                subMarket.card_title || subMarket.title
+                subMarket.id,
+                subMarket.title
               )}
               handleAmountChange={handleAmountChange(
                 index,
-                subMarket.card_title || subMarket.title
+                subMarket.id,
+                subMarket.title
               )}
             />
           ))}

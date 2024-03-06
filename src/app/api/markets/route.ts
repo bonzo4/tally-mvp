@@ -4,6 +4,7 @@ import { getPredictionMarketCards } from "@/lib/supabase/queries/markets/predict
 
 export type PredictionMarketData = {
   id: number;
+  slug: string;
   title: string;
   category: string | null;
   image: string;
@@ -59,6 +60,7 @@ export async function GET(req: NextRequest) {
           totalPot: market.total_pot,
           totalComments: market.total_comments,
           subMarkets,
+          slug: market.slug,
         };
       });
 

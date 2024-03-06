@@ -44,6 +44,7 @@ export default function MarketsGallery({
             return (
               <div key={market.id}>
                 <MarketTile
+                  slug={market.slug}
                   title={market.title}
                   category={market.category}
                   image={market.image}

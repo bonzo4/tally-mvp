@@ -7,7 +7,6 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { Database } from "@/lib/supabase/types";
 import { Estimate } from "@/app/api/estimateBuy/route";
-import { FEE_RATE } from "@/lib/constants";
 import { getTallyClob } from "@/lib/solana/program";
 import { getManagerKeyPair } from "@/lib/solana/wallet";
 import {
@@ -171,7 +170,7 @@ async function checkSufficientFunds({
     return acc + Number(data?.amount);
   }, 0);
 
-  if (userBalance < totalAmount * (1 + FEE_RATE)) {
+  if (userBalance < totalAmount) {
     throw new Error("Insufficient balance");
   }
 

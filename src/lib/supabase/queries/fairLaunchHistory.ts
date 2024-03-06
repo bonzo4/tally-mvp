@@ -28,7 +28,8 @@ async function getFairLaunchHistoryQuery({
   return await supabase
     .from("fair_launch_order")
     .select("*, choice_markets(title, color, sub_markets(title))")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
 }
 
 export async function getFairLaunchHistory({

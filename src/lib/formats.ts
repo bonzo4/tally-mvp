@@ -55,6 +55,15 @@ export function formatNumberWithCommasNoDecimals(value: number): string {
   }).format(value);
 }
 
+export function formatNumberWithCommas(
+  value: number,
+  decimals: number
+): string {
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: decimals,
+  }).format(value);
+}
+
 // Source: https://stackoverflow.com/a/8888498/
 export function formatAMPM(date: Date) {
   var hours = date.getHours();

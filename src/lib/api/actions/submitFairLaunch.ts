@@ -275,24 +275,24 @@ export async function submitFairLaunch(
       amount: amount,
     });
 
-    const { data: subMarketData, error: subMarketError } = await supabase
-      .from("sub_market_id")
-      .select("prediction_market_id")
-      .eq("id", sub_market_id)
-      .single();
+    // const { data: subMarketData, error: subMarketError } = await supabase
+    //   .from("sub_markets")
+    //   .select("prediction_market_id")
+    //   .eq("id", sub_market_id)
+    //   .single();
 
-    if (subMarketError) throw subMarketError;
+    // if (subMarketError) throw subMarketError;
 
-    const { data: predictionMarketData, error: predictionMarketDataError } =
-      await supabase
-        .from("prediction_markets")
-        .select("public_key")
-        .eq("id", subMarketData.prediction_market_id)
-        .single();
+    // const { data: predictionMarketData, error: predictionMarketDataError } =
+    //   await supabase
+    //     .from("prediction_markets")
+    //     .select("public_key")
+    //     .eq("id", subMarketData.prediction_market_id)
+    //     .single();
 
-    if (predictionMarketDataError) throw predictionMarketDataError;
-    if (!predictionMarketData.public_key)
-      throw new Error("No public key found.");
+    // if (predictionMarketDataError) throw predictionMarketDataError;
+    // if (!predictionMarketData.public_key)
+    //   throw new Error("No public key found.");
 
     const fairLaunchOrder = {
       subMarketId: sub_market_id,
@@ -302,11 +302,11 @@ export async function submitFairLaunch(
     };
 
     // TODO: submit transaction to smart contract
-    await submitToSmartContract({
-      userWallet: balanceData.public_key,
-      marketKey: predictionMarketData.public_key,
-      fairLaunchOrders: [fairLaunchOrder],
-    });
+    // await submitToSmartContract({
+    //   userWallet: balanceData.public_key,
+    //   marketKey: predictionMarketData.public_key,
+    //   fairLaunchOrders: [fairLaunchOrder],
+    // });
 
     const txns = [];
 

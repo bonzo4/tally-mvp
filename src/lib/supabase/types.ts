@@ -231,31 +231,28 @@ export type Database = {
       }
       deposits: {
         Row: {
+          balance_id: number
           created_at: string
           id: number
           new_usdc_balance: number
-          payment_type: string
           usdc_amount_received: number
           user_id: number
-          wallet_id: number
         }
         Insert: {
+          balance_id: number
           created_at?: string
           id?: number
           new_usdc_balance: number
-          payment_type: string
           usdc_amount_received: number
           user_id: number
-          wallet_id: number
         }
         Update: {
+          balance_id?: number
           created_at?: string
           id?: number
           new_usdc_balance?: number
-          payment_type?: string
           usdc_amount_received?: number
           user_id?: number
-          wallet_id?: number
         }
         Relationships: [
           {
@@ -266,8 +263,8 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "deposits_wallet_id_fkey"
-            columns: ["wallet_id"]
+            foreignKeyName: "public_deposits_balance_id_fkey"
+            columns: ["balance_id"]
             isOneToOne: false
             referencedRelation: "user_balances"
             referencedColumns: ["id"]
@@ -279,30 +276,33 @@ export type Database = {
           avg_share_price: number
           choice_market_id: number
           created_at: string
+          fees: number
           id: number
-          incoming_usdc: number
-          new_usdc_balance: number
           shares: number
+          status: Database["public"]["Enums"]["trade_status"]
+          total_amount: number
           user_id: number
         }
         Insert: {
           avg_share_price: number
           choice_market_id: number
           created_at?: string
+          fees?: number
           id?: number
-          incoming_usdc: number
-          new_usdc_balance: number
           shares: number
+          status?: Database["public"]["Enums"]["trade_status"]
+          total_amount?: number
           user_id: number
         }
         Update: {
           avg_share_price?: number
           choice_market_id?: number
           created_at?: string
+          fees?: number
           id?: number
-          incoming_usdc?: number
-          new_usdc_balance?: number
           shares?: number
+          status?: Database["public"]["Enums"]["trade_status"]
+          total_amount?: number
           user_id?: number
         }
         Relationships: [
@@ -1089,7 +1089,7 @@ export type Database = {
       user_balances: {
         Row: {
           created_at: string
-          encrypted_secret_key: string
+          has_first_deposit: boolean
           id: number
           public_key: string
           unredeemable_balance: number
@@ -1098,7 +1098,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          encrypted_secret_key: string
+          has_first_deposit?: boolean
           id?: number
           public_key: string
           unredeemable_balance?: number
@@ -1107,7 +1107,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          encrypted_secret_key?: string
+          has_first_deposit?: boolean
           id?: number
           public_key?: string
           unredeemable_balance?: number

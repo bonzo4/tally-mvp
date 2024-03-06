@@ -9,6 +9,7 @@ export async function getFairLaunch(slug: string) {
   >({
     url,
     options: { slug: slug },
+    cache: "no-cache",
   });
 
   return subMarket;

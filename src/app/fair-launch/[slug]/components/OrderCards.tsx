@@ -1,17 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useFormState } from "react-dom";
+import { Database } from "@/lib/supabase/types";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
-import { formatDollarsWithoutCents } from "@/lib/formats";
+import { Input as InputPrimitive, InputProps } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-import { FilterButton } from "@/components/FilterButton";
 import { ChoiceMarket } from "@/lib/supabase/queries/markets/subMarkets";
-import { Database } from "@/lib/supabase/types";
+import { FilterButton } from "@/components/FilterButton";
+import {
+  validateFairLaunch,
+  submitFairLaunch,
+  FairLaunchEstimate,
+  FairLaunchUseFormState,
+  FairLaunchError,
+} from "@/lib/api/actions/submitFairLaunch";
 import { textCssMap } from "@/lib/cssMaps";
+import { FairLaunchConfirmation } from "./Popup";
 
 type Color = Database["public"]["Enums"]["colors_enum"];
 
@@ -41,14 +49,89 @@ const buttonCssMap: Record<Color, string> = {
   white: "bg-tally-white hover:bg-tally-white/90",
 };
 
-function OrderCard({ choice }: { choice: ChoiceMarket }) {
+export function isFairLaunchError(
+  state: FairLaunchUseFormState
+): state is FairLaunchError {
+  return state ? state.status === "error" : false;
+}
+
+type InputWithErrorProps = InputProps & {
+  validateFormState: FairLaunchUseFormState;
+};
+
+function Input(props: InputWithErrorProps) {
+  let isError: boolean = false;
+  let errorMessage: string[] = [];
+  if (
+    props.name &&
+    props.validateFormState?.status === "error" &&
+    props.validateFormState?.errors[props.name]
+  ) {
+    isError = true;
+    errorMessage = props.validateFormState.errors[props.name] || [];
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      <InputPrimitive
+        name={props.name}
+        value={props.value}
+        onChange={props.onChange}
+        className={cn(
+          isError ? "border border-tally-red" : "border-0",
+          "bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
+        )}
+        placeholder={props.placeholder}
+      />
+
+      {isError &&
+        errorMessage.map((msg, index) => (
+          <div key={index} className="text-sm text-tally-red">
+            {msg}
+          </div>
+        ))}
+    </div>
+  );
+}
+
+function OrderCard({
+  choice,
+  formId,
+}: {
+  choice: ChoiceMarket;
+  formId: string;
+}) {
   const color = choice.color || "primary";
   const borderCss = borderCssMap[color as keyof typeof borderCssMap];
   const buttonCss = buttonCssMap[color as keyof typeof buttonCssMap];
   const textCss = textCssMap[color as keyof typeof textCssMap];
+  const [amount, setAmount] = useState<number>();
+
+  const [validateFormState, validateFormAction] = useFormState<
+    FairLaunchUseFormState,
+    FormData
+  >(validateFairLaunch.bind(null, choice.id), null);
+
+  const [submitFormState, submitFormAction] = useFormState<
+    FairLaunchUseFormState,
+    FormData
+  >(submitFairLaunch.bind(null, choice.id), null);
+
+  const [estimate, setEstimate] = useState<FairLaunchEstimate | null>(null);
+
+  useEffect(() => {
+    console.log("Validate Form State", validateFormState);
+  }, [validateFormState]);
+
+  useEffect(() => {
+    if (validateFormState?.status === "success") {
+      setEstimate(validateFormState.estimate);
+    }
+  }, [validateFormState]);
 
   return (
-    <div
+    <form
+      id={formId}
+      action={(payload) => submitFormAction(payload)}
       className={cn(
         borderCss,
         "flex flex-col space-y-4 rounded-2xl border-2 bg-black p-4"
@@ -59,30 +142,49 @@ function OrderCard({ choice }: { choice: ChoiceMarket }) {
           <div className="text-4xl font-bold text-white">{choice.title}</div>
           <div className={cn(textCss, "text-2xl")}>$.50</div>
         </div>
-        <div className="text-sm text-tally-gray">{`Total Pot: ${formatDollarsWithoutCents(
-          choice.total_pot
-        )}`}</div>
       </div>
       <div className="flex space-x-2">
-        <Input
-          className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
-          placeholder="$0"
+        <div className="flex w-full flex-col">
+          <Input
+            name="amount"
+            value={amount ? amount : ""}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray lg:w-[220px]"
+            placeholder="$0"
+            validateFormState={validateFormState}
+          />
+        </div>
+        <FairLaunchConfirmation
+          className={cn(borderCss)}
+          estimate={estimate}
+          trigger={
+            <Button
+              formAction={(payload) => validateFormAction(payload)}
+              className={cn(buttonCss, "text-black hover:text-black")}
+            >
+              Buy
+            </Button>
+          }
+          submit={
+            <Button
+              type="submit"
+              form={formId}
+              className={cn(buttonCss, "text-black hover:text-black")}
+            >
+              Submit
+            </Button>
+          }
         />
-        <Button className={cn(buttonCss, "text-black hover:text-black")}>
-          Buy
-        </Button>
       </div>
       <div className="flex flex-col space-y-1">
         <div className="flex justify-between">
           <div className="text-sm text-tally-gray">Shares</div>
-          <div className="text-white">0</div>
-        </div>
-        <div className="flex justify-between">
-          <div className="text-sm text-tally-gray">Potential Return</div>
-          <div className="text-white">$0 (0%)</div>
+          <div className="text-white">
+            {Number(amount) ? Number(amount) * 2 : 0}
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 
@@ -117,23 +219,16 @@ function OrderCardMulti({ choice }: { choice: ChoiceMarket }) {
               </div>
               <div className={cn(textCss, "text-lg")}>$.50</div>
             </div>
-            <div className="mt-2 text-sm text-tally-gray lg:hidden">{`Total Pot: ${formatDollarsWithoutCents(
-              choice.total_pot
-            )}`}</div>
           </div>
         </div>
-        <div className="mt-2 hidden text-sm text-tally-gray lg:flex">{`Total Pot: ${formatDollarsWithoutCents(
-          choice.total_pot
-        )}`}</div>
       </div>
       <div className="flex flex-shrink-0 flex-col justify-between">
         <div className="flex space-x-2">
-          <Input
-            className="border-0 bg-tally-layer-2 text-tally-gray placeholder:text-tally-gray xl:w-[251px]"
-            placeholder="$0"
-          />
-          <Button className={cn(buttonCss, "text-black hover:text-black")}>
-            Buy
+          <Button
+            type="submit"
+            className={cn(buttonCss, "text-black hover:text-black")}
+          >
+            Submit
           </Button>
         </div>
         <div className="flex items-end justify-between">
@@ -172,7 +267,13 @@ export function OrderMobile({ choices }: { choices: ChoiceMarket[] }) {
           ))}
         </div>
         {choices
-          .map((choice, index) => <OrderCard key={index} choice={choice} />)
+          .map((choice, index) => (
+            <OrderCard
+              key={index}
+              choice={choice}
+              formId={`fair-launch-form-${choice.id}-mobile`}
+            />
+          ))
           .filter((choice) => choice.props.choice.title === selected)}
       </div>
     );
@@ -193,7 +294,11 @@ export function OrderDesktop({ choices }: { choices: ChoiceMarket[] }) {
     return (
       <div className="hidden space-x-6 lg:flex">
         {choices.map((choice, index) => (
-          <OrderCard key={index} choice={choice} />
+          <OrderCard
+            key={index}
+            choice={choice}
+            formId={`fair-launch-form-${choice.id}-desktop`}
+          />
         ))}
       </div>
     );

@@ -1,60 +1,61 @@
 "use client";
-import { HelioCheckout } from "@heliofi/checkout-react";
 import { ChangeEvent, useState } from "react";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useFormState } from "react-dom";
+import { WithdrawUseFormState, withdraw } from "@/lib/api/actions/withdraw";
+import { Button } from "@/components/ui/button";
 
 type WithdrawProps = {
   userId: number;
 };
 
+export type WithdrawFormState = {
+  walletKey: string;
+  amount: number;
+};
+
 export default function Withdraw({ userId }: WithdrawProps) {
-  const [amount, setAmount] = useState("5");
+  const [withdrawFormState, withdrawFormAction] = useFormState<
+    WithdrawUseFormState,
+    FormData
+  >(withdraw, null);
+
+  const [formState, setFormState] = useState<WithdrawFormState>({
+    walletKey: "",
+    amount: 0,
+  });
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
+  };
+
+  const { walletKey, amount } = formState;
 
   return (
     <div className="flex flex-col space-y-5">
-      <div className="flex flex-col space-y-2">
+      <form className="flex flex-col space-y-2" action={withdrawFormAction}>
         <Label>Amount</Label>
         <Input
+          name="amount"
+          type="number"
           defaultValue={"5"}
           value={amount}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setAmount(e.target.value)
-          }
+          onChange={onChange}
           className="text-black"
         />
-      </div>
-      <HelioCheckout
-        config={{
-          additionalJSON: {
-            userId,
-          },
-          paylinkId: process.env.NEXT_PUBLIC_HELIO_PAYLINK_ID!,
-          network: "main",
-          theme: {
-            themeMode: "dark",
-            colors: {
-              primaryButtonBackground: "#46FF9B",
-              primaryButtonText: "#000000",
-              primaryButtonBackgroundHover: "#46FF9B",
-            },
-          },
-          amount: amount,
-          onSuccess: (event: {
-            data: unknown;
-            transaction: string;
-            paymentPK?: string;
-            swapTransactionSignature?: string;
-            blockchainSymbol?: string;
-          }) => console.log(event),
-          onError: (event: { transaction?: string; errorMessage?: string }) =>
-            console.log(event),
-          onPending: (event: { data?: unknown; transaction: string }) =>
-            console.log(event),
-          onCancel: () => console.log("Cancelled payment"),
-          onStartPayment: () => console.log("Starting payment"),
-        }}
-      />
+        <Label>Wallet Address</Label>
+        <Input
+          name="walletKey"
+          type="text"
+          value={walletKey}
+          onChange={onChange}
+          className="text-black"
+        />
+        <Button type="submit" className="w-full">
+          Withdraw
+        </Button>
+      </form>
     </div>
   );
 }

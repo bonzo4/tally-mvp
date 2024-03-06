@@ -738,14 +738,14 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "orders_choice_market_id_fkey";
+            foreignKeyName: "public_orders_choice_market_id_fkey";
             columns: ["choice_market_id"];
             isOneToOne: false;
             referencedRelation: "choice_markets";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "orders_user_id_fkey";
+            foreignKeyName: "public_orders_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "users";
@@ -858,6 +858,7 @@ export type Database = {
           end_time: string;
           icon: string;
           id: number;
+          public_key: string | null;
           slug: string;
           start_time: string;
           thumbnail: string;
@@ -873,6 +874,7 @@ export type Database = {
           end_time: string;
           icon: string;
           id?: number;
+          public_key?: string | null;
           slug: string;
           start_time: string;
           thumbnail: string;
@@ -888,6 +890,7 @@ export type Database = {
           end_time?: string;
           icon?: string;
           id?: number;
+          public_key?: string | null;
           slug?: string;
           start_time?: string;
           thumbnail?: string;

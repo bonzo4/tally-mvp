@@ -6,9 +6,10 @@ import { BuyFormState } from "@/app/trade/[slug]/components/BuyCard";
 import getUser from "@/lib/supabase/user";
 
 export type Estimate = {
+  subMarketId: number;
   subMarketTitle: string;
-  choiceMarketTitle: string;
   choiceMarketId: number;
+  choiceMarketTitle: string;
   tradeSide: "BUY" | "SELL";
   avgPrice: number;
   cumulativeDollars: number;
@@ -31,9 +32,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       const { avgPrice, cumulativeDollars, cumulativeShares, fees } =
         await estimateBuy(supabase, choiceMarketId, amount);
       resData.push({
+        subMarketId: txn.subMarketId,
         subMarketTitle: txn.subMarketTitle,
-        choiceMarketTitle: txn.choiceMarketTitle,
         choiceMarketId: txn.choiceMarketId,
+        choiceMarketTitle: txn.choiceMarketTitle,
         tradeSide: "BUY",
         avgPrice: avgPrice,
         cumulativeDollars: cumulativeDollars,

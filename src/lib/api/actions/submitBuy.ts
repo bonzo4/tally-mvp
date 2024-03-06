@@ -8,6 +8,17 @@ import { getUser } from "@/lib/supabase/queries/user";
 import { Database } from "@/lib/supabase/types";
 import { Estimate } from "@/app/api/estimateBuy/route";
 import { FEE_RATE } from "@/lib/constants";
+import { getTallyClob } from "@/lib/solana/program";
+import { getManagerKeyPair } from "@/lib/solana/wallet";
+import {
+  getMarketPDA,
+  getMarketPortfolioPDA,
+  getUserPDA,
+} from "@/lib/solana/pdas";
+import { PublicKey } from "@solana/web3.js";
+import { AnchorError, BN } from "@coral-xyz/anchor";
+import { feeAccounts } from "@/lib/solana/fee";
+import { sendTransactions } from "@/lib/solana/transaction";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -48,7 +59,11 @@ type FormattedBuyFormData = {
   amount: string | undefined;
 };
 
-async function checkUserLoggedIn({ supabase }: { supabase: SupabaseClient }) {
+async function checkUserLoggedIn({
+  supabase,
+}: {
+  supabase: SupabaseClient<Database>;
+}) {
   const {
     data: { user: authUser },
   } = await supabase.auth.getUser();
@@ -138,19 +153,20 @@ async function checkSufficientFunds({
   userId,
   formData_,
 }: {
-  supabase: SupabaseClient;
+  supabase: SupabaseClient<Database>;
   userId: number;
   formData_: FormattedBuyFormData[];
 }) {
   const { data: balancesData, error: balancesError } = await supabase
     .from("user_balances")
     .select()
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .single();
   if (!balancesData) {
     throw new Error("Insufficient balance");
   }
   const userBalance =
-    balancesData[0].usdc_balance + balancesData[0].unredeemable_balance;
+    balancesData.usdc_balance + balancesData.unredeemable_balance;
   const totalAmount = formData_.reduce((acc, data) => {
     return acc + Number(data?.amount);
   }, 0);
@@ -158,6 +174,8 @@ async function checkSufficientFunds({
   if (userBalance < totalAmount * (1 + FEE_RATE)) {
     throw new Error("Insufficient balance");
   }
+
+  return balancesData;
 }
 
 export async function validateBuy(
@@ -233,8 +251,27 @@ export default async function submitBuy(
       (data) => data.amount !== "" && data.choice_market_id !== ""
     );
 
+    const { data: subMarketData, error: subMarketError } = await supabase
+      .from("sub_market_id")
+      .select("prediction_market_id")
+      .eq("id", formData_[0].sub_market_id)
+      .single();
+
+    if (subMarketError) throw subMarketError;
+
+    const { data: predictionMarketData, error: predictionMarketDataError } =
+      await supabase
+        .from("prediction_markets")
+        .select("public_key")
+        .eq("id", subMarketData.prediction_market_id)
+        .single();
+
+    if (predictionMarketDataError) throw predictionMarketDataError;
+    if (!predictionMarketData.public_key)
+      throw new Error("No public key found.");
+
     // check if user has enough funds
-    await checkSufficientFunds({
+    const balanceData = await checkSufficientFunds({
       supabase,
       userId: user.id,
       formData_: formData_,
@@ -259,8 +296,19 @@ export default async function submitBuy(
       .insert(txns)
       .select();
 
+    const buyOrders = estimate.map((values) => ({
+      subMarketId: new BN(values.subMarketId),
+      choiceId: new BN(values.choiceMarketId),
+      amount: values.cumulativeDollars,
+      requestedPricePerShare: values.avgPrice,
+    }));
+
     // TODO: submit transaction to smart contract
-    const { data: data_, error: error_ } = await submitToSmartContract(txns);
+    const { data: data_, error: error_ } = await submitToSmartContract({
+      userWallet: balanceData.public_key,
+      marketKey: predictionMarketData.public_key,
+      buyOrders,
+    });
 
     // TODO: Handle error if smart contract fails and redirect appropriately
 
@@ -268,6 +316,15 @@ export default async function submitBuy(
       throw error;
     }
   } catch (error: any) {
+    if (error instanceof AnchorError) {
+      const err = error as AnchorError;
+      const useFormState: BuyUseFormState = {
+        status: "error",
+        message: err.message,
+        errors: [],
+      };
+      return useFormState;
+    }
     if (error instanceof FormError) {
       const useFormState: BuyUseFormState = {
         status: "error",
@@ -285,7 +342,46 @@ export default async function submitBuy(
   redirect("/profile");
 }
 
-async function submitToSmartContract(txns: any) {
+type SubmitToSmartContractOptions = {
+  userWallet: string;
+  marketKey: string;
+  buyOrders: {
+    subMarketId: BN;
+    choiceId: BN;
+    amount: number;
+    requestedPricePerShare: number;
+  }[];
+};
+
+async function submitToSmartContract({
+  marketKey,
+  userWallet,
+  buyOrders,
+}: SubmitToSmartContractOptions) {
+  const program = getTallyClob();
+  const managerWallet = getManagerKeyPair();
+  const userPDA = getUserPDA(new PublicKey(userWallet), program);
+  const marketPDA = getMarketPDA(new PublicKey(marketKey), program);
+  const marketPortfolioPDA = getMarketPortfolioPDA(marketPDA, userPDA, program);
+
+  const bulkBuyTx = await program.methods
+    .bulkBuyByPrice(buyOrders)
+    .signers([managerWallet])
+    .accounts({
+      ...feeAccounts,
+      user: userPDA,
+      market: marketPDA,
+      marketPortfolio: marketPortfolioPDA,
+      signer: managerWallet.publicKey,
+    })
+    .instruction();
+
+  await sendTransactions({
+    connection: program.provider.connection,
+    transactions: [bulkBuyTx],
+    signer: managerWallet,
+  });
+
   return {
     data: true,
     error: false,

@@ -1,4 +1,4 @@
-import { Program, utils } from "@project-serum/anchor";
+import { Program, utils } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { TallyClob } from "./tally-clob-types";
 

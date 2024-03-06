@@ -97,7 +97,10 @@ export default async function FairLaunchPage({
           <Countdown end={new Date(end)} />
           <Info {...market} />
           {phase === "fair-launch" ? (
-            <OrderDesktop choices={market.choice_markets} />
+            <OrderDesktop
+              subMarketId={market.id}
+              choices={market.choice_markets}
+            />
           ) : null}
           {phase === "results" ? (
             <div className="flex w-full flex-col items-center space-y-4">
@@ -113,7 +116,7 @@ export default async function FairLaunchPage({
         <TradePhase className="flex bg-transparent lg:hidden" />
       ) : null}
       {phase === "fair-launch" ? (
-        <OrderMobile choices={market.choice_markets} />
+        <OrderMobile subMarketId={market.id} choices={market.choice_markets} />
       ) : null}
       {phase === "results" ? (
         <ResultsMobile

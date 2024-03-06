@@ -96,7 +96,6 @@ export type TallyClob = {
           type: "publicKey";
         },
       ];
-      returns: "publicKey";
     },
     {
       name: "addToBalance";
@@ -120,7 +119,33 @@ export type TallyClob = {
       args: [
         {
           name: "amount";
-          type: "f64";
+          type: "u128";
+        },
+      ];
+    },
+    {
+      name: "addToUnreedeemable";
+      accounts: [
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [
+        {
+          name: "amount";
+          type: "u128";
         },
       ];
     },
@@ -171,7 +196,7 @@ export type TallyClob = {
       args: [
         {
           name: "amount";
-          type: "f64";
+          type: "u128";
         },
       ];
     },
@@ -650,7 +675,11 @@ export type TallyClob = {
           },
           {
             name: "balance";
-            type: "f64";
+            type: "u128";
+          },
+          {
+            name: "unreedemableBalance";
+            type: "u128";
           },
         ];
       };
@@ -664,15 +693,15 @@ export type TallyClob = {
         fields: [
           {
             name: "sharesToBuy";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "buyPrice";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "feePrice";
-            type: "f64";
+            type: "u128";
           },
         ];
       };
@@ -684,15 +713,15 @@ export type TallyClob = {
         fields: [
           {
             name: "sharesToSell";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "sellPrice";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "feePrice";
-            type: "f64";
+            type: "u128";
           },
         ];
       };
@@ -708,19 +737,19 @@ export type TallyClob = {
           },
           {
             name: "usdcPot";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "potShares";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "mintedShares";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "fairLaunchPot";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "winningChoice";
@@ -740,7 +769,7 @@ export type TallyClob = {
           },
           {
             name: "shares";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "claimed";
@@ -756,7 +785,7 @@ export type TallyClob = {
         fields: [
           {
             name: "amount";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "subMarketId";
@@ -788,15 +817,15 @@ export type TallyClob = {
           },
           {
             name: "price";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "shares";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "feePrice";
-            type: "f64";
+            type: "u128";
           },
         ];
       };
@@ -852,6 +881,10 @@ export type TallyClob = {
             name: "tradingEnd";
             type: "i64";
           },
+          {
+            name: "initPot";
+            type: "u128";
+          },
         ];
       };
     },
@@ -866,7 +899,7 @@ export type TallyClob = {
           },
           {
             name: "invariant";
-            type: "f64";
+            type: "u128";
           },
           {
             name: "choices";
@@ -1147,7 +1180,6 @@ export const IDL: TallyClob = {
           type: "publicKey",
         },
       ],
-      returns: "publicKey",
     },
     {
       name: "addToBalance",
@@ -1171,7 +1203,33 @@ export const IDL: TallyClob = {
       args: [
         {
           name: "amount",
-          type: "f64",
+          type: "u128",
+        },
+      ],
+    },
+    {
+      name: "addToUnreedeemable",
+      accounts: [
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "amount",
+          type: "u128",
         },
       ],
     },
@@ -1222,7 +1280,7 @@ export const IDL: TallyClob = {
       args: [
         {
           name: "amount",
-          type: "f64",
+          type: "u128",
         },
       ],
     },
@@ -1701,7 +1759,11 @@ export const IDL: TallyClob = {
           },
           {
             name: "balance",
-            type: "f64",
+            type: "u128",
+          },
+          {
+            name: "unreedemableBalance",
+            type: "u128",
           },
         ],
       },
@@ -1715,15 +1777,15 @@ export const IDL: TallyClob = {
         fields: [
           {
             name: "sharesToBuy",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "buyPrice",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "feePrice",
-            type: "f64",
+            type: "u128",
           },
         ],
       },
@@ -1735,15 +1797,15 @@ export const IDL: TallyClob = {
         fields: [
           {
             name: "sharesToSell",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "sellPrice",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "feePrice",
-            type: "f64",
+            type: "u128",
           },
         ],
       },
@@ -1759,19 +1821,19 @@ export const IDL: TallyClob = {
           },
           {
             name: "usdcPot",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "potShares",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "mintedShares",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "fairLaunchPot",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "winningChoice",
@@ -1791,7 +1853,7 @@ export const IDL: TallyClob = {
           },
           {
             name: "shares",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "claimed",
@@ -1807,7 +1869,7 @@ export const IDL: TallyClob = {
         fields: [
           {
             name: "amount",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "subMarketId",
@@ -1839,15 +1901,15 @@ export const IDL: TallyClob = {
           },
           {
             name: "price",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "shares",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "feePrice",
-            type: "f64",
+            type: "u128",
           },
         ],
       },
@@ -1903,6 +1965,10 @@ export const IDL: TallyClob = {
             name: "tradingEnd",
             type: "i64",
           },
+          {
+            name: "initPot",
+            type: "u128",
+          },
         ],
       },
     },
@@ -1917,7 +1983,7 @@ export const IDL: TallyClob = {
           },
           {
             name: "invariant",
-            type: "f64",
+            type: "u128",
           },
           {
             name: "choices",

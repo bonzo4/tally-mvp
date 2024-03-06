@@ -7,6 +7,18 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/queries/user";
 import { Database } from "@/lib/supabase/types";
 import { Estimate } from "@/app/api/estimateBuy/route";
+import { BN } from "@coral-xyz/anchor";
+import { getTallyClob } from "@/lib/solana/program";
+import { getManagerKeyPair } from "@/lib/solana/wallet";
+import {
+  getMarketPDA,
+  getMarketPortfolioPDA,
+  getUserPDA,
+} from "@/lib/solana/pdas";
+import { PublicKey } from "@solana/web3.js";
+import { sendTransactions } from "@/lib/solana/transaction";
+import { Holdings } from "@/lib/supabase/queries/holdings";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -85,6 +97,7 @@ async function checkEnoughShares({
   formData_: FormattedSellFormData[];
   userId: number;
 }) {
+  const holdings: Holdings[] = [];
   const errors = {} as SellErrors;
   for (const txn of formData_) {
     const { data, error } = await supabase
@@ -100,10 +113,12 @@ async function checkEnoughShares({
         text: "You do not have enough shares to sell.",
       };
     }
+    holdings.push(data[0]);
   }
   if (Object.keys(errors).length) {
     throw new SellFormError(errors);
   }
+  return holdings;
 }
 
 export async function validateSell(
@@ -204,11 +219,54 @@ export default async function submitSell(
     // remove unfilled fields
     formData_ = formData_.filter((data) => data.shares !== "");
 
+    const { data: subMarketData, error: subMarketError } = await supabase
+      .from("sub_market_id")
+      .select("prediction_market_id")
+      .eq("id", estimate[0].subMarketId)
+      .single();
+
+    if (subMarketError) throw subMarketError;
+
+    const { data: predictionMarketData, error: predictionMarketDataError } =
+      await supabase
+        .from("prediction_markets")
+        .select("public_key")
+        .eq("id", subMarketData.prediction_market_id)
+        .single();
+
+    if (predictionMarketDataError) throw predictionMarketDataError;
+    if (!predictionMarketData.public_key)
+      throw new Error("No public key found.");
+
     // check that users have enough shares
     await checkEnoughShares({
       supabase: supabase,
       formData_: formData_,
       userId: user.id,
+    });
+
+    const { data: balanceData, error: balancesError } = await supabase
+      .from("user_balances")
+      .select()
+      .eq("user_id", user.id)
+      .single();
+
+    if (balancesError) {
+      throw Error("Error fetching user balances.");
+    }
+
+    const sellOrders = estimate.map((values) => ({
+      subMarketId: new BN(values.subMarketId),
+      choiceId: new BN(values.choiceMarketId),
+      amount: values.cumulativeDollars,
+      requestedPricePerShare: values.avgPrice,
+    }));
+
+    // TODO: submit transaction to smart contract
+    await submitToSmartContract({
+      userWallet: balanceData.public_key,
+      marketKey: predictionMarketData.public_key,
+      sellOrders,
     });
 
     // group transactions together before POSTING
@@ -243,4 +301,67 @@ export default async function submitSell(
     };
   }
   redirect("/profile");
+}
+
+type SubmitToSmartContractOptions = {
+  userWallet: string;
+  marketKey: string;
+  sellOrders: {
+    subMarketId: number;
+    choiceId: number;
+    amount: number;
+    requestedPricePerShare: number;
+  }[];
+};
+
+async function submitToSmartContract({
+  marketKey,
+  userWallet,
+  sellOrders,
+}: SubmitToSmartContractOptions) {
+  const program = getTallyClob();
+  const managerWallet = getManagerKeyPair();
+  const userPDA = getUserPDA(new PublicKey(userWallet), program);
+  const marketPDA = getMarketPDA(new PublicKey(marketKey), program);
+  const marketPortfolioPDA = getMarketPortfolioPDA(marketPDA, userPDA, program);
+
+  const orders = sellOrders.map((order) => ({
+    subMarketId: new BN(order.subMarketId),
+    choiceId: new BN(order.choiceId),
+    amount: new BN(order.amount * Math.pow(10, 9)),
+    requestedPricePerShare: order.requestedPricePerShare,
+  }));
+
+  const bulkBuyTx = await program.methods
+    .bulkSellByShares(orders)
+    .signers([managerWallet])
+    .accounts({
+      mint: new PublicKey(process.env.USDC_MINT!),
+      fromUsdcAccount: getAssociatedTokenAddressSync(
+        new PublicKey(process.env.USDC_MINT!),
+        new PublicKey(process.env.MANAGER_PUBLIC_KEY!)
+      ),
+      feeUsdcAccount: getAssociatedTokenAddressSync(
+        new PublicKey(process.env.USDC_MINT!),
+        new PublicKey(process.env.FEE_MANAGER_KEY!)
+      ),
+      user: userPDA,
+      market: marketPDA,
+      marketPortfolio: marketPortfolioPDA,
+      signer: managerWallet.publicKey,
+    })
+    .instruction();
+
+  await sendTransactions({
+    connection: program.provider.connection,
+    transactions: [bulkBuyTx],
+    signer: managerWallet,
+  }).catch((err) => {
+    throw new Error(err);
+  });
+
+  return {
+    data: true,
+    error: false,
+  };
 }

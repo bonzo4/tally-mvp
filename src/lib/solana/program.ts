@@ -1,9 +1,8 @@
-import { Program, AnchorProvider, Idl } from "@project-serum/anchor";
+import { Program, AnchorProvider } from "@coral-xyz/anchor";
 import { Connection, clusterApiUrl, PublicKey, Keypair } from "@solana/web3.js";
 
-import idl from "./tally_clob.json";
-import { TallyClob } from "./tally-clob-types";
-import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
+import { TallyClob, IDL } from "./tally-clob-types";
+import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 
 export function getTallyClob() {
   const programID = new PublicKey(
@@ -22,7 +21,7 @@ export function getTallyClob() {
   const provider = new AnchorProvider(connection, wallet, {});
 
   const program = new Program(
-    idl as Idl,
+    IDL,
     programID,
     provider
   ) as unknown as Program<TallyClob>;

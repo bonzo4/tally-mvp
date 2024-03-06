@@ -11,9 +11,8 @@ import {
   createAssociatedTokenAccount,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import { AnchorError } from "@project-serum/anchor";
+import { AnchorError, BN } from "@coral-xyz/anchor";
 import { sendTransactions } from "@/lib/solana/transaction";
-import { feeAccounts } from "@/lib/solana/fee";
 
 export type BuyErrorMessages = {
   radio: string;
@@ -149,10 +148,18 @@ export async function withdraw(
     // const userData = await program.account.user.fetch(userPDA);
 
     const withdrawTx = await program.methods
-      .withdrawFromBalance(formData_.amount)
+      .withdrawFromBalance(new BN(formData_.amount * Math.pow(10, 9)))
       .signers([managerWallet])
       .accounts({
-        ...feeAccounts,
+        mint: new PublicKey(process.env.USDC_MINT!),
+        fromUsdcAccount: getAssociatedTokenAddressSync(
+          new PublicKey(process.env.USDC_MINT!),
+          new PublicKey(process.env.MANAGER_PUBLIC_KEY!)
+        ),
+        feeUsdcAccount: getAssociatedTokenAddressSync(
+          new PublicKey(process.env.USDC_MINT!),
+          new PublicKey(process.env.FEE_MANAGER_KEY!)
+        ),
         user: userPDA,
         signer: managerWallet.publicKey,
         toUsdcAccount: to,

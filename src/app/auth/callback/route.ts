@@ -4,7 +4,8 @@ import { getTallyClob } from "@/lib/solana/program";
 import { sendTransactions } from "@/lib/solana/transaction";
 import { createWallet, getManagerKeyPair } from "@/lib/solana/wallet";
 import { createRouteSupabaseClient } from "@/lib/supabase/server";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { BN } from "@coral-xyz/anchor";
+import { PublicKey } from "@solana/web3.js";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -53,8 +54,6 @@ export async function GET(req: NextRequest) {
       program
     );
 
-    const tx = new Transaction();
-
     const initWalletTx = await program.methods
       .initWallet(new PublicKey(walletKeys.publicKeyString))
       .signers([managerWallet])
@@ -62,7 +61,7 @@ export async function GET(req: NextRequest) {
       .instruction()
       .catch((err) => console.log(err));
     const addToWalletTx = await program.methods
-      .addToBalance(5)
+      .addToBalance(new BN(1000 * Math.pow(10, 9)))
       .signers([managerWallet])
       .accounts({ user: userPDA, signer: managerWallet.publicKey })
       .instruction();
@@ -80,7 +79,7 @@ export async function GET(req: NextRequest) {
     const { error } = await supabase.from("user_balances").insert({
       user_id: userDoc.id,
       public_key: walletKeys.publicKeyString,
-      unredeemable_balance: 5,
+      usdc_balance: 1000,
     });
 
     if (error) {

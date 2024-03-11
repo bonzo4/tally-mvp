@@ -76,15 +76,16 @@ export async function estimateBuy(
   // get initial pot values
   const { totalPot, choicePot } = getPotSizes(subMarkets, choiceMarketId);
 
+  // estimate fees
+  const fees = estimateFees(amount);
+
   // calculate total spend
   const { cumulativeDollars, cumulativeShares } = estimateBuyByDollars({
-    amount: amount * (1 - FEE_RATE),
-    choicePot,
-    totalPot,
+    amount: amount - fees,
+    choiceMarketId: choiceMarketId,
+    subMarket: subMarkets,
   });
   const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
-
-  const fees = estimateFees(cumulativeDollars);
 
   console.log(
     "avgPrice",
@@ -102,23 +103,25 @@ export async function estimateBuy(
 
 function estimateBuyByDollars({
   amount,
-  choicePot,
-  totalPot,
+  choiceMarketId,
+  subMarket,
 }: {
   amount: number;
-  choicePot: number;
-  totalPot: number;
+  choiceMarketId: number;
+  subMarket: SubMarketWithChoiceMarkets;
 }) {
-  let sharePrice = calculateSharePrice({ choicePot, totalPot });
-  let cumulativeDollars = 0;
-  let cumulativeShares = 0;
-  while (cumulativeDollars + sharePrice <= amount) {
-    choicePot += sharePrice;
-    totalPot += sharePrice;
-    cumulativeShares += 1;
-    cumulativeDollars += sharePrice;
-    sharePrice = calculateSharePrice({ choicePot, totalPot });
-  }
+  const invariant = subMarket.invariant;
+  const sharesInMM1 = subMarket.choice_markets.filter(
+    (choiceMarket) => choiceMarket.id === choiceMarketId
+  )[0].shares_in_mm;
+  const sharesInMM2 = subMarket.choice_markets.filter(
+    (choiceMarket) => choiceMarket.id !== choiceMarketId
+  )[0].shares_in_mm;
+
+  const cumulativeDollars = amount;
+  const cumulativeShares =
+    sharesInMM1 + amount - invariant / (sharesInMM2 + amount);
+
   return { cumulativeDollars, cumulativeShares };
 }
 

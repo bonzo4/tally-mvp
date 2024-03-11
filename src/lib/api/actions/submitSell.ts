@@ -219,24 +219,24 @@ export default async function submitSell(
     // remove unfilled fields
     formData_ = formData_.filter((data) => data.shares !== "");
 
-    const { data: subMarketData, error: subMarketError } = await supabase
-      .from("sub_market_id")
-      .select("prediction_market_id")
-      .eq("id", estimate[0].subMarketId)
-      .single();
+    // const { data: subMarketData, error: subMarketError } = await supabase
+    //   .from("sub_market_id")
+    //   .select("prediction_market_id")
+    //   .eq("id", estimate[0].subMarketId)
+    //   .single();
 
-    if (subMarketError) throw subMarketError;
+    // if (subMarketError) throw subMarketError;
 
-    const { data: predictionMarketData, error: predictionMarketDataError } =
-      await supabase
-        .from("prediction_markets")
-        .select("public_key")
-        .eq("id", subMarketData.prediction_market_id)
-        .single();
+    // const { data: predictionMarketData, error: predictionMarketDataError } =
+    //   await supabase
+    //     .from("prediction_markets")
+    //     .select("public_key")
+    //     .eq("id", subMarketData.prediction_market_id)
+    //     .single();
 
-    if (predictionMarketDataError) throw predictionMarketDataError;
-    if (!predictionMarketData.public_key)
-      throw new Error("No public key found.");
+    // if (predictionMarketDataError) throw predictionMarketDataError;
+    // if (!predictionMarketData.public_key)
+    //   throw new Error("No public key found.");
 
     // check that users have enough shares
     await checkEnoughShares({
@@ -245,29 +245,29 @@ export default async function submitSell(
       userId: user.id,
     });
 
-    const { data: balanceData, error: balancesError } = await supabase
-      .from("user_balances")
-      .select()
-      .eq("user_id", user.id)
-      .single();
+    // const { data: balanceData, error: balancesError } = await supabase
+    //   .from("user_balances")
+    //   .select()
+    //   .eq("user_id", user.id)
+    //   .single();
 
-    if (balancesError) {
-      throw Error("Error fetching user balances.");
-    }
+    // if (balancesError) {
+    //   throw Error("Error fetching user balances.");
+    // }
 
-    const sellOrders = estimate.map((values) => ({
-      subMarketId: new BN(values.subMarketId),
-      choiceId: new BN(values.choiceMarketId),
-      amount: values.cumulativeDollars,
-      requestedPricePerShare: values.avgPrice,
-    }));
+    // const sellOrders = estimate.map((values) => ({
+    //   subMarketId: new BN(values.subMarketId),
+    //   choiceId: new BN(values.choiceMarketId),
+    //   amount: values.cumulativeDollars,
+    //   requestedPricePerShare: values.avgPrice,
+    // }));
 
-    // TODO: submit transaction to smart contract
-    await submitToSmartContract({
-      userWallet: balanceData.public_key,
-      marketKey: predictionMarketData.public_key,
-      sellOrders,
-    });
+    // // TODO: submit transaction to smart contract
+    // await submitToSmartContract({
+    //   userWallet: balanceData.public_key,
+    //   marketKey: predictionMarketData.public_key,
+    //   sellOrders,
+    // });
 
     // group transactions together before POSTING
     const txns = [];
@@ -286,6 +286,7 @@ export default async function submitSell(
 
     const { data, error } = await supabase.from("orders").insert(txns).select();
   } catch (error: any) {
+    console.log(error);
     if (error instanceof SellFormError) {
       const useFormState: SellUseFormState = {
         status: "error",

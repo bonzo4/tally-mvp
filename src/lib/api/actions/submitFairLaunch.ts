@@ -330,6 +330,7 @@ export async function submitFairLaunch(
       throw error;
     }
   } catch (error: any) {
+    console.log(error);
     return fromErrorToFormState(error);
   }
   redirect("/profile");

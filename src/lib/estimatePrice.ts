@@ -42,12 +42,6 @@ export function getPotSizes(subMarket: SubMarket, choiceMarketId: number) {
   };
 }
 
-export function getSharePrice(subMarket: SubMarket, choiceMarketId: number) {
-  const { choicePot, totalPot } = getPotSizes(subMarket, choiceMarketId);
-  const sharePrice = calculateSharePrice({ choicePot, totalPot });
-  return sharePrice;
-}
-
 function calculateSharePrice({
   choicePot,
   totalPot,

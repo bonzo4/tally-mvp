@@ -21,6 +21,7 @@ import { SellFormState } from "./SellCard";
 import {
   formatDollarsWithCents,
   formatNumberWithCommasNoDecimals,
+  formatNumberWithCommas,
   formatPercentageWithOneDecimal,
 } from "@/lib/formats";
 import { BuyUseFormState } from "@/lib/api/actions/submitBuy";
@@ -33,9 +34,7 @@ function EstimateLineItem({ txn }: { txn: Estimate }) {
     <TableRow className="border-0 hover:bg-tally-background">
       <TableCell className="font-medium">{txn.subMarketTitle}</TableCell>
       <TableCell>{txn.choiceMarketTitle}</TableCell>
-      <TableCell>
-        {formatNumberWithCommasNoDecimals(txn.cumulativeShares)}
-      </TableCell>
+      <TableCell>{formatNumberWithCommas(txn.cumulativeShares, 2)}</TableCell>
       <TableCell>{formatDollarsWithCents(txn.avgPrice)}</TableCell>
       <TableCell className="text-right">
         {formatDollarsWithCents(txn.cumulativeDollars)}

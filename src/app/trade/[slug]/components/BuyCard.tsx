@@ -18,7 +18,6 @@ import { SummaryBuy } from "./Summary";
 import { Estimate } from "@/app/api/estimateBuy/route";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
 import { UserDoc } from "@/lib/supabase/queries/user";
-import { getSharePrice } from "@/lib/estimatePrice";
 import submitBuy, {
   validateBuy,
   BuyUseFormState,
@@ -76,7 +75,6 @@ function BuySubMarket({
             )}
           >
             {subMarket.choice_markets.map((choiceMarket, index) => {
-              const sharePrice = getSharePrice(subMarket, choiceMarket.id);
               return (
                 <ChoiceButton
                   id={choiceMarket.id.toString()}
@@ -85,13 +83,13 @@ function BuySubMarket({
                   key={index}
                   className="h-[40px] w-full"
                   choiceMarket={choiceMarket}
-                  sharePrice={sharePrice}
+                  sharePrice={choiceMarket.share_price}
                   checked={formState.choiceMarketId === choiceMarket.id}
                   onChange={(e) =>
                     handleRadioButtonChange({
                       choiceMarketTitle: choiceMarket.title,
                       choiceMarketId: choiceMarket.id,
-                      sharePrice: sharePrice,
+                      sharePrice: choiceMarket.share_price,
                     })
                   }
                 />

@@ -20,7 +20,6 @@ import { BuyFormState } from "./BuyCard";
 import { SellFormState } from "./SellCard";
 import {
   formatDollarsWithCents,
-  formatNumberWithCommasNoDecimals,
   formatNumberWithCommas,
   formatPercentageWithOneDecimal,
 } from "@/lib/formats";

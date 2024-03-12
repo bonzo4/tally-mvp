@@ -28,7 +28,6 @@ import submitSell, {
   SellUseFormState,
   validateSell,
 } from "@/lib/api/actions/submitSell";
-import { getSharePrice } from "@/lib/estimatePrice";
 import { Estimate } from "@/app/api/estimateBuy/route";
 
 type SellChoiceMarketProps = {
@@ -162,10 +161,6 @@ function SellContent({
             {subMarketWithHoldings.choice_markets.map(
               (choice_market, index) => {
                 if (!choice_market.holdings.length) return;
-                const sharePrice = getSharePrice(
-                  subMarketWithHoldings,
-                  choice_market.id
-                );
                 const insufficientBalanceError =
                   choice_market.holdings[0].shares <
                   formState[choice_market.id]?.shares
@@ -179,7 +174,7 @@ function SellContent({
                   <SellChoiceMarket
                     key={index}
                     choiceMarket={choice_market}
-                    sharePrice={sharePrice}
+                    sharePrice={choice_market.share_price}
                     formState={formState}
                     error={insufficientBalanceError || backendError}
                     setIsFormEnabled={setIsFormEnabled}
@@ -188,7 +183,7 @@ function SellContent({
                         subMarketWithHoldings.title,
                       choice_market.title,
                       choice_market.id,
-                      sharePrice
+                      choice_market.share_price
                     )}
                     enabledInput={enabledInput}
                   />

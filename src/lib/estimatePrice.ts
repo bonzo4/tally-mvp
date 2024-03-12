@@ -7,6 +7,7 @@ import {
   SubMarketWithChoiceMarkets,
 } from "@/lib/supabase/queries/markets/subMarkets";
 import { SubMarketWithHoldings } from "@/lib/supabase/queries/markets/tradeMarket";
+import { quadraticFormula } from "@/lib/quadraticFormula";
 
 type SubMarket = SubMarketWithChoiceMarkets | SubMarketWithHoldings;
 
@@ -27,37 +28,6 @@ async function getSlugFromChoiceMarketId(
   return data[0].sub_markets.slug;
 }
 
-export function getPotSizes(subMarket: SubMarket, choiceMarketId: number) {
-  let totalPot = 0;
-  let choicePot = 0;
-  for (const choiceMarket of subMarket.choice_markets) {
-    if (choiceMarket.id === choiceMarketId) {
-      choicePot = choiceMarket.total_pot;
-    }
-    totalPot += choiceMarket.total_pot;
-  }
-  return {
-    totalPot: totalPot,
-    choicePot: choicePot,
-  };
-}
-
-export function getSharePrice(subMarket: SubMarket, choiceMarketId: number) {
-  const { choicePot, totalPot } = getPotSizes(subMarket, choiceMarketId);
-  const sharePrice = calculateSharePrice({ choicePot, totalPot });
-  return sharePrice;
-}
-
-function calculateSharePrice({
-  choicePot,
-  totalPot,
-}: {
-  choicePot: number;
-  totalPot: number;
-}) {
-  return choicePot && totalPot ? choicePot / totalPot : 1;
-}
-
 function estimateFees(amount: number) {
   return amount * FEE_RATE;
 }
@@ -73,18 +43,16 @@ export async function estimateBuy(
     await getSubMarkets({ supabase, options: { slug: slug } })
   )[0];
 
-  // get initial pot values
-  const { totalPot, choicePot } = getPotSizes(subMarkets, choiceMarketId);
+  // estimate fees
+  const fees = estimateFees(amount);
 
   // calculate total spend
   const { cumulativeDollars, cumulativeShares } = estimateBuyByDollars({
-    amount: amount * (1 - FEE_RATE),
-    choicePot,
-    totalPot,
+    amount: amount - fees,
+    choiceMarketId: choiceMarketId,
+    subMarket: subMarkets,
   });
   const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
-
-  const fees = estimateFees(cumulativeDollars);
 
   console.log(
     "avgPrice",
@@ -102,23 +70,25 @@ export async function estimateBuy(
 
 function estimateBuyByDollars({
   amount,
-  choicePot,
-  totalPot,
+  choiceMarketId,
+  subMarket,
 }: {
   amount: number;
-  choicePot: number;
-  totalPot: number;
+  choiceMarketId: number;
+  subMarket: SubMarketWithChoiceMarkets;
 }) {
-  let sharePrice = calculateSharePrice({ choicePot, totalPot });
-  let cumulativeDollars = 0;
-  let cumulativeShares = 0;
-  while (cumulativeDollars + sharePrice <= amount) {
-    choicePot += sharePrice;
-    totalPot += sharePrice;
-    cumulativeShares += 1;
-    cumulativeDollars += sharePrice;
-    sharePrice = calculateSharePrice({ choicePot, totalPot });
-  }
+  const invariant = subMarket.invariant;
+  const sharesInMM1 = subMarket.choice_markets.filter(
+    (choiceMarket) => choiceMarket.id === choiceMarketId
+  )[0].shares_in_mm;
+  const sharesInMM2 = subMarket.choice_markets.filter(
+    (choiceMarket) => choiceMarket.id !== choiceMarketId
+  )[0].shares_in_mm;
+
+  const cumulativeDollars = amount;
+  const cumulativeShares =
+    sharesInMM1 + amount - invariant / (sharesInMM2 + amount);
+
   return { cumulativeDollars, cumulativeShares };
 }
 
@@ -137,7 +107,7 @@ export async function estimateSell({
   const slug = await getSlugFromChoiceMarketId(supabase, choiceMarketId);
 
   // get submarket data
-  const subMarkets = (
+  const subMarket = (
     await getSubMarkets({ supabase, options: { slug: slug } })
   )[0];
 
@@ -153,16 +123,11 @@ export async function estimateSell({
   }
   const sharesHeld = holdings[0].shares;
 
-  // get initial pot values
-  const { totalPot, choicePot } = getPotSizes(subMarkets, choiceMarketId);
-
   // calculate total spend
   const { cumulativeDollars, cumulativeShares } = estimateSellByShares({
-    cumulativeDollars: 0,
-    cumulativeShares: 0,
-    shares: shares,
-    choicePot,
-    totalPot,
+    choiceMarketId,
+    subMarket,
+    shares,
     sharesHeld,
   });
   const avgPrice = cumulativeShares ? cumulativeDollars / cumulativeShares : 0;
@@ -181,55 +146,35 @@ export async function estimateSell({
 }
 
 function estimateSellByShares({
-  cumulativeDollars,
-  cumulativeShares,
   shares,
-  choicePot,
-  totalPot,
+  choiceMarketId,
+  subMarket,
   sharesHeld,
 }: {
-  cumulativeDollars: number;
-  cumulativeShares: number;
   shares: number;
+  choiceMarketId: number;
+  subMarket: SubMarketWithChoiceMarkets;
   sharesHeld: number;
-  choicePot: number;
-  totalPot: number;
 }) {
-  let sharePrice = calculateSharePrice({ choicePot, totalPot });
-  while (sharesHeld && cumulativeShares < shares) {
-    choicePot -= sharePrice;
-    totalPot -= sharePrice;
-    cumulativeShares += 1;
-    sharesHeld -= 1;
-    cumulativeDollars += sharePrice;
-    sharePrice = calculateSharePrice({ choicePot, totalPot });
-  }
-  return { cumulativeDollars, cumulativeShares };
-}
+  const invariant = subMarket.invariant;
+  const sharesInMM1 = subMarket.choice_markets.filter(
+    (choiceMarket) => choiceMarket.id === choiceMarketId
+  )[0].shares_in_mm;
+  const sharesInMM2 = subMarket.choice_markets.filter(
+    (choiceMarket) => choiceMarket.id !== choiceMarketId
+  )[0].shares_in_mm;
 
-function estimateSellByDollars({
-  amount,
-  cumulative,
-  shareCount,
-  choicePot,
-  totalPot,
-  sharesHeld,
-}: {
-  amount: number;
-  cumulative: number;
-  shareCount: number;
-  sharesHeld: number;
-  choicePot: number;
-  totalPot: number;
-}) {
-  let sharePrice = calculateSharePrice({ choicePot, totalPot });
-  while (sharesHeld && cumulative + sharePrice <= amount) {
-    choicePot -= sharePrice;
-    totalPot -= sharePrice;
-    shareCount += 1;
-    sharesHeld -= 1;
-    cumulative += sharePrice;
-    sharePrice = calculateSharePrice({ choicePot, totalPot });
-  }
-  return { cumulative, shareCount };
+  const cumulativeShares = shares;
+  const roots = quadraticFormula(
+    1,
+    -(sharesInMM1 + shares + sharesInMM2),
+    (sharesInMM1 + shares) * sharesInMM2 - invariant
+  );
+  // TODO: Better way of ensuring the correct root is selected?
+  const root = roots
+    .filter((root) => root >= 0)
+    .filter((root) => root <= sharesInMM1 + shares)[0];
+  const cumulativeDollars = root;
+
+  return { cumulativeDollars, cumulativeShares };
 }

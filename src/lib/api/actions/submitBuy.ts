@@ -313,6 +313,7 @@ export default async function submitBuy(
       throw error;
     }
   } catch (error: any) {
+    console.log(error);
     if (error instanceof AnchorError) {
       const err = error as AnchorError;
       const useFormState: BuyUseFormState = {

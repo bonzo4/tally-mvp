@@ -17,7 +17,7 @@ import {
 import { PublicKey } from "@solana/web3.js";
 import { AnchorError, BN } from "@coral-xyz/anchor";
 import { sendTransactions } from "@/lib/solana/transaction";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { feeAccounts } from "@/lib/solana/feeAccounts";
 
 type trade_status = Database["public"]["Enums"]["trade_status"];
 type trade_side = Database["public"]["Enums"]["trade_side"];
@@ -251,7 +251,7 @@ export default async function submitBuy(
     );
 
     const { data: subMarketData, error: subMarketError } = await supabase
-      .from("sub_market_id")
+      .from("sub_markets")
       .select("prediction_market_id")
       .eq("id", formData_[0].sub_market_id)
       .single();
@@ -276,9 +276,31 @@ export default async function submitBuy(
       formData_: formData_,
     });
 
-    const buyOrders = estimate.map((values) => ({
-      subMarketId: new BN(values.subMarketId),
-      choiceId: new BN(values.choiceMarketId),
+    // group transactions together before POSTING
+    const txns = estimate.map((values) => ({
+      user_id: user.id,
+      choice_market_id: Number(values.choiceMarketId),
+      total_amount: values.cumulativeDollars,
+      shares: values.cumulativeShares,
+      avg_share_price: values.avgPrice,
+      trade_side: values.tradeSide,
+      status: "PENDING" as trade_status,
+      fees: values.fees,
+    }));
+
+    const { data: data, error: error } = await supabase
+      .from("orders")
+      .insert(txns)
+      .select();
+
+    if (error) {
+      throw error;
+    }
+
+    const buyOrders = estimate.map((values, index) => ({
+      orderId: data[index].id,
+      subMarketId: values.subMarketId,
+      choiceId: values.choiceMarketId,
       amount: values.cumulativeDollars,
       requestedPricePerShare: values.avgPrice,
     }));
@@ -288,30 +310,8 @@ export default async function submitBuy(
       userWallet: balanceData.public_key,
       marketKey: predictionMarketData.public_key,
       buyOrders,
+      userId: user.id,
     });
-
-    // group transactions together before POSTING
-    const txns = [];
-    for (const txn of estimate) {
-      txns.push({
-        user_id: user.id,
-        choice_market_id: Number(txn.choiceMarketId),
-        total_amount: txn.cumulativeDollars,
-        shares: txn.cumulativeShares,
-        avg_share_price: txn.avgPrice,
-        trade_side: txn.tradeSide,
-        status: "CONFIRMED" as trade_status,
-        fees: txn.fees,
-      });
-    }
-    const { data: data, error: error } = await supabase
-      .from("orders")
-      .insert(txns)
-      .select();
-
-    if (error) {
-      throw error;
-    }
   } catch (error: any) {
     console.log(error);
     if (error instanceof AnchorError) {
@@ -343,7 +343,9 @@ export default async function submitBuy(
 type SubmitToSmartContractOptions = {
   userWallet: string;
   marketKey: string;
+  userId: number;
   buyOrders: {
+    orderId: number;
     subMarketId: number;
     choiceId: number;
     amount: number;
@@ -355,6 +357,7 @@ async function submitToSmartContract({
   marketKey,
   userWallet,
   buyOrders,
+  userId,
 }: SubmitToSmartContractOptions) {
   const program = getTallyClob();
   const managerWallet = getManagerKeyPair();
@@ -363,6 +366,7 @@ async function submitToSmartContract({
   const marketPortfolioPDA = getMarketPortfolioPDA(marketPDA, userPDA, program);
 
   const orders = buyOrders.map((order) => ({
+    id: new BN(order.orderId),
     subMarketId: new BN(order.subMarketId),
     choiceId: new BN(order.choiceId),
     amount: new BN(order.amount * Math.pow(10, 9)),
@@ -370,18 +374,10 @@ async function submitToSmartContract({
   }));
 
   const bulkBuyTx = await program.methods
-    .bulkBuyByPrice(orders)
+    .bulkBuyByPrice(orders, new BN(userId))
     .signers([managerWallet])
     .accounts({
-      mint: new PublicKey(process.env.USDC_MINT!),
-      fromUsdcAccount: getAssociatedTokenAddressSync(
-        new PublicKey(process.env.USDC_MINT!),
-        new PublicKey(process.env.MANAGER_PUBLIC_KEY!)
-      ),
-      feeUsdcAccount: getAssociatedTokenAddressSync(
-        new PublicKey(process.env.USDC_MINT!),
-        new PublicKey(process.env.FEE_MANAGER_KEY!)
-      ),
+      ...feeAccounts,
       user: userPDA,
       market: marketPDA,
       marketPortfolio: marketPortfolioPDA,

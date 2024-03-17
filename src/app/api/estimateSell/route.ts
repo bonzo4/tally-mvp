@@ -7,6 +7,7 @@ import getUser from "@/lib/supabase/user";
 import { SellFormState } from "@/app/trade/[slug]/components/SellCard";
 
 export type Estimate = {
+  subMarketId: number;
   subMarketTitle: string;
   choiceMarketTitle: string;
   choiceMarketId: number;
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           shares: shares,
         });
       resData.push({
+        subMarketId: txn.subMarketId,
         subMarketTitle: txn.subMarketTitle,
         choiceMarketTitle: txn.choiceMarketTitle,
         choiceMarketId: txn.choiceMarketId,

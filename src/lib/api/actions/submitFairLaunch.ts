@@ -275,50 +275,36 @@ export async function submitFairLaunch(
       amount: amount,
     });
 
-    // const { data: subMarketData, error: subMarketError } = await supabase
-    //   .from("sub_markets")
-    //   .select("prediction_market_id")
-    //   .eq("id", sub_market_id)
-    //   .single();
+    const { data: subMarketData, error: subMarketError } = await supabase
+      .from("sub_markets")
+      .select("prediction_market_id")
+      .eq("id", sub_market_id)
+      .single();
 
-    // if (subMarketError) throw subMarketError;
+    if (subMarketError) throw subMarketError;
 
-    // const { data: predictionMarketData, error: predictionMarketDataError } =
-    //   await supabase
-    //     .from("prediction_markets")
-    //     .select("public_key")
-    //     .eq("id", subMarketData.prediction_market_id)
-    //     .single();
+    const { data: predictionMarketData, error: predictionMarketDataError } =
+      await supabase
+        .from("prediction_markets")
+        .select("public_key")
+        .eq("id", subMarketData.prediction_market_id)
+        .single();
 
-    // if (predictionMarketDataError) throw predictionMarketDataError;
-    // if (!predictionMarketData.public_key)
-    //   throw new Error("No public key found.");
+    if (predictionMarketDataError) throw predictionMarketDataError;
+    if (!predictionMarketData.public_key)
+      throw new Error("No public key found.");
 
-    const fairLaunchOrder = {
-      subMarketId: sub_market_id,
-      choiceId: choice_market_id,
-      amount: amount,
-      requestedPricePerShare: 0.5,
-    };
-
-    // TODO: submit transaction to smart contract
-    // await submitToSmartContract({
-    //   userWallet: balanceData.public_key,
-    //   marketKey: predictionMarketData.public_key,
-    //   fairLaunchOrders: [fairLaunchOrder],
-    // });
-
-    const txns = [];
-
-    txns.push({
-      user_id: user.id,
-      choice_market_id: choice_market_id,
-      total_amount: amountForShares,
-      shares: amountForShares * 2,
-      avg_share_price: 0.5,
-      status: "CONFIRMED" as trade_status,
-      fees: fees,
-    });
+    const txns = [
+      {
+        user_id: user.id,
+        choice_market_id: choice_market_id,
+        total_amount: amountForShares,
+        shares: amountForShares * 2,
+        avg_share_price: 0.5,
+        status: "PENDING" as trade_status,
+        fees: fees,
+      },
+    ];
 
     const { data: data, error: error } = await supabase
       .from("fair_launch_order")
@@ -329,6 +315,21 @@ export async function submitFairLaunch(
     if (error) {
       throw error;
     }
+    const fairLaunchOrder = {
+      orderId: data[0].id,
+      subMarketId: sub_market_id,
+      choiceId: choice_market_id,
+      amount: amount,
+      requestedPricePerShare: 0.5,
+    };
+
+    // TODO: submit transaction to smart contract
+    await submitToSmartContract({
+      userWallet: balanceData.public_key,
+      marketKey: predictionMarketData.public_key,
+      fairLaunchOrders: [fairLaunchOrder],
+      userId: user.id,
+    });
   } catch (error: any) {
     console.log(error);
     return fromErrorToFormState(error);
@@ -339,7 +340,9 @@ export async function submitFairLaunch(
 type SubmitToSmartContractOptions = {
   userWallet: string;
   marketKey: string;
+  userId: number;
   fairLaunchOrders: {
+    orderId: number;
     subMarketId: number;
     choiceId: number;
     amount: number;
@@ -351,6 +354,7 @@ async function submitToSmartContract({
   marketKey,
   userWallet,
   fairLaunchOrders,
+  userId,
 }: SubmitToSmartContractOptions) {
   const program = getTallyClob();
   const managerWallet = getManagerKeyPair();
@@ -359,6 +363,7 @@ async function submitToSmartContract({
   const marketPortfolioPDA = getMarketPortfolioPDA(marketPDA, userPDA, program);
 
   const orders = fairLaunchOrders.map((order) => ({
+    id: new BN(order.orderId),
     subMarketId: new BN(order.subMarketId),
     choiceId: new BN(order.choiceId),
     amount: new BN(order.amount * Math.pow(10, 9)),
@@ -366,7 +371,7 @@ async function submitToSmartContract({
   }));
 
   const bulkBuyTx = await program.methods
-    .fairLaunchOrder(orders)
+    .fairLaunchOrder(orders, new BN(userId))
     .signers([managerWallet])
     .accounts({
       user: userPDA,

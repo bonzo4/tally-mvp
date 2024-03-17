@@ -29,6 +29,7 @@ async function getFairLaunchHistoryQuery({
     .from("fair_launch_order")
     .select("*, choice_markets(title, color, sub_markets(title))")
     .eq("user_id", userId)
+    .eq("status", "CONFIRMED")
     .order("created_at", { ascending: false });
 }
 

@@ -6,24 +6,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  formatDollarsWithCents,
-  formatNumberWithCommasNoDecimals,
-} from "@/lib/formats";
+import { formatDollarsWithCents } from "@/lib/formats";
 import { Holdings } from "@/lib/supabase/queries/holdings";
 import { textCssMap } from "@/lib/cssMaps";
 
 function PortfolioRow({ holding }: { holding: Holdings }) {
   const color = holding.choice_markets?.color || "primary";
   const textCss = textCssMap[color as keyof typeof textCssMap];
-  const {
-    created_at,
-    choice_markets,
-    shares,
-    shares_bought,
-    total_buy_value,
-    winnings,
-  } = holding;
+  const { created_at, choice_markets, shares, shares_bought, total_buy_value } =
+    holding;
 
   return (
     <TableRow className="border-0">
@@ -31,9 +22,7 @@ function PortfolioRow({ holding }: { holding: Holdings }) {
         {choice_markets?.sub_markets?.title || ""}
       </TableCell>
       <TableCell className={textCss}>{choice_markets?.title}</TableCell>
-      <TableCell className="text-right text-white">
-        {formatNumberWithCommasNoDecimals(shares)}
-      </TableCell>
+      <TableCell className="text-right text-white">{shares}</TableCell>
       <TableCell className="text-right text-white">
         {formatDollarsWithCents(total_buy_value / shares_bought)}
       </TableCell>
@@ -46,11 +35,7 @@ function PortfolioRow({ holding }: { holding: Holdings }) {
       <TableCell className="text-center text-white">
         {choice_markets?.sub_markets?.has_resolved ? "Resolved" : "Ongoing"}
       </TableCell>
-      <TableCell className="text-center text-white">
-        {choice_markets?.sub_markets?.has_resolved
-          ? formatDollarsWithCents(winnings || 0)
-          : "TBD"}
-      </TableCell>
+      <TableCell className="text-center text-white">{"TBD"}</TableCell>
     </TableRow>
   );
 }

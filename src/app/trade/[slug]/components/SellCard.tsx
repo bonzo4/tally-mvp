@@ -16,10 +16,7 @@ import {
   ChoiceMarketWithHoldings,
   SubMarketWithHoldings,
 } from "@/lib/supabase/queries/markets/tradeMarket";
-import {
-  formatNumberWithCommasNoDecimals,
-  formatDollarsWithCents,
-} from "@/lib/formats";
+import { formatDollarsWithCents } from "@/lib/formats";
 
 import OrderInput from "./OrderInput";
 import ChoiceButton from "./ChoiceButton";
@@ -73,9 +70,7 @@ function SellChoiceMarket({
           disabled={true}
         />
         <div className="flex flex-col">
-          <div className="text-right text-white">{`${formatNumberWithCommasNoDecimals(
-            shares
-          )} shares `}</div>
+          <div className="text-right text-white">{`${shares} shares `}</div>
         </div>
       </div>
       <OrderInput
@@ -83,7 +78,6 @@ function SellChoiceMarket({
         name={choiceMarket.id.toString()}
         label="Shares"
         placeholder="Number of shares to sell"
-        step="1"
         error={error}
         value={inputAmount}
         disabled={enabledInput ? enabledInput !== choiceMarket.id : false}
@@ -133,6 +127,7 @@ function SellContent({
   setIsFormEnabled: (enabled: boolean) => void;
   validateFormState: SellUseFormState;
   handleAmountChange: (
+    subMarketId: number,
     subMarketTitle: string,
     choiceMarketTitle: string,
     choice_market_id: number,
@@ -179,6 +174,7 @@ function SellContent({
                     error={insufficientBalanceError || backendError}
                     setIsFormEnabled={setIsFormEnabled}
                     handleAmountChange={handleAmountChange(
+                      subMarketWithHoldings.id,
                       subMarketWithHoldings.card_title ||
                         subMarketWithHoldings.title,
                       choice_market.title,
@@ -212,6 +208,7 @@ function LoginButton({ slug }: { slug: string }) {
 
 export type SellFormState = {
   [key: number]: {
+    subMarketId: number;
     subMarketTitle: string;
     choiceMarketTitle: string;
     choiceMarketId: number;
@@ -240,6 +237,7 @@ export default function SellCard({
 
   const handleAmountChange =
     (
+      subMarketId: number,
       subMarketTitle: string,
       choiceMarketTitle: string,
       choiceMarketId: number,
@@ -249,6 +247,7 @@ export default function SellCard({
       setFormState({
         ...formState,
         [choiceMarketId]: {
+          subMarketId: subMarketId,
           subMarketTitle: subMarketTitle,
           choiceMarketTitle: choiceMarketTitle,
           choiceMarketId: choiceMarketId,

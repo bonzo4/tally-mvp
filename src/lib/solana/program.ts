@@ -1,12 +1,12 @@
 import { Program, AnchorProvider } from "@coral-xyz/anchor";
 import { Connection, clusterApiUrl, PublicKey, Keypair } from "@solana/web3.js";
 
-import { TallyClob, IDL } from "./tally-clob-types";
+import { TallyClob, IDL } from "./tally-clob";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 
 export function getTallyClob() {
   const programID = new PublicKey(
-    "3DRCmEKEds4FUwZHYWuqfRqS8W5fpRaEYHzYbj7giQcj"
+    "9XnGPkzHYqs4UbLi5NDTkterYnmXuiBQZkd2PtZKzQQP"
   );
 
   const keypair = new Keypair({
@@ -20,11 +20,7 @@ export function getTallyClob() {
 
   const provider = new AnchorProvider(connection, wallet, {});
 
-  const program = new Program(
-    IDL,
-    programID,
-    provider
-  ) as unknown as Program<TallyClob>;
+  const program = new Program(IDL, programID, provider) as Program<TallyClob>;
 
   return program;
 }

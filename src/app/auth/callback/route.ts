@@ -47,6 +47,35 @@ export async function GET(req: NextRequest) {
 
     const walletKeys = createWallet(connection);
 
+    const { data, error } = await supabase
+      .from("user_balances")
+      .insert({
+        user_id: userDoc.id,
+        public_key: walletKeys.publicKeyString,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const { data: depositData, error: error2 } = await supabase
+      .from("deposits")
+      .insert({
+        balance_id: data.id,
+        new_usdc_balance: 1000,
+        usdc_amount_received: 1000,
+        user_id: userDoc.id,
+        status: "PENDING",
+      })
+      .select()
+      .single();
+
+    if (error2) {
+      throw new Error(error2.message);
+    }
+
     const program = getTallyClob();
     const managerWallet = getManagerKeyPair();
     const userPDA = getUserPDA(
@@ -61,7 +90,11 @@ export async function GET(req: NextRequest) {
       .instruction()
       .catch((err) => console.log(err));
     const addToWalletTx = await program.methods
-      .addToBalance(new BN(1000 * Math.pow(10, 9)))
+      .addToBalance(
+        new BN(1000 * Math.pow(10, 9)),
+        new BN(userDoc.id),
+        new BN(depositData.id)
+      )
       .signers([managerWallet])
       .accounts({ user: userPDA, signer: managerWallet.publicKey })
       .instruction();
@@ -75,16 +108,6 @@ export async function GET(req: NextRequest) {
       transactions: [initWalletTx, addToWalletTx],
       signer: managerWallet,
     });
-
-    const { error } = await supabase.from("user_balances").insert({
-      user_id: userDoc.id,
-      public_key: walletKeys.publicKeyString,
-      usdc_balance: 1000,
-    });
-
-    if (error) {
-      throw new Error(error.message);
-    }
   }
 
   return NextResponse.redirect(new URL(redirectTo, req.url));

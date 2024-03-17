@@ -86,8 +86,8 @@ function estimateBuyByDollars({
   )[0].shares_in_mm;
 
   const cumulativeDollars = amount;
-  const cumulativeShares =
-    sharesInMM1 + amount - invariant / (sharesInMM2 + amount);
+  const newPotShares = invariant / (sharesInMM2 + amount);
+  const cumulativeShares = sharesInMM1 + amount - newPotShares;
 
   return { cumulativeDollars, cumulativeShares };
 }

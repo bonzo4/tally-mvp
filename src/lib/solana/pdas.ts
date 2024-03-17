@@ -1,6 +1,6 @@
 import { Program, utils } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
-import { TallyClob } from "./tally-clob-types";
+import { TallyClob } from "./tally-clob";
 
 export function getUserPDA(
   userKey: PublicKey,

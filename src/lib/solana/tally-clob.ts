@@ -121,6 +121,14 @@ export type TallyClob = {
           name: "amount";
           type: "u128";
         },
+        {
+          name: "userId";
+          type: "u64";
+        },
+        {
+          name: "depositId";
+          type: "u64";
+        },
       ];
     },
     {
@@ -146,6 +154,10 @@ export type TallyClob = {
         {
           name: "amount";
           type: "u128";
+        },
+        {
+          name: "userId";
+          type: "u64";
         },
       ];
     },
@@ -198,6 +210,14 @@ export type TallyClob = {
           name: "amount";
           type: "u128";
         },
+        {
+          name: "userId";
+          type: "u64";
+        },
+        {
+          name: "withdrawId";
+          type: "u64";
+        },
       ];
     },
     {
@@ -237,6 +257,10 @@ export type TallyClob = {
               defined: "Order";
             };
           };
+        },
+        {
+          name: "userId";
+          type: "u64";
         },
       ];
     },
@@ -298,6 +322,10 @@ export type TallyClob = {
             };
           };
         },
+        {
+          name: "userId";
+          type: "u64";
+        },
       ];
     },
     {
@@ -357,6 +385,10 @@ export type TallyClob = {
               defined: "Order";
             };
           };
+        },
+        {
+          name: "userId";
+          type: "u64";
         },
       ];
     },
@@ -418,6 +450,10 @@ export type TallyClob = {
             };
           };
         },
+        {
+          name: "userId";
+          type: "u64";
+        },
       ];
     },
     {
@@ -477,6 +513,10 @@ export type TallyClob = {
               defined: "Order";
             };
           };
+        },
+        {
+          name: "userId";
+          type: "u64";
         },
       ];
     },
@@ -602,6 +642,10 @@ export type TallyClob = {
         },
         {
           name: "choiceId";
+          type: "u64";
+        },
+        {
+          name: "userId";
           type: "u64";
         },
       ];
@@ -784,6 +828,10 @@ export type TallyClob = {
         kind: "struct";
         fields: [
           {
+            name: "id";
+            type: "u64";
+          },
+          {
             name: "amount";
             type: "u128";
           },
@@ -808,6 +856,10 @@ export type TallyClob = {
         kind: "struct";
         fields: [
           {
+            name: "orderId";
+            type: "u64";
+          },
+          {
             name: "subMarketId";
             type: "u64";
           },
@@ -826,6 +878,10 @@ export type TallyClob = {
           {
             name: "feePrice";
             type: "u128";
+          },
+          {
+            name: "avgSharePrice";
+            type: "f64";
           },
         ];
       };
@@ -951,6 +1007,238 @@ export type TallyClob = {
           },
         ];
       };
+    },
+  ];
+  events: [
+    {
+      name: "FairLaunchOrderEvent";
+      fields: [
+        {
+          name: "orderId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "totalAmount";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "shares";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "avgSharePrice";
+          type: "f64";
+          index: false;
+        },
+        {
+          name: "fees";
+          type: "u128";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "OrderEvent";
+      fields: [
+        {
+          name: "orderId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "totalAmount";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "shares";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "avgSharePrice";
+          type: "f64";
+          index: false;
+        },
+        {
+          name: "fees";
+          type: "u128";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "BalanceEvent";
+      fields: [
+        {
+          name: "userId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "unreedemableBalance";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "usdcBalance";
+          type: "u128";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "MarketAdjustEvent";
+      fields: [
+        {
+          name: "choiceId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "newChoicePot";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "newMintedShares";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "newChoiceShares";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "otherChoiceId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "newOtherChoiceShares";
+          type: "u128";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "PortfolioEvent";
+      fields: [
+        {
+          name: "choiceId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "userId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "sharesOwned";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "buyValue";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "sellValue";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "sharesBought";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "sharesSold";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "isFairLaunch";
+          type: "bool";
+          index: false;
+        },
+        {
+          name: "claimed";
+          type: "bool";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "FairLaunchMarketEvent";
+      fields: [
+        {
+          name: "subMarketId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "newInvariant";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "choiceId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "newChoicePot";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "mintedShares";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "newChoiceShares";
+          type: "u128";
+          index: false;
+        },
+        {
+          name: "otherChoiceId";
+          type: "u64";
+          index: false;
+        },
+        {
+          name: "newOtherChoiceShares";
+          type: "u128";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "DepositEvent";
+      fields: [
+        {
+          name: "depositId";
+          type: "u64";
+          index: false;
+        },
+      ];
+    },
+    {
+      name: "WithdrawalEvent";
+      fields: [
+        {
+          name: "withdrawId";
+          type: "u64";
+          index: false;
+        },
+      ];
     },
   ];
   errors: [
@@ -1205,6 +1493,14 @@ export const IDL: TallyClob = {
           name: "amount",
           type: "u128",
         },
+        {
+          name: "userId",
+          type: "u64",
+        },
+        {
+          name: "depositId",
+          type: "u64",
+        },
       ],
     },
     {
@@ -1230,6 +1526,10 @@ export const IDL: TallyClob = {
         {
           name: "amount",
           type: "u128",
+        },
+        {
+          name: "userId",
+          type: "u64",
         },
       ],
     },
@@ -1282,6 +1582,14 @@ export const IDL: TallyClob = {
           name: "amount",
           type: "u128",
         },
+        {
+          name: "userId",
+          type: "u64",
+        },
+        {
+          name: "withdrawId",
+          type: "u64",
+        },
       ],
     },
     {
@@ -1321,6 +1629,10 @@ export const IDL: TallyClob = {
               defined: "Order",
             },
           },
+        },
+        {
+          name: "userId",
+          type: "u64",
         },
       ],
     },
@@ -1382,6 +1694,10 @@ export const IDL: TallyClob = {
             },
           },
         },
+        {
+          name: "userId",
+          type: "u64",
+        },
       ],
     },
     {
@@ -1441,6 +1757,10 @@ export const IDL: TallyClob = {
               defined: "Order",
             },
           },
+        },
+        {
+          name: "userId",
+          type: "u64",
         },
       ],
     },
@@ -1502,6 +1822,10 @@ export const IDL: TallyClob = {
             },
           },
         },
+        {
+          name: "userId",
+          type: "u64",
+        },
       ],
     },
     {
@@ -1561,6 +1885,10 @@ export const IDL: TallyClob = {
               defined: "Order",
             },
           },
+        },
+        {
+          name: "userId",
+          type: "u64",
         },
       ],
     },
@@ -1686,6 +2014,10 @@ export const IDL: TallyClob = {
         },
         {
           name: "choiceId",
+          type: "u64",
+        },
+        {
+          name: "userId",
           type: "u64",
         },
       ],
@@ -1868,6 +2200,10 @@ export const IDL: TallyClob = {
         kind: "struct",
         fields: [
           {
+            name: "id",
+            type: "u64",
+          },
+          {
             name: "amount",
             type: "u128",
           },
@@ -1892,6 +2228,10 @@ export const IDL: TallyClob = {
         kind: "struct",
         fields: [
           {
+            name: "orderId",
+            type: "u64",
+          },
+          {
             name: "subMarketId",
             type: "u64",
           },
@@ -1910,6 +2250,10 @@ export const IDL: TallyClob = {
           {
             name: "feePrice",
             type: "u128",
+          },
+          {
+            name: "avgSharePrice",
+            type: "f64",
           },
         ],
       },
@@ -2035,6 +2379,238 @@ export const IDL: TallyClob = {
           },
         ],
       },
+    },
+  ],
+  events: [
+    {
+      name: "FairLaunchOrderEvent",
+      fields: [
+        {
+          name: "orderId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "totalAmount",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "shares",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "avgSharePrice",
+          type: "f64",
+          index: false,
+        },
+        {
+          name: "fees",
+          type: "u128",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "OrderEvent",
+      fields: [
+        {
+          name: "orderId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "totalAmount",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "shares",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "avgSharePrice",
+          type: "f64",
+          index: false,
+        },
+        {
+          name: "fees",
+          type: "u128",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "BalanceEvent",
+      fields: [
+        {
+          name: "userId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "unreedemableBalance",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "usdcBalance",
+          type: "u128",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "MarketAdjustEvent",
+      fields: [
+        {
+          name: "choiceId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "newChoicePot",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "newMintedShares",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "newChoiceShares",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "otherChoiceId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "newOtherChoiceShares",
+          type: "u128",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "PortfolioEvent",
+      fields: [
+        {
+          name: "choiceId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "userId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "sharesOwned",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "buyValue",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "sellValue",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "sharesBought",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "sharesSold",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "isFairLaunch",
+          type: "bool",
+          index: false,
+        },
+        {
+          name: "claimed",
+          type: "bool",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "FairLaunchMarketEvent",
+      fields: [
+        {
+          name: "subMarketId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "newInvariant",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "choiceId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "newChoicePot",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "mintedShares",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "newChoiceShares",
+          type: "u128",
+          index: false,
+        },
+        {
+          name: "otherChoiceId",
+          type: "u64",
+          index: false,
+        },
+        {
+          name: "newOtherChoiceShares",
+          type: "u128",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "DepositEvent",
+      fields: [
+        {
+          name: "depositId",
+          type: "u64",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "WithdrawalEvent",
+      fields: [
+        {
+          name: "withdrawId",
+          type: "u64",
+          index: false,
+        },
+      ],
     },
   ],
   errors: [

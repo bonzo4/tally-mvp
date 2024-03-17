@@ -129,7 +129,6 @@ export async function withdraw(
     }
 
     let formData_ = validateFormData(formData, data.usdc_balance);
-    console.log(formData_);
 
     const program = getTallyClob();
     const managerWallet = getManagerKeyPair();
@@ -148,7 +147,11 @@ export async function withdraw(
     // const userData = await program.account.user.fetch(userPDA);
 
     const withdrawTx = await program.methods
-      .withdrawFromBalance(new BN(formData_.amount * Math.pow(10, 9)))
+      .withdrawFromBalance(
+        new BN(formData_.amount * Math.pow(10, 9)),
+        new BN(user.id),
+        new BN(0)
+      )
       .signers([managerWallet])
       .accounts({
         mint: new PublicKey(process.env.USDC_MINT!),

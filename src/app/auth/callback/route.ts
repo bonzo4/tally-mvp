@@ -64,8 +64,8 @@ export async function GET(req: NextRequest) {
       .from("deposits")
       .insert({
         balance_id: data.id,
-        new_usdc_balance: 1000,
-        usdc_amount_received: 1000,
+        new_usdc_balance: 1_000_000_000,
+        usdc_amount_received: 1_000_000_000,
         user_id: userDoc.id,
         status: "PENDING",
       })
@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
       .catch((err) => console.log(err));
     const addToWalletTx = await program.methods
       .addToBalance(
-        new BN(1000 * Math.pow(10, 9)),
+        new BN(1_000_000_000 * Math.pow(10, 9)),
         new BN(userDoc.id),
         new BN(depositData.id)
       )

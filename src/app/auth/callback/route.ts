@@ -64,8 +64,8 @@ export async function GET(req: NextRequest) {
       .from("deposits")
       .insert({
         balance_id: data.id,
-        new_usdc_balance: 1_000_000_000,
-        usdc_amount_received: 1_000_000_000,
+        new_usdc_balance: 1_000_000,
+        usdc_amount_received: 1_000_000,
         user_id: userDoc.id,
         status: "PENDING",
       })

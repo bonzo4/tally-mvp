@@ -369,7 +369,7 @@ async function submitToSmartContract({
     id: new BN(order.orderId),
     subMarketId: new BN(order.subMarketId),
     choiceId: new BN(order.choiceId),
-    amount: new BN(BigInt(order.amount) * BigInt(Math.pow(10, 9))),
+    amount: new BN(order.amount * Math.pow(10, 9)),
     requestedPricePerShare: order.requestedPricePerShare,
   }));
 

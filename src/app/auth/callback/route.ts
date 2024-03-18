@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
       .catch((err) => console.log(err));
     const addToWalletTx = await program.methods
       .addToBalance(
-        new BN(1_000_000_000 * Math.pow(10, 9)),
+        new BN(BigInt(1_000_000_000) * BigInt(Math.pow(10, 9))),
         new BN(userDoc.id),
         new BN(depositData.id)
       )

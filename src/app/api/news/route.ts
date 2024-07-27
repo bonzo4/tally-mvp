@@ -9,7 +9,7 @@ type NewsArticles = {
 
 export async function GET(request: NextRequest) {
   const response = await fetch(
-    `https://newsapi.org/v2/everything?q=country=us&apiKey=${process.env.NEWS_API_KEY}`
+    `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`
   );
 
   const data = await response.json();
@@ -18,5 +18,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.json("Failed to get news", { status: 500 });
   }
 
-  return NextResponse.json(data, { status: 200 });
+  return NextResponse.json(data.articles.slice(0, 5), { status: 200 });
 }

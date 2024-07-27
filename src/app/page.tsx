@@ -8,6 +8,7 @@ import { getCategoryData } from "@/lib/api/data/categories";
 import { getLandingBannersData } from "@/lib/api/data/banners/landingBanners";
 import { getBlogs } from "@/lib/api/data/blogs";
 import { preload } from "@/lib/api/fetch";
+import { getNews } from "@/lib/api/data/news";
 
 export default async function LandingPage() {
   const dataFuncs = [getCategoryData, getLandingBannersData, getBlogs];
@@ -17,6 +18,9 @@ export default async function LandingPage() {
   const categories = await getCategoryData();
   const landingBanners = await getLandingBannersData();
   const blogs = await getBlogs({ limit: 5 });
+  const news = await getNews();
+
+  console.log(news);
 
   return (
     <div className="w-full">
@@ -28,7 +32,7 @@ export default async function LandingPage() {
         />
         <div className="flex flex-col space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <Insights blogs={blogs || []} />
-          <LiveNewsFeed />
+          <LiveNewsFeed news={news} />
         </div>
 
         <Guide />

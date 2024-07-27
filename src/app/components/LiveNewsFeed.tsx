@@ -2,49 +2,69 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-function NewsTile() {
+function NewsTile({ news }: { news: any }) {
+  const publishDate = new Date(news.publishedAt);
+
   return (
     <div className="w-full">
       <Link href="/">
         <div className="flex w-full">
           <div className="relative h-[100px] w-[100px] flex-shrink-0">
-            <Image
-              src="https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg"
-              fill={true}
-              alt="test image"
-              className="rounded-lg object-cover"
-            />
+            {news.urlToImage ? (
+              <Image
+                src={news.urlToImage}
+                fill={true}
+                alt="test image"
+                className="rounded-lg object-cover"
+              />
+            ) : (
+              <Image
+                src="https://raw.githubusercontent.com/davidjerleke/embla-carousel/master/packages/embla-carousel-docs/src/assets/images/slide-1.jpg"
+                fill={true}
+                alt="test image"
+                className="rounded-lg object-cover"
+              />
+            )}
           </div>
           <div className="flex flex-col justify-center space-y-1 self-stretch px-3">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xs font-bold text-tally-primary">
-                  Finance
+                  {news.author}
                 </h3>
               </div>
               <div className="text-nowrap text-xs font-medium text-gray-400 lg:hidden">
-                Nov 28th
+                {publishDate.toDateString()}
               </div>
             </div>
             <div>
-              <h2 className="font-bold text-white">
-                Bitcoin ETF approved by Jan 15?
-              </h2>
+              {news.title ? (
+                <h2 className="font-bold text-white">{news.title}</h2>
+              ) : (
+                <h2 className="font-bold text-white">
+                  Bitcoin ETF approved by Jan 15?
+                </h2>
+              )}
             </div>
             <div className="line-clamp-2 w-full text-sm text-white">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et
-                eros id massa dictum semper. Vestibulum quis tortor a sem
-                lacinia finibus quis et est. Nulla suscipit diam ac interdum
-                aliquam. And if there happens to be more text it should cut off
-                see here it&apos;s going to keep going and let&apos;s see what
-                happens to the text here.
-              </p>
+              {news.description ? (
+                <p>{news.description}</p>
+              ) : (
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  et eros id massa dictum semper. Vestibulum quis tortor a sem
+                  lacinia finibus quis et est. Nulla suscipit diam ac interdum
+                  aliquam. And if there happens to be more text it should cut
+                  off see here it&apos;s going to keep going and let&apos;s see
+                  what happens to the text here.
+                </p>
+              )}
             </div>
           </div>
           <div className="hidden items-center self-stretch px-6 lg:flex">
             <div className="text-nowrap text-xs font-medium text-gray-400">
-              Nov 28th
+              {publishDate.toDateString().split(" ")[1]}{" "}
+              {publishDate.toDateString().split(" ")[2]}
             </div>
           </div>
         </div>
@@ -107,7 +127,7 @@ function NewsTile2() {
   );
 }
 
-export default function LiveNewsFeed() {
+export default function LiveNewsFeed({ news }: { news: any[] }) {
   return (
     <div className="flex flex-col space-y-5 px-4 lg:px-16">
       <div className="flex justify-between">
@@ -124,11 +144,9 @@ export default function LiveNewsFeed() {
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-5">
-        <NewsTile />
-        <NewsTile />
-        <NewsTile />
-        <NewsTile />
-        <NewsTile />
+        {news.map((newsArticle: any, index: number) => (
+          <NewsTile key={index} news={newsArticle} />
+        ))}
       </div>
     </div>
   );

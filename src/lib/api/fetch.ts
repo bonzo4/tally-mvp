@@ -20,7 +20,9 @@ export async function fetchData<T, Options>({
   cache = "no-store",
 }: FetchDataProps<T, Options>): Promise<T | null> {
   return (async (url: string, options: Options) => {
-    const res = await fetch(url, { cache: cache as RequestCache });
+    const res = await fetch(url, {
+      cache: cache as RequestCache,
+    });
 
     if (res.status !== 200) {
       const data = await res.json();

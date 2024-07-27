@@ -62,10 +62,10 @@ export default function PriceBar({
           <div className="flex w-full flex-col space-y-1">
             <div className="flex flex-row justify-between">
               <span className="whitespace-nowrap text-sm text-tally-primary">
-                Yes: {prices[0].price * 100}%
+                Yes: {(prices[0].price * 100).toFixed(2)}%
               </span>
               <span className="whitespace-nowrap text-sm text-tally-red">
-                No: {prices[1].price * 100}%
+                No: {(prices[1].price * 100).toFixed(2)}%
               </span>
             </div>
             <div className="relative flex h-[2px] w-full">
@@ -92,7 +92,7 @@ export default function PriceBar({
                     priceTitleColors[index]
                   )}
                 >
-                  {price.title}: {price.price * 100}%
+                  {price.title}: {(price.price * 100).toFixed(2)}%
                 </span>
               );
             })}

@@ -35,11 +35,17 @@ function Poll() {
 
 export default function Polls() {
   return (
-    <div className="flex flex-col space-y-5">
-      <Poll />
-      <Poll />
-      <Poll />
-      <Poll />
+    <div className="flex w-full flex-col">
+      <div className="min-h-[400px] bg-zinc-800"></div>
     </div>
   );
+
+  // return (
+  //   <div className="flex flex-col space-y-5">
+  //     <Poll />
+  //     <Poll />
+  //     <Poll />
+  //     <Poll />
+  //   </div>
+  // );
 }

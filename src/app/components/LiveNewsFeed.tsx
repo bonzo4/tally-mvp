@@ -144,9 +144,10 @@ export default function LiveNewsFeed({ news }: { news: any[] }) {
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-5">
-        {news.map((newsArticle: any, index: number) => (
-          <NewsTile key={index} news={newsArticle} />
-        ))}
+        {news &&
+          news.map((newsArticle: any, index: number) => (
+            <NewsTile key={index} news={newsArticle} />
+          ))}
       </div>
     </div>
   );

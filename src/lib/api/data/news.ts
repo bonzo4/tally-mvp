@@ -1,10 +1,13 @@
-import { fetchData } from "../fetch";
-
 export async function getNews() {
-  const data = await fetchData<any, {}>({
-    url: `${process.env.NEXT_PUBLIC_URL}/api/news`,
-    options: {},
-  });
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/news`, {
+      next: {
+        revalidate: 60,
+      },
+    });
 
-  return await data;
+    return await response.json();
+  } catch {
+    return null;
+  }
 }

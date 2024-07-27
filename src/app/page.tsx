@@ -20,8 +20,6 @@ export default async function LandingPage() {
   const blogs = await getBlogs({ limit: 5 });
   const news = await getNews();
 
-  console.log(news);
-
   return (
     <div className="w-full">
       <Banner banners={landingBanners || []} />

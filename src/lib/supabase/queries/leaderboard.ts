@@ -32,6 +32,8 @@ interface LeaderboardQueryParams {
   options: LeaderboardOptions;
 }
 
+// PostgrestResponse<LeaderboardDaily>;
+
 async function leaderboardQuery({
   supabase,
   options,

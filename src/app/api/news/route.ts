@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   const data = await response.json();
 
   if (data.status !== "ok") {
-    return NextResponse.json("Failed to get news", { status: 500 });
+    return NextResponse.json([{}, {}, {}, {}, {}], { status: 200 });
   }
 
   return NextResponse.json(data.articles.slice(0, 5), { status: 200 });

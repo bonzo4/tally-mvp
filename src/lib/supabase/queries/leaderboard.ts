@@ -46,7 +46,7 @@ async function leaderboardQuery({
     table = mapParamToTable[filter];
   }
   return await supabase
-    .from(table)
+    .from("leaderboard_daily")
     .select("*")
     .order(order, { ascending: false })
     .limit(15);

@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import localFont from "next/font/local";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { UserDoc, getUser } from "@/lib/supabase/queries/user";
+import { LoginForm } from "@/components/auth/AuthForm";
 
 const gotham = localFont({
   src: "../../public/gotham.otf",
@@ -37,18 +38,34 @@ export default async function RootLayout({
   if (authUser) {
     user = await getUser({ supabase, options: { userId: authUser.id } });
   }
+
+  if (authUser)
+    return (
+      <html lang="en">
+        <body
+          className={cn(
+            "flex min-h-screen flex-col bg-tally-background font-gotham tracking-wide antialiased"
+          )}
+        >
+          <Header user={user} />
+          <main className="flex w-full grow flex-col items-center">
+            {children}
+          </main>
+          <Footer />
+        </body>
+      </html>
+    );
+
   return (
     <html lang="en">
       <body
         className={cn(
-          "flex min-h-screen flex-col bg-tally-background font-gotham tracking-wide antialiased"
+          "flex h-full min-h-screen flex-col bg-tally-background font-gotham tracking-wide antialiased"
         )}
       >
-        <Header user={user} />
-        <main className="flex w-full grow flex-col items-center">
-          {children}
-        </main>
-        <Footer />
+        <div className="flex  items-center justify-center">
+          <LoginForm redirectTo="/" />
+        </div>
       </body>
     </html>
   );

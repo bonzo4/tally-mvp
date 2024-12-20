@@ -1,3 +1,22 @@
+```
+src/app/*        # Next.js app pages
+src/components/* # Reusable components
+src/hooks/*      # Custom hooks
+src/lib/api      # Data fetching functions
+src/lib/solana/* # Solana wallet integration
+```
+
+## Features
+
+- Next.js
+- TypeScript
+- ESLint
+- Prettier
+- Supabase Database, Storage, and Auth
+- Tailwind CSS
+- Solana wallet integration
+- Needs a lot of work on the frontend
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
